@@ -1,0 +1,366 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "injecao-dependencia-node",
+          "name": "Injeção de Dependência (Node.js)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que vamos melhorar nesta lição?",
+              "content": "Na lição passada, cada camada criava suas próprias dependências: o Controller usava new CreateUserService() por dentro do handle, e o Service acessava diretamente o Repository já instanciado como Singleton.\n\nIsso funciona, mas deixa as camadas presas umas às outras, o que dificulta, por exemplo, trocar o Repository por uma versão de teste na hora de escrever testes automatizados. Nesta lição você vai aprender a técnica de Injeção de Dependência: ao invés de cada classe criar o que precisa, ela vai receber essas dependências prontas através do construtor. Toda a instanciação vai acontecer em um único lugar, no server.js."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o projeto",
+              "content": "1. No seu computador, em documentos, crie uma pasta com o nome do projeto ProjetoInjecaoDependencia.\n\n2. No VSCode, clique em Abrir Pasta -Open Folder- e selecione a pasta do projeto.\n\n3. Na extensão Learn Extension, clique em próximo para iniciar sua jornada."
+            },
+            {
+              "id": "b1a4c9f0-3e12-4a8d-9f61-1d2e3f4a5b6c",
+              "type": "explanation",
+              "title": "Como inciar um projeto em node.js?",
+              "content": "1.Use o terminal para executar o comando 'npm init -y' \n\n2.O comando 'npm init -y' cria automaticamente o arquivo package.json."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar um arquivo .gitignore informando ao Git para ignorar a pasta node_modules?",
+              "comment": "Criar o arquivo .gitignore",
+              "answer": "node_modules",
+              "workspace": {
+                "activeFilePath": ".gitignore",
+                "tree": [
+                  { "type": "file", "name": "package.json" },
+                  { "type": "file", "name": ".gitignore" }
+                ]
+              }
+            },
+             {
+              "id": "b1a4c9f0-3e12-4a8d-9f61-1d2e3f4a5b6c",
+              "type": "explanation",
+              "title": "Como instalar a biblioteca para criar uma api?",
+              "content": "1.Use o terminal para executar o comando 'npm install express' \n\n2. O comando 'npm install express' instala o framework Express no arquivo package.json \n\n3. Criar o arquivo package-lock.json que registra exatamente as versões das dependências instaladas no projeto \n\n4. Cria a pasta node_module que contém todas as dependências do projeto."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Habilitando import e a estrutura de pastas do projeto",
+              "content": "Abra o package.json e troque \"type\": \"commonjs\" por \"type\": \"module\", para poder usar a sintaxe import.\n\nA estrutura de pastas vai ser parecida com a da lição anterior:\n\npackage.json\nsrc\n  controllers\n    user.controller.js\n  repositories\n    user.repository.js\n  server.js\n  services\n    create.user.service.js\n\nA diferença desta vez é que vamos começar pelo server.js, entendendo primeiro como as peças vão se encaixar, e só depois vamos construir cada camada, terminando no Repository."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo a Injeção de Dependência",
+              "content": "Dependência, aqui, é qualquer objeto que uma classe precisa para funcionar. O CreateUserService depende do UserRepository, por exemplo, porque precisa dele para buscar e salvar usuários.\n\nInjeção de Dependência significa que, ao invés da própria classe criar essa dependência com new, ela recebe essa dependência já pronta de fora, através do construtor. Quem decide qual dependência entregar é quem cria o objeto, nesse caso, o server.js. Isso deixa as classes mais flexíveis: no futuro, dá para entregar um UserRepository diferente, até mesmo um falso, usado só em testes, sem precisar alterar o código do Service."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo server.js, como importar o express, o UserController, o CreateUserService e o UserRepository, que ainda vamos construir nos próximos passos?",
+              "comment": "Importar todas as camadas no server.js",
+              "answer": "import express from \"express\";\nimport { UserController } from \"./src/controllers/user.controller.js\";\nimport { CreateUserService } from \"./src/services/create.user.service.js\";\nimport { UserRepository } from \"./src/repositories/user.repository.js\";",
+              "workspace": {
+                "activeFilePath": "src/server.js",
+                "tree": [
+                  { "type": "file", "name": "server.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que importar arquivos que ainda não existem?",
+              "content": "Estamos projetando o server.js antes de criar as outras camadas de propósito, para você entender primeiro o contrato entre elas, ou seja, o que cada uma vai precisar receber. Isso é uma forma de pensar chamada design de cima para baixo.\n\nNão se preocupe, os arquivos controllers/user.controller.js, services/create.user.service.js e repositories/user.repository.js serão criados logo nos próximos exercícios, com exatamente esse conteúdo esperado pelo server.js."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar a aplicação Express na variável app, e habilitar o parser de JSON com express.json()?",
+              "comment": "Criar a aplicação e habilitar JSON",
+              "answer": "const app = express();\napp.use(express.json());",
+              "workspace": {
+                "activeFilePath": "src/server.js",
+                "tree": [
+                  { "type": "file", "name": "server.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar, em sequência, uma instância de UserRepository, depois uma instância de CreateUserService injetando o userRepository criado, e depois uma instância de UserController injetando o createUserService criado?",
+              "comment": "Instanciar e injetar as dependências",
+              "answer": "const userRepository = new UserRepository();\nconst createUserService = new CreateUserService(userRepository);\nconst userController = new UserController(createUserService);",
+              "workspace": {
+                "activeFilePath": "src/server.js",
+                "tree": [
+                  { "type": "file", "name": "server.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "A cadeia de injeção de dependências",
+              "content": "Repare na ordem: primeiro criamos o UserRepository, porque ele não depende de mais nada. Em seguida criamos o CreateUserService, entregando o userRepository para dentro do construtor. Por último criamos o UserController, entregando o createUserService para dentro do construtor dele.\n\nCada linha entrega para a próxima peça exatamente o que ela precisa para funcionar. É o server.js quem monta esse quebra-cabeça todo, e é o único lugar do projeto que usa new nas nossas próprias classes."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar a rota POST em /users, chamando o handle do userController, garantindo que dentro do handle o this continue se referindo ao próprio userController?",
+              "comment": "Criar a rota POST /users com bind",
+              "answer": "app.post(\"/users\", userController.handle.bind(userController));",
+              "workspace": {
+                "activeFilePath": "src/server.js",
+                "tree": [
+                  { "type": "file", "name": "server.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que precisamos do .bind(userController)?",
+              "content": "Quando passamos userController.handle diretamente para o app.post, sem chamar a função, o JavaScript perde a referência de qual objeto é o this dentro dela. Quando o Express chamar essa função mais tarde, o this dentro do handle não vai mais apontar para o userController, e o código this.createUserService vai dar erro, como se essa propriedade não existisse.\n\nO método bind cria uma nova versão da função handle, mas já travada para sempre usar userController como o this. Esse é um detalhe comum do JavaScript sempre que você passa um método de uma classe como referência, ao invés de chamar ele diretamente."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Por fim, como fazer a aplicação escutar a porta 3002, exibindo no terminal a mensagem Server is running on PORT 3002?",
+              "comment": "Colocar o servidor no ar",
+              "answer": "app.listen(3002, () => console.log(\"Server is running on PORT 3002\"));",
+              "workspace": {
+                "activeFilePath": "src/server.js",
+                "tree": [
+                  { "type": "file", "name": "server.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Agora vamos construir cada camada",
+              "content": "O server.js já está completo, esperando por três peças: UserController, CreateUserService e UserRepository, cada uma recebendo sua dependência pelo construtor.\n\nVamos construir na ordem em que o server.js as utiliza: primeiro o Controller, depois o Service, e por último o Repository, que é a única camada que não recebe nenhuma dependência."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo user.controller.js, como criar a classe UserController com um construtor que recebe createUserService e guarda ele em this.createUserService?",
+              "comment": "Criar o construtor do UserController",
+              "answer": "class UserController {\n  constructor(createUserService) {\n    this.createUserService = createUserService;\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/controllers/user.controller.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo o construtor da classe",
+              "content": "O construtor é um método especial, chamado automaticamente sempre que usamos new NomeDaClasse(). Ele recebe os parâmetros passados no momento da criação, no nosso caso o createUserService, e é o lugar ideal para guardar essas dependências em propriedades da instância, usando this.\n\nDepois desse ponto, qualquer outro método da classe, como o handle que vamos criar a seguir, pode acessar this.createUserService normalmente, porque ele já foi guardado no momento em que o objeto foi criado."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar o método handle, que recebe request e response, extrai o body, e dentro de um try chama this.createUserService.execute passando o body, retornando o resultado com response.json?",
+              "comment": "Criar o método handle usando a dependência injetada dentro da classe UserController",
+              "answer": "handle(request, response) {\n  const { body } = request;\n\n  try {\n    const result = this.createUserService.execute(body);\n    return response.json(result);\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/controllers/user.controller.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo após o try, como criar o catch que captura o erro e retorna status 400 com um JSON contendo err.message?",
+              "comment": "Tratar o erro no handle",
+              "answer": "catch (err) {\n  return response.status(400).json({\n    err: err.message,\n  });\n}",
+              "workspace": {
+                "activeFilePath": "src/controllers/user.controller.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como exportar a classe UserController usando chaves, no final do arquivo?",
+              "comment": "Exportar a classe UserController",
+              "answer": "export { UserController };",
+              "workspace": {
+                "activeFilePath": "src/controllers/user.controller.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Repare: nada de new CreateUserService() aqui dentro",
+              "content": "Compare com a lição anterior: antes, o handle criava sua própria instância do Service com new CreateUserService(). Agora, o UserController nem precisa saber como o CreateUserService é construído, ele só recebe uma instância já pronta pelo construtor, e usa ela através de this.createUserService.\n\nEsse é o ganho da Injeção de Dependência: o Controller ficou mais simples, e não depende mais de saber os detalhes de construção do Service."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo create.user.service.js, como criar a classe CreateUserService com um construtor que recebe userRepository e guarda ele em this.userRepository?",
+              "comment": "Criar o construtor do CreateUserService",
+              "answer": "class CreateUserService {\n  constructor(userRepository) {\n    this.userRepository = userRepository;\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/services/create.user.service.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar o método execute, que recebe data, lançando um erro com a mensagem Username é obrigatório caso data.username não tenha sido informado?",
+              "comment": "Criar o método execute dentro do CreateUserService e validar se o username foi informado",
+              "answer": "execute(data) {\n  if (!data.username) {\n    throw new Error(\"Username é obrigatório\");\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/services/create.user.service.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar this.userRepository para verificar, através do findByUsername, se o username já existe, lançando um erro com a mensagem Usuário já cadastrado! caso ele exista?",
+              "comment": "Verificar se o usuário já existe usando a dependência injetada",
+              "answer": "const existUser = this.userRepository.findByUsername(data.username);\n\nif (existUser) {\n  throw new Error(\"Usuário já cadastrado!\");\n}",
+              "workspace": {
+                "activeFilePath": "src/services/create.user.service.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar this.userRepository para salvar o data recebido, retornando diretamente o resultado do save?",
+              "comment": "Salvar o usuário usando a dependência injetada",
+              "answer": "return this.userRepository.save(data);",
+              "workspace": {
+                "activeFilePath": "src/services/create.user.service.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como exportar a classe CreateUserService usando chaves, no final do arquivo?",
+              "comment": "Exportar a classe CreateUserService",
+              "answer": "export { CreateUserService };",
+              "workspace": {
+                "activeFilePath": "src/services/create.user.service.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Repare: o Service não conhece mais o UserRepository importado diretamente",
+              "content": "Antes, o CreateUserService fazia import UserRepository from ... e usava esse import diretamente, ou até criava uma instância nova dentro do execute. Agora, o Service não faz nenhum import do Repository, ele simplesmente recebe qualquer objeto que tenha os métodos findByUsername e save através do construtor.\n\nIsso significa que, em um teste automatizado, você poderia criar um userRepository falso, com esses dois métodos, e passar ele no lugar do de verdade, sem tocar em uma linha sequer do CreateUserService."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo user.repository.js, como criar a classe UserRepository com a propriedade users iniciada como uma lista vazia?",
+              "comment": "Criar a classe UserRepository",
+              "answer": "class UserRepository {\n  users = [];\n}",
+              "workspace": {
+                "activeFilePath": "src/repositories/user.repository.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] }, { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar o método findByUsername, que percorre a lista users e retorna o usuário cujo username seja igual ao recebido?",
+              "comment": "Dentro do UserRepository, criar um método para buscar usuário por username",
+              "answer": "findByUsername(username) {\n  const userExists = this.users.find((user) => user.username === username);\n  return userExists;\n}",
+              "workspace": {
+                "activeFilePath": "src/repositories/user.repository.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] }, { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar o método save, que gera um id aleatório, adiciona o usuário na lista users e retorna o usuário já com o id?",
+              "comment": "Salvar usuário na lista",
+              "answer": "save(user) {\n  const id = Math.random().toString();\n  const userWithId = { ...user, id };\n  this.users.push(userWithId);\n  return userWithId;\n}",
+              "workspace": {
+                "activeFilePath": "src/repositories/user.repository.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] }, { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como exportar a classe UserRepository usando chaves, no final do arquivo, ao invés de exportar uma instância como fizemos na lição anterior?",
+              "comment": "Exportar a classe UserRepository",
+              "answer": "export { UserRepository };",
+              "workspace": {
+                "activeFilePath": "src/repositories/user.repository.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] }, { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que exportar a classe, e não mais uma instância?",
+              "content": "Na lição passada, o Repository exportava export default new UserRepository(), garantindo uma única instância compartilhada, o padrão Singleton. Agora, quem decide quantas instâncias existem e quando criar cada uma é o server.js, que já faz isso com new UserRepository().\n\nPor isso exportamos apenas a classe, e não uma instância pronta: a responsabilidade de instanciar não é mais do próprio arquivo, e sim de quem está montando a aplicação."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como rodar a aplicação para testar se a API está funcionando?",
+              "content": "O comando node src/server.js inicia o servidor e você pode acessar a rota http://localhost:3002/ no navegador."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "como realizar um requisição para criar user na rota POST /users?",
+              "content": "Use o comando no termial: curl -X POST http://localhost:3002/users -H \"Content-Type: application/json\" -d '{\"username\": \"john_doe\", \"email\": \"john.doe@example.com\"}'"
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: Injeção de Dependência na prática",
+              "content": "Nesta lição você reescreveu a mesma aplicação de camadas usando Injeção de Dependência, e agora consegue enxergar as diferenças principais:\n\n1. Todas as instâncias, UserRepository, CreateUserService e UserController, são criadas em um único lugar, o server.js.\n2. Cada classe recebe suas dependências prontas pelo construtor, guardando elas em propriedades com this, ao invés de criar ou importar o que precisa por conta própria.\n3. O UserRepository não sabe que está sendo usado pelo CreateUserService, o CreateUserService não sabe que está sendo usado pelo UserController, e nenhum deles sabe como o server.js os construiu.\n4. Usamos userController.handle.bind(userController) para garantir que o this dentro do handle continue se referindo à instância correta, mesmo quando o Express chama essa função sozinho.\n\nEsse desacoplamento é o que torna a Injeção de Dependência tão usada em aplicações profissionais: fica muito mais fácil testar cada camada isoladamente, e trocar uma implementação por outra sem precisar alterar as classes que a utilizam."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

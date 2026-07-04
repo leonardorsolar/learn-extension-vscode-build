@@ -1,0 +1,856 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "injecao-dependencia-python",
+          "name": "Injeção de Dependência (Python + Poetry)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que vamos melhorar nesta lição?",
+              "content": "Na lição passada, você construiu a mesma aplicação em JavaScript puro, usando Injeção de Dependência: o server.js instanciava cada camada e entregava as dependências pelo construtor.\n\nIsso já deixou as camadas desacopladas, mas em JavaScript nada garante que quem implementa um Repository vai realmente ter os métodos findByUsername e save. Esse erro só apareceria em tempo de execução. Nesta lição você vai reescrever a mesma aplicação em TypeScript, usando interfaces para descrever o contrato entre as camadas e tipos para descrever os dados, de forma que o próprio editor avise sobre erros antes mesmo de rodar o código."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o projeto",
+              "content": "1. Crie a pasta ProjetoInjecaoDependenciaPython.\n\n2. Abra no VSCode.\n\n3. Inicie a jornada."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como iniciar um projeto Python com Poetry?",
+              "content": "1. Execute 'poetry new ProjetoInjecaoDependenciaPython'.\n\n2. Entre na pasta criada.\n\n3. O Poetry cria pyproject.toml automaticamente."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar um arquivo .gitignore informando ao Git para ignorar a pasta node_modules e a pasta dist, onde o TypeScript vai gerar os arquivos compilados?",
+              "comment": "Criar o arquivo .gitignore",
+              "answer": "node_modules\ndist",
+              "workspace": {
+                "activeFilePath": ".gitignore",
+                "tree": [
+                  {
+                    "type": "file",
+                    "name": "package.json"
+                  },
+                  {
+                    "type": "file",
+                    "name": ".gitignore"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Instalando o Express e o TypeScript",
+              "content": "1. Use o terminal para executar 'npm install express', instalando o framework Express, do mesmo jeito que na lição anterior.\n\n2. Use o terminal para executar 'npm install -D typescript @types/node @types/express ts-node-dev'.\n\n3. O TypeScript, o @types/node e o @types/express são instalados como dependências de desenvolvimento (-D) porque só são usados enquanto você escreve o código, não quando a aplicação já está rodando em produção.\n\n4. O ts-node-dev vai permitir rodar arquivos .ts diretamente, reiniciando o servidor sozinho a cada alteração salva."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que são os pacotes @types?",
+              "content": "O Express, por padrão, é escrito em JavaScript e não sabe nada sobre tipos. Os pacotes @types/node e @types/express são arquivos extras, mantidos pela comunidade, que descrevem os tipos de tudo que o Node.js e o Express expõem, como Request e Response.\n\nGraças a esses pacotes, o TypeScript consegue te avisar, por exemplo, se você tentar acessar uma propriedade que não existe dentro de request, mesmo o Express em si sendo uma biblioteca JavaScript."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como criar o arquivo tsconfig.json usando o terminal, através do comando que o próprio TypeScript oferece para gerar essa configuração?",
+              "content": "1. Use o terminal para executar o comando 'npx tsc --init'.\n\n2. O comando 'npx tsc --init' cria automaticamente o arquivo tsconfig.json."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Para que serve o tsconfig.json?",
+              "content": "O tsconfig.json é o arquivo que diz ao TypeScript como ele deve se comportar: qual versão do JavaScript gerar, onde procurar os arquivos .ts, onde colocar os arquivos .js já compilados, e quão rígido ele deve ser ao checar os tipos.\n\nO comando npx tsc --init gera esse arquivo já preenchido com várias opções comentadas. Nos próximos passos você vai ajustar apenas as opções que realmente importam para este projeto."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No tsconfig.json, como configurar rootDir apontando para ./src, outDir apontando para ./dist, target como es2020, module como commonjs e strict como true?",
+              "comment": "Ajustar as opções principais do tsconfig.json",
+              "answer": "{\n  \"compilerOptions\": {\n    \"target\": \"es2020\",\n    \"module\": \"commonjs\",\n    \"rootDir\": \"./src\",\n    \"outDir\": \"./dist\",\n    \"strict\": true,\n    \"esModuleInterop\": true,\n    \"skipLibCheck\": true\n  }\n}",
+              "workspace": {
+                "activeFilePath": "tsconfig.json",
+                "tree": [
+                  {
+                    "type": "file",
+                    "name": "package.json"
+                  },
+                  {
+                    "type": "file",
+                    "name": ".gitignore"
+                  },
+                  {
+                    "type": "file",
+                    "name": "tsconfig.json"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo cada opção ajustada",
+              "content": "rootDir e outDir dizem ao TypeScript onde está o código fonte e onde deve colocar o código já convertido para JavaScript puro, para não misturar os dois tipos de arquivo.\n\ntarget define para qual versão do JavaScript o código será convertido, e module define o formato dos import e export usado nesse JavaScript final. strict ativa o conjunto completo de checagens de tipo, incluindo proibir o uso implícito de any, o que ajuda a pegar mais erros. esModuleInterop permite usar import express from \"express\" mesmo quando a biblioteca original não segue exatamente o padrão ES Modules."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Fluxo da aplicação",
+              "content": "HTTP Request\n↓\nUserRouter\n↓\nUserController\n↓\nCreateUserService\n↓\nUserRepository (Protocol)\n↓\nSqlAlchemyUserRepository\n↓\nBanco de Dados"
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No package.json, dentro de scripts, como criar um script chamado dev que executa ts-node-dev, reiniciando o servidor automaticamente, apontando para src/server.ts?",
+              "comment": "Criar o script de desenvolvimento",
+              "answer": "\"scripts\": {\n  \"dev\": \"ts-node-dev --respawn --transpile-only src/server.ts\"\n}",
+              "workspace": {
+                "activeFilePath": "package.json",
+                "tree": [
+                  {
+                    "type": "file",
+                    "name": "package.json"
+                  },
+                  {
+                    "type": "file",
+                    "name": ".gitignore"
+                  },
+                  {
+                    "type": "file",
+                    "name": "tsconfig.json"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Estrutura de pastas do projeto",
+              "content": "A estrutura de pastas vai ser parecida com a da lição em JavaScript, com duas adições: uma pasta types para os formatos de dados, e uma pasta interfaces para o contrato do Repository.\n\npackage.json\ntsconfig.json\nsrc\n  types\n    user.ts\n  interfaces\n    user-repository.interface.ts\n  repositories\n    user.repository.ts\n  services\n    create.user.service.ts\n  controllers\n    user.controller.ts\n  server.ts\n\nAssim como na lição anterior, vamos começar pelo server.ts para entender o contrato entre as camadas, e só depois construir cada uma, terminando no Repository."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que criar tipos e interfaces separados?",
+              "content": "Em JavaScript, o formato de um usuário ou o contrato de um Repository só existia na cabeça de quem escreveu o código. Em TypeScript, podemos descrever isso explicitamente: um type para o formato dos dados, como o User, e uma interface para o contrato de comportamento, como o IUserRepository.\n\nQuando o CreateUserService depender de IUserRepository, ao invés de depender da classe UserRepository diretamente, qualquer classe que implemente esse mesmo contrato pode ser injetada no lugar dela, inclusive uma versão falsa usada em testes."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo types/user.ts, como criar o type User com id, username e email, todos do tipo string, e o type CreateUserDTO com apenas username e email, também do tipo string?",
+              "comment": "Criar os tipos de dados do usuário",
+              "answer": "type User = {\n  id: string;\n  username: string;\n  email: string;\n};\n\ntype CreateUserDTO = {\n  username: string;\n  email: string;\n};\n\nexport { User, CreateUserDTO };",
+              "workspace": {
+                "activeFilePath": "src/types/user.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "types",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "user.ts"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo interfaces/user-repository.interface.ts, como importar User e CreateUserDTO de \"../types/user\", e criar a interface IUserRepository com o método findByUsername, que recebe uma string e retorna User ou undefined, e o método save, que recebe um CreateUserDTO e retorna User?",
+              "comment": "Criar o contrato IUserRepository",
+              "answer": "import { User, CreateUserDTO } from \"../types/user\";\n\ninterface IUserRepository {\n  findByUsername(username: string): User | undefined;\n  save(data: CreateUserDTO): User;\n}\n\nexport { IUserRepository };",
+              "workspace": {
+                "activeFilePath": "src/interfaces/user-repository.interface.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "types",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "user.ts"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "folder",
+                        "name": "interfaces",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "user-repository.interface.ts"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo a interface como contrato",
+              "content": "Uma interface em TypeScript não gera nenhum código quando compilada, ela existe apenas para o próprio TypeScript checar os tipos enquanto você escreve. IUserRepository diz que qualquer classe que a implemente precisa, obrigatoriamente, ter um método findByUsername e um método save, com exatamente essas assinaturas.\n\nO retorno User | undefined em findByUsername já deixa explícito que esse método pode não encontrar ninguém, obrigando quem usa o retorno a lidar com essa possibilidade, algo que em JavaScript ficava só implícito."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo server.ts, como importar express, Request e Response do pacote express, o UserController, o CreateUserService e o UserRepository, que ainda vamos construir nos próximos passos?",
+              "comment": "Importar todas as camadas no server.ts",
+              "answer": "import express, { Request, Response } from \"express\";\nimport { UserController } from \"./controllers/user.controller\";\nimport { CreateUserService } from \"./services/create.user.service\";\nimport { UserRepository } from \"./repositories/user.repository\";",
+              "workspace": {
+                "activeFilePath": "src/server.ts",
+                "tree": [
+                  {
+                    "type": "file",
+                    "name": "server.ts"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que importar Request e Response?",
+              "content": "Request e Response são os tipos que o próprio Express expõe, através do pacote @types/express, para descrever o formato da requisição e da resposta HTTP. Vamos usá-los mais à frente, ao tipar os parâmetros do método handle no UserController, para que o TypeScript saiba exatamente quais propriedades existem em cada um."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar a aplicação Express na constante app, e habilitar o parser de JSON com express.json()?",
+              "comment": "Criar a aplicação e habilitar JSON",
+              "answer": "const app = express();\napp.use(express.json());",
+              "workspace": {
+                "activeFilePath": "src/server.ts",
+                "tree": [
+                  {
+                    "type": "file",
+                    "name": "server.ts"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar, em sequência, uma instância de UserRepository, depois uma instância de CreateUserService injetando o userRepository criado, e depois uma instância de UserController injetando o createUserService criado, do mesmo jeito que na lição em JavaScript?",
+              "comment": "Instanciar e injetar as dependências",
+              "answer": "const userRepository = new UserRepository();\nconst createUserService = new CreateUserService(userRepository);\nconst userController = new UserController(createUserService);",
+              "workspace": {
+                "activeFilePath": "src/server.ts",
+                "tree": [
+                  {
+                    "type": "file",
+                    "name": "server.ts"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "A injeção de dependência continua igual, o que muda é a checagem",
+              "content": "Repare que a lógica é exatamente a mesma da lição em JavaScript: primeiro o UserRepository, depois o CreateUserService recebendo ele, depois o UserController recebendo o Service.\n\nA diferença é que agora, se o construtor de CreateUserService esperar um IUserRepository e você tentar passar qualquer outra coisa que não tenha findByUsername e save com as assinaturas corretas, o TypeScript vai acusar o erro direto no editor, antes mesmo de você rodar o código."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar a rota POST em /users, chamando o handle do userController, garantindo que dentro do handle o this continue se referindo ao próprio userController?",
+              "comment": "Criar a rota POST /users com bind",
+              "answer": "app.post(\"/users\", userController.handle.bind(userController));",
+              "workspace": {
+                "activeFilePath": "src/server.ts",
+                "tree": [
+                  {
+                    "type": "file",
+                    "name": "server.ts"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Por fim, como fazer a aplicação escutar a porta 3003, exibindo no terminal a mensagem Server is running on PORT 3003?",
+              "comment": "Colocar o servidor no ar",
+              "answer": "app.listen(3003, () => console.log(\"Server is running on PORT 3003\"));",
+              "workspace": {
+                "activeFilePath": "src/server.ts",
+                "tree": [
+                  {
+                    "type": "file",
+                    "name": "server.ts"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Agora vamos construir cada camada",
+              "content": "O server.ts já está completo, esperando por três peças: UserController, CreateUserService e UserRepository, cada uma recebendo sua dependência tipada pelo construtor.\n\nVamos construir na ordem em que o server.ts as utiliza: primeiro o Controller, depois o Service, e por último o Repository, que implementa a interface IUserRepository."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo user.controller.ts, como importar Request e Response de \"express\" e o CreateUserService, e criar a classe UserController com um construtor que recebe createUserService tipado como CreateUserService e guarda ele em this.createUserService?",
+              "comment": "Criar o construtor do UserController",
+              "answer": "import { Request, Response } from \"express\";\nimport { CreateUserService } from \"../services/create.user.service\";\n\nclass UserController {\n  constructor(private createUserService: CreateUserService) {}\n}",
+              "workspace": {
+                "activeFilePath": "src/controllers/user.controller.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "controllers",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "user.controller.ts"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que significa private no construtor?",
+              "content": "Em TypeScript, escrever private createUserService: CreateUserService diretamente no parâmetro do construtor é um atalho: ele já cria a propriedade this.createUserService e já guarda o valor recebido nela, sem precisar escrever this.createUserService = createUserService por conta própria.\n\nO private, além disso, diz que essa propriedade só pode ser acessada de dentro da própria classe UserController, reforçando que o createUserService é um detalhe interno do Controller, e não algo que deveria ser mexido de fora."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar o método handle, tipando request como Request e response como Response, extraindo o body, e dentro de um try chamando this.createUserService.execute passando o body, retornando o resultado com response.json?",
+              "comment": "Criar o método handle usando a dependência injetada e tipada",
+              "answer": "handle(request: Request, response: Response) {\n  const { body } = request;\n\n  try {\n    const result = this.createUserService.execute(body);\n    return response.json(result);\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/controllers/user.controller.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "controllers",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "user.controller.ts"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo após o try, como criar o catch que captura o erro tipado como unknown, verifica se ele é uma instância de Error, e retorna status 400 com um JSON contendo a mensagem do erro?",
+              "comment": "Tratar o erro no handle de forma segura para o TypeScript",
+              "answer": "catch (err) {\n  if (err instanceof Error) {\n    return response.status(400).json({\n      err: err.message,\n    });\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/controllers/user.controller.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "controllers",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "user.controller.ts"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que verificar err instanceof Error?",
+              "content": "Em TypeScript, o valor capturado em um catch tem o tipo unknown por padrão, justamente porque um throw pode lançar qualquer coisa, não só um Error. Antes de acessar err.message, o TypeScript exige que você prove que err realmente é um Error, o que fazemos com err instanceof Error.\n\nEsse é um exemplo direto de como o TypeScript pega, ainda no editor, um tipo de erro que em JavaScript só apareceria em produção, caso algum dia alguém lançasse algo que não fosse um Error."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como exportar a classe UserController usando chaves, no final do arquivo?",
+              "comment": "Exportar a classe UserController",
+              "answer": "export { UserController };",
+              "workspace": {
+                "activeFilePath": "src/controllers/user.controller.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "controllers",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "user.controller.ts"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo create.user.service.ts, como importar CreateUserDTO e User de \"../types/user\" e IUserRepository de \"../interfaces/user-repository.interface\", e criar a classe CreateUserService com um construtor que recebe userRepository tipado como IUserRepository, usando private para já guardar em this.userRepository?",
+              "comment": "Criar o construtor do CreateUserService dependendo apenas da interface",
+              "answer": "import { CreateUserDTO, User } from \"../types/user\";\nimport { IUserRepository } from \"../interfaces/user-repository.interface\";\n\nclass CreateUserService {\n  constructor(private userRepository: IUserRepository) {}\n}",
+              "workspace": {
+                "activeFilePath": "src/services/create.user.service.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "controllers",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "user.controller.ts"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "folder",
+                        "name": "services",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "create.user.service.ts"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O Service depende da interface, não da classe",
+              "content": "Repare que o construtor recebe userRepository: IUserRepository, e não userRepository: UserRepository. Isso é o coração da Injeção de Dependência em TypeScript: o CreateUserService só se importa que a dependência cumpra o contrato descrito na interface, não com qual classe específica a implementa.\n\nGraças a isso, no futuro, é possível criar uma classe InMemoryUserRepository, usada só em testes, que implemente IUserRepository, e injetar ela no lugar da UserRepository de verdade, sem alterar nenhuma linha do CreateUserService."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar o método execute, que recebe data tipado como CreateUserDTO e retorna User, lançando um erro com a mensagem Username é obrigatório caso data.username não tenha sido informado?",
+              "comment": "Criar o método execute tipado e validar se o username foi informado",
+              "answer": "execute(data: CreateUserDTO): User {\n  if (!data.username) {\n    throw new Error(\"Username é obrigatório\");\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/services/create.user.service.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "controllers",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "user.controller.ts"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "folder",
+                        "name": "services",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "create.user.service.ts"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar this.userRepository para verificar, através do findByUsername, se o username já existe, lançando um erro com a mensagem Usuário já cadastrado! caso ele exista?",
+              "comment": "Verificar se o usuário já existe usando a dependência injetada",
+              "answer": "const existUser = this.userRepository.findByUsername(data.username);\n\nif (existUser) {\n  throw new Error(\"Usuário já cadastrado!\");\n}",
+              "workspace": {
+                "activeFilePath": "src/services/create.user.service.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "controllers",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "user.controller.ts"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "folder",
+                        "name": "services",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "create.user.service.ts"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar this.userRepository para salvar o data recebido, retornando diretamente o resultado do save?",
+              "comment": "Salvar o usuário usando a dependência injetada",
+              "answer": "return this.userRepository.save(data);",
+              "workspace": {
+                "activeFilePath": "src/services/create.user.service.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "controllers",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "user.controller.ts"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "folder",
+                        "name": "services",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "create.user.service.ts"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como exportar a classe CreateUserService usando chaves, no final do arquivo?",
+              "comment": "Exportar a classe CreateUserService",
+              "answer": "export { CreateUserService };",
+              "workspace": {
+                "activeFilePath": "src/services/create.user.service.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "controllers",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "user.controller.ts"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "folder",
+                        "name": "services",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "create.user.service.ts"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo user.repository.ts, como importar User e CreateUserDTO de \"../types/user\" e IUserRepository de \"../interfaces/user-repository.interface\", e criar a classe UserRepository implementando IUserRepository, com a propriedade users tipada como User[] e iniciada como uma lista vazia?",
+              "comment": "Criar a classe UserRepository implementando o contrato",
+              "answer": "import { User, CreateUserDTO } from \"../types/user\";\nimport { IUserRepository } from \"../interfaces/user-repository.interface\";\n\nclass UserRepository implements IUserRepository {\n  users: User[] = [];\n}",
+              "workspace": {
+                "activeFilePath": "src/repositories/user.repository.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "controllers",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "user.controller.ts"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "folder",
+                        "name": "services",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "create.user.service.ts"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "folder",
+                        "name": "repositories",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "user.repository.ts"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que a palavra implements garante?",
+              "content": "Ao escrever class UserRepository implements IUserRepository, você está avisando o TypeScript que essa classe promete cumprir todo o contrato da interface. Se você esquecer de criar o método save, por exemplo, o TypeScript vai acusar erro na própria declaração da classe, antes mesmo de você tentar usar essa classe em qualquer lugar.\n\nÉ essa promessa que permite ao CreateUserService confiar, através da interface, que qualquer UserRepository injetado nele vai ter os métodos findByUsername e save funcionando."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar o método findByUsername, recebendo username como string e retornando User ou undefined, percorrendo a lista users e retornando o usuário cujo username seja igual ao recebido?",
+              "comment": "Implementar o findByUsername exigido pela interface",
+              "answer": "findByUsername(username: string): User | undefined {\n  const userExists = this.users.find((user) => user.username === username);\n  return userExists;\n}",
+              "workspace": {
+                "activeFilePath": "src/repositories/user.repository.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "controllers",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "user.controller.ts"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "folder",
+                        "name": "services",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "create.user.service.ts"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "folder",
+                        "name": "repositories",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "user.repository.ts"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar o método save, recebendo user como CreateUserDTO e retornando User, gerando um id aleatório, adicionando o usuário na lista users e retornando o usuário já com o id?",
+              "comment": "Implementar o save exigido pela interface",
+              "answer": "save(user: CreateUserDTO): User {\n  const id = Math.random().toString();\n  const userWithId: User = { ...user, id };\n  this.users.push(userWithId);\n  return userWithId;\n}",
+              "workspace": {
+                "activeFilePath": "src/repositories/user.repository.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "controllers",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "user.controller.ts"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "folder",
+                        "name": "services",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "create.user.service.ts"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "folder",
+                        "name": "repositories",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "user.repository.ts"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como exportar a classe UserRepository usando chaves, no final do arquivo?",
+              "comment": "Exportar a classe UserRepository",
+              "answer": "export { UserRepository };",
+              "workspace": {
+                "activeFilePath": "src/repositories/user.repository.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "controllers",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "user.controller.ts"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "folder",
+                        "name": "services",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "create.user.service.ts"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "folder",
+                        "name": "repositories",
+                        "children": [
+                          {
+                            "type": "file",
+                            "name": "user.repository.ts"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como rodar a aplicação para testar se a API está funcionando?",
+              "content": "O comando npm run dev inicia o ts-node-dev, que compila e roda o src/server.ts na hora, reiniciando sozinho a cada alteração salva. Depois, é só acessar a rota http://localhost:3003/ no navegador."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como realizar uma requisição para criar um usuário na rota POST /users?",
+              "content": "Use o comando no terminal: curl -X POST http://localhost:3003/users -H \"Content-Type: application/json\" -d '{\"username\": \"john_doe\", \"email\": \"john.doe@example.com\"}'"
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: Injeção de Dependência com TypeScript",
+              "content": "Nesta lição você reescreveu a mesma aplicação de Injeção de Dependência da lição anterior, agora em TypeScript, e pode comparar os ganhos principais:\n\n1. O tsconfig.json define como o TypeScript compila o projeto, com rootDir, outDir, target, module e strict configurados.\n2. Criamos types para descrever o formato dos dados, como User e CreateUserDTO, e uma interface, IUserRepository, para descrever o contrato de comportamento do Repository.\n3. O CreateUserService depende de IUserRepository, não da classe UserRepository, o que permite trocar a implementação, inclusive por uma falsa em testes, sem alterar o Service.\n4. A classe UserRepository usa implements IUserRepository para provar, ainda no editor, que cumpre o contrato esperado.\n5. No catch do UserController, tratamos o erro como unknown e usamos err instanceof Error antes de acessar err.message, algo que o TypeScript exige e que o JavaScript deixava passar despercebido.\n\nEsse é o principal ganho de aplicar TypeScript sobre Injeção de Dependência: os contratos entre as camadas, antes só combinados por convenção entre os desenvolvedores, agora são checados automaticamente pelo compilador."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
