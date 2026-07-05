@@ -1,0 +1,137 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "css-inline-basico",
+          "name": "CSS Inline - Propriedades Básicas",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o ambiente",
+              "content": "Antes de escrever qualquer código, vamos preparar o ambiente:\n\n1. Dentro da pasta, no seu projeto, crie um arquivo chamado index.html. Esse será o arquivo que o navegador vai abrir para mostrar sua página.\n\n2. Clique em próximo para iniciar os exercícios."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Digite ! e pressione Tab para gerar a estrutura básica do HTML com o Emmet dentro do arquivo index.html vazio.",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é CSS e como ele pode ser aplicado?",
+              "content": "CSS significa Cascading Style Sheets, ou Folhas de Estilo em Cascata. Enquanto o HTML define a estrutura e o conteúdo de uma página, o CSS define a aparência: cores, tamanhos, espaçamentos e posicionamento.\n\nExistem três formas de aplicar CSS: inline, direto dentro de uma tag usando o atributo style; interno, escrito dentro de uma tag style no head do arquivo; e externo, em um arquivo separado com extensão .css. Nesta lição vamos começar pela forma inline, que é a mais direta, para entender a sintaxe básica das propriedades antes de aprender as outras formas."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag body, adicione um título usando a tag h1 com o texto Bem-vindo ao meu site.",
+              "comment": "Adicionar título h1 sem estilo ainda",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<h1>Bem-vindo ao meu site</h1>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como funciona a sintaxe do CSS inline?",
+              "content": "Para aplicar CSS inline, adicione o atributo style na própria tag, com o valor entre aspas. Dentro desse valor, cada propriedade segue o formato propriedade: valor;, e você pode colocar várias propriedades na mesma tag, uma depois da outra, sempre separadas por ponto e vírgula.\n\nDuas propriedades bem básicas são color, que define a cor do texto, e font-size, que define o tamanho da fonte, geralmente em pixels."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Altere o h1 criado anteriormente para adicionar um atributo style aplicando color igual a blue e font-size igual a 32px, deixando o título azul e maior.",
+              "comment": "Adicionar estilo inline no h1 com color e font-size",
+              "commentAnchor": {
+                "find": "<h1>Bem-vindo ao meu site</h1>",
+                "position": "replace",
+                "fallback": "end"
+              },
+              "answer": "<h1 style=\"color: blue; font-size: 32px;\">Bem-vindo ao meu site</h1>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Outras propriedades: fundo e espaçamento interno",
+              "content": "Além de cor e tamanho de texto, o CSS tem propriedades para controlar o fundo e o espaçamento de um elemento. background-color define a cor de fundo, e padding define o espaçamento interno entre o conteúdo e a borda do elemento, o que evita que o texto fique colado nas bordas."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo do h1, adicione um parágrafo usando a tag p com o texto Este e um paragrafo de exemplo, aplicando um style com background-color igual a yellow e padding igual a 10px.",
+              "comment": "Adicionar parágrafo com background-color e padding inline",
+              "commentAnchor": {
+                "find": "<h1 style=\"color: blue; font-size: 32px;\">Bem-vindo ao meu site</h1>",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "<p style=\"background-color: yellow; padding: 10px;\">Este e um paragrafo de exemplo.</p>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Outras propriedades: borda e largura",
+              "content": "Duas outras propriedades bem comuns são border, que desenha uma borda ao redor do elemento, definindo espessura, estilo e cor em uma única linha, como 2px solid black, e width, que define a largura do elemento, podendo ser em pixels ou em outras unidades que você vai conhecer mais adiante."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo do parágrafo, adicione uma div com o texto Esta e uma div de exemplo, aplicando um style com border igual a 2px solid black e width igual a 200px.",
+              "comment": "Adicionar div com border e width inline",
+              "commentAnchor": {
+                "find": "<p style=\"background-color: yellow; padding: 10px;\">Este e um paragrafo de exemplo.</p>",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "<div style=\"border: 2px solid black; width: 200px;\">Esta e uma div de exemplo.</div>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: sintaxe básica do CSS inline",
+              "content": "Nesta lição você aprendeu:\n\n1. Que o CSS pode ser aplicado de três formas: inline, interno e externo, e praticamos a forma inline.\n2. Que o CSS inline usa o atributo style, com propriedades no formato propriedade: valor; separadas por ponto e vírgula.\n3. As propriedades color e font-size, para cor e tamanho do texto.\n4. As propriedades background-color e padding, para cor de fundo e espaçamento interno.\n5. As propriedades border e width, para borda e largura do elemento.\n\nO CSS inline é ótimo para aprender a sintaxe básica, mas repetir o mesmo estilo em várias tags fica repetitivo e difícil de manter. Nas próximas lições você vai aprender a forma interna e a forma externa, que resolvem exatamente esse problema."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

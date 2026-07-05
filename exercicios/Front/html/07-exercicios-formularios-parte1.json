@@ -1,0 +1,137 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "formularios-parte1",
+          "name": "Formulários - Parte 1 (form, input, label, button)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o ambiente",
+              "content": "Antes de escrever qualquer código, vamos preparar o ambiente:\n\n1. Dentro da pasta, no seu projeto, crie um arquivo chamado index.html. Esse será o arquivo que o navegador vai abrir para mostrar sua página.\n\n2. Clique em próximo para iniciar os exercícios."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Digite ! e pressione Tab para gerar a estrutura básica do HTML com o Emmet dentro do arquivo index.html vazio.",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é a tag form?",
+              "content": "A tag form agrupa todos os campos que fazem parte de um mesmo formulário, como campos de texto, seleções e botões. É ela que define, através do atributo action, para onde os dados digitados pelo usuário devem ser enviados quando o formulário for submetido.\n\nPor enquanto, vamos usar action=\"#\", que é um valor temporário, apenas para termos uma estrutura válida enquanto aprendemos os elementos internos do formulário."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag body, crie uma tag form vazia com o atributo action apontando para #, que vai servir de base para o formulário que construiremos nesta lição.",
+              "comment": "Criar a tag form base",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<form action=\"#\">\n</form>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que sempre usar label junto com input?",
+              "content": "A tag input cria um campo onde o usuário pode digitar informações, mas sozinha ela não diz para o usuário o que deve ser digitado ali. É para isso que existe a tag label: ela exibe um texto explicativo ligado a um campo específico.\n\nEssa ligação é feita através do atributo for na label, que deve ter o mesmo valor do atributo id do input correspondente. Além de deixar isso visualmente claro, essa ligação faz com que, ao clicar no texto da label, o navegador coloque o cursor automaticamente dentro do input relacionado, o que também ajuda muito na acessibilidade."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag form, adicione uma label com o atributo for igual a nome e o texto Nome:, seguida de um input do tipo text com id e name iguais a nome, para que o usuário possa digitar o nome dele.",
+              "comment": "Adicionar campo de nome com label e input",
+              "commentAnchor": {
+                "find": "<form action=\"#\">",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<label for=\"nome\">Nome:</label>\n  <input type=\"text\" id=\"nome\" name=\"nome\">",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que existem diferentes valores para o atributo type?",
+              "content": "O atributo type do input muda o comportamento e a validação do campo. type=\"text\" aceita qualquer texto livre, enquanto type=\"email\" já valida automaticamente se o que foi digitado tem o formato de um email, como texto arroba texto ponto texto, antes mesmo de enviar o formulário.\n\nEssa validação automática do navegador evita erros simples e melhora a experiência do usuário, sem que você precise escrever nenhum código adicional para isso."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo do campo de nome, adicione uma label com o atributo for igual a email e o texto Email:, seguida de um input do tipo email com id e name iguais a email.",
+              "comment": "Adicionar campo de email com validação automática",
+              "commentAnchor": {
+                "find": "<input type=\"text\" id=\"nome\" name=\"nome\">",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "<label for=\"email\">Email:</label>\n  <input type=\"email\" id=\"email\" name=\"email\">",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Qual a função do button dentro de um formulário?",
+              "content": "A tag button cria um botão clicável. Dentro de um formulário, quando o atributo type é definido como submit, clicar nesse botão faz o navegador tentar enviar o formulário, seguindo o que foi definido no action da tag form.\n\nUma vantagem do button em relação a outras formas antigas de criar botão é que você pode colocar qualquer conteúdo dentro dele, como texto, e futuramente até um ícone, sem perder o comportamento de envio do formulário."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No final da tag form, depois dos campos já criados, adicione um button do tipo submit com o texto Enviar, para que o usuário possa enviar o formulário.",
+              "comment": "Adicionar botão de envio do formulário",
+              "commentAnchor": {
+                "find": "<form action=\"#\">",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "<button type=\"submit\">Enviar</button>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: estrutura básica de um formulário",
+              "content": "Nesta lição você construiu um formulário simples e aprendeu:\n\n1. Que a tag form agrupa os campos de um formulário e define, pelo action, para onde os dados serão enviados.\n2. Que a tag label deve estar sempre ligada a um input através dos atributos for e id, melhorando a clareza e a acessibilidade.\n3. Que o atributo type do input muda o comportamento do campo, como text para texto livre e email para validação automática de formato.\n4. Que a tag button com type=\"submit\" é responsável por enviar o formulário quando clicada.\n\nNa próxima lição sobre formulários, você vai conhecer outros tipos de campo, como select, textarea, checkbox e radio, além de atributos de validação mais avançados."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

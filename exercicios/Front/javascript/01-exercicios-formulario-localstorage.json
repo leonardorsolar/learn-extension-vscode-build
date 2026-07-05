@@ -1,0 +1,237 @@
+{
+  "levels": [
+    {
+      "id": "formulario",
+      "name": "Formulário de Cadastro",
+      "themes": [
+        {
+          "id": "cadastro-nome-localstorage",
+          "name": "Formulário de Cadastro com LocalStorage",
+          "lines": [
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do arquivo index.html vazio, digite ! e pressione Tab para gerar a estrutura básica do HTML com o Emmet, que já vai criar as tags head e body prontas para usarmos.",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag body, crie um formulário (form) com o id formCadastro, para agrupar o campo do cadastro do usuário.",
+              "comment": "Criar a tag formulário com id formCadastro",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<form id='formCadastro'>\n</form>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do formulário, adicione um label com o texto Nome: e um input de texto com id nome, para o usuário digitar o nome dele.",
+              "comment": "Adicionar o rótulo e o campo input nome no formulário",
+              "commentAnchor": {
+                "find": "<form id='formCadastro'>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<label for='nome'>Nome:</label>\n<input type='text' id='nome' name='nome'>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Adicione um botão do tipo submit dentro do formulário, para que o usuário consiga confirmar o envio do cadastro.",
+              "comment": "Adicionar botão de envio",
+              "commentAnchor": {
+                "find": "<form id='formCadastro'>",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "<button type='submit'>Cadastrar</button>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Depois do formulário, adicione uma tag script apontando para o arquivo script.js, onde vamos escrever a lógica de salvar o nome digitado.",
+              "comment": "Vincular o arquivo script.js",
+              "commentAnchor": {
+                "find": "</form>",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "<script src='script.js'></script>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "script.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo script.js, selecione o formulário pelo id formCadastro e guarde a referência em uma constante chamada form, para conseguirmos escutar o envio dele.",
+              "comment": "Selecionar o formulário pelo id",
+              "answer": "const form = document.getElementById('formCadastro');",
+              "workspace": {
+                "activeFilePath": "script.js",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "script.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Adicione um listener para o evento submit do formulário, passando uma função vazia que vamos preencher nos próximos passos.",
+              "comment": "Escutar o evento de envio do formulário",
+              "answer": "form.addEventListener('submit', function (event) {\n});",
+              "workspace": {
+                "activeFilePath": "script.js",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "script.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da função de envio, impeça o comportamento padrão do formulário de recarregar a página, usando event.preventDefault().",
+              "comment": "Evitar o recarregamento automático da página",
+              "commentAnchor": {
+                "find": "form.addEventListener('submit', function (event) {",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "event.preventDefault();",
+              "workspace": {
+                "activeFilePath": "script.js",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "script.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ainda dentro da função de envio, capture o valor digitado no campo nome, guardando em uma constante chamada nome.",
+              "comment": "Capturar o valor digitado pelo usuário",
+              "commentAnchor": {
+                "find": "form.addEventListener('submit', function (event) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "const nome = document.getElementById('nome').value;",
+              "workspace": {
+                "activeFilePath": "script.js",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "script.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como abrir o console do navegador para inspecionar",
+              "content": "Antes de continuar, vamos aprender a inspecionar o que está acontecendo na página:\n\n1. Abra o index.html no navegador.\n2. Clique com o botão direito na página e escolha Inspecionar (ou pressione F12).\n3. Vá até a aba Console. É ali que aparecem as mensagens que enviamos com console.log, além de erros do JavaScript.\n\nUsar o console para conferir valores é um hábito essencial de qualquer desenvolvedor: em vez de adivinhar se o código está funcionando, você imprime o valor e vê exatamente o que está guardado nele."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Use console.log para exibir o valor da constante nome no console do navegador, assim conseguimos conferir se o valor foi capturado corretamente antes de salvar.",
+              "comment": "Conferir o valor capturado com console.log",
+              "commentAnchor": {
+                "find": "form.addEventListener('submit', function (event) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "console.log(nome);",
+              "workspace": {
+                "activeFilePath": "script.js",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "script.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Salve o nome digitado no localStorage do navegador, usando localStorage.setItem com a chave nome e o valor da constante nome, para que ele fique guardado mesmo depois de fechar a página.",
+              "comment": "Salvar o nome no localStorage",
+              "commentAnchor": {
+                "find": "form.addEventListener('submit', function (event) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "localStorage.setItem('nome', nome);",
+              "workspace": {
+                "activeFilePath": "script.js",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "script.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Para confirmar que o dado foi salvo corretamente, use console.log para exibir o valor que está guardado no localStorage, lendo-o com localStorage.getItem('nome').",
+              "comment": "Confirmar no console o valor salvo no localStorage",
+              "commentAnchor": {
+                "find": "form.addEventListener('submit', function (event) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "console.log(localStorage.getItem('nome'));",
+              "workspace": {
+                "activeFilePath": "script.js",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "script.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: salvando dados no navegador com localStorage",
+              "content": "Nesta lição você construiu um cadastro simples que guarda dados direto no navegador, sem precisar de nenhum servidor:\n\n1. No index.html, criou um formulário com um campo nome e um botão de envio.\n2. Vinculou um arquivo script.js à página usando a tag script.\n3. No script.js, selecionou o formulário e escutou o evento submit.\n4. Usou event.preventDefault() para impedir o recarregamento padrão da página.\n5. Capturou o valor digitado pelo usuário através da propriedade value do input.\n6. Usou console.log para conferir, no console do navegador, se o valor estava correto antes de salvar.\n7. Guardou o valor com localStorage.setItem, que salva dados no navegador mesmo depois de a página ser fechada.\n8. Conferiu o valor salvo com localStorage.getItem, também exibido com console.log.\n\nDica extra: além da aba Console, você pode ver os dados salvos abrindo o DevTools (F12), indo até a aba Application (ou Armazenamento) e depois em Local Storage. Lá aparece a chave nome com o valor que você digitou no formulário."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

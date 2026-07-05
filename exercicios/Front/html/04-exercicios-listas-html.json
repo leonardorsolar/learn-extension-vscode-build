@@ -1,0 +1,113 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "listas-html",
+          "name": "Listas (ul, ol, li)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o ambiente",
+              "content": "Antes de escrever qualquer código, vamos preparar o ambiente:\n\n1. Dentro da pasta, no seu projeto, crie um arquivo chamado index.html. Esse será o arquivo que o navegador vai abrir para mostrar sua página.\n\n2. Clique em próximo para iniciar os exercícios."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Digite ! e pressione Tab para gerar a estrutura básica do HTML com o Emmet dentro do arquivo index.html vazio.",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Qual a diferença entre lista não ordenada e lista ordenada?",
+              "content": "O HTML tem duas tags principais para criar listas: ul e ol. A tag ul, de unordered list, cria uma lista onde a ordem dos itens não importa, como os ingredientes de uma receita ou os itens de uma lista de compras. Ela aparece por padrão com marcadores, como bolinhas.\n\nJá a tag ol, de ordered list, cria uma lista onde a ordem importa, como o passo a passo de uma receita ou um ranking. Ela aparece por padrão com números.\n\nEm ambos os casos, cada item da lista é escrito dentro de uma tag li, de list item, que só faz sentido quando está dentro de uma ul ou de uma ol."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag body, crie uma lista não ordenada usando a tag ul com três itens usando a tag li: Pao, Leite e Ovos, já que a ordem desses itens em uma lista de compras não importa.",
+              "comment": "Criar lista não ordenada de compras com ul e li",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<ul>\n  <li>Pao</li>\n  <li>Leite</li>\n  <li>Ovos</li>\n</ul>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Quando usar ol em vez de ul?",
+              "content": "Use ol sempre que a sequência dos itens fizer diferença para o entendimento do conteúdo, como em um passo a passo, uma receita ou uma classificação de primeiro, segundo e terceiro lugar. Se você trocasse a ordem dos itens de uma ol, o sentido do conteúdo mudaria, o que não acontece em uma ul."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo da lista de compras, crie uma lista ordenada usando a tag ol com o passo a passo para fazer um cafe, com três itens usando a tag li: Ferver a agua, Escolher o tipo de cafe e Coar e servir, já que a ordem desses passos importa.",
+              "comment": "Criar lista ordenada com o passo a passo usando ol e li",
+              "commentAnchor": {
+                "find": "</ul>",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "<ol>\n  <li>Ferver a agua</li>\n  <li>Escolher o tipo de cafe</li>\n  <li>Coar e servir</li>\n</ol>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que são listas aninhadas?",
+              "content": "É possível colocar uma lista dentro de um item de outra lista, criando o que chamamos de lista aninhada. Isso é útil quando um dos passos ou itens precisa se dividir em opções ou sub-itens.\n\nPara isso, basta colocar uma nova tag ul ou ol dentro da tag li desejada, antes do fechamento dela. O navegador identifica automaticamente esse aninhamento e costuma exibir a lista interna com um recuo e um estilo de marcador diferente."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "O passo Escolher o tipo de cafe pode se dividir em opções. Altere esse item para incluir uma lista não ordenada aninhada dentro dele, usando ul e li, com as opções Coado e Expresso.",
+              "comment": "Adicionar lista aninhada com as opções de tipo de café",
+              "commentAnchor": {
+                "find": "<li>Escolher o tipo de cafe</li>",
+                "position": "replace",
+                "fallback": "end"
+              },
+              "answer": "<li>Escolher o tipo de cafe\n    <ul>\n      <li>Coado</li>\n      <li>Expresso</li>\n    </ul>\n  </li>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: listas não ordenadas, ordenadas e aninhadas",
+              "content": "Nesta lição você aprendeu:\n\n1. Que ul cria uma lista não ordenada, usada quando a sequência dos itens não importa.\n2. Que ol cria uma lista ordenada, usada quando a sequência dos itens importa.\n3. Que cada item de uma lista, em ambos os casos, é escrito com a tag li.\n4. Que é possível criar listas aninhadas, colocando uma nova ul ou ol dentro de um li já existente, para representar sub-itens ou opções.\n\nListas são uma das formas mais comuns de organizar conteúdo em uma página, seja para menus de navegação, listas de produtos ou instruções passo a passo."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,212 @@
+{
+  "levels": [
+    {
+      "id": "formulario",
+      "name": "Formulário de Cadastro",
+      "themes": [
+        {
+          "id": "cadastro-nome-email",
+          "name": "Formulário de Cadastro com Fetch",
+          "lines": [
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do arquivo index.html vazio, digite ! e pressione Tab para gerar a estrutura básica do HTML com o Emmet, que já vai criar as tags head e body prontas para usarmos.",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag body, crie um formulário (form) com o id formCadastro, para agrupar os campos do cadastro do usuário.",
+              "comment": "Criar a tag formulário com id formCadastro",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<form id='formCadastro'>\n</form>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do formulário, adicione um label com o texto Nome: e um input de texto com id nome, para o usuário digitar o nome dele.",
+              "comment": "Adicionar o rótulo e o campo input nome no formulário",
+              "commentAnchor": {
+                "find": "<form id='formCadastro'>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<label for='nome'>Nome:</label>\n<input type='text' id='nome' name='nome'>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo do campo nome, adicione um label com o texto Email: e um input do tipo email com id email, para o usuário digitar o email dele.",
+              "comment": "Adicionar o rótulo e o campo input email no formulário",
+              "commentAnchor": {
+                "find": "<form id='formCadastro'>",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "<label for='email'>Email:</label>\n<input type='email' id='email' name='email'>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Adicione um botão do tipo submit dentro do formulário, para que o usuário consiga confirmar o envio do cadastro.",
+              "comment": "Adicionar botão de envio",
+              "commentAnchor": {
+                "find": "<form id='formCadastro'>",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "<button type='submit'>Cadastrar</button>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Depois do formulário, adicione uma tag script apontando para o arquivo script.js, onde vamos escrever a lógica de envio do cadastro em JavaScript.",
+              "comment": "Vincular o arquivo script.js",
+              "commentAnchor": {
+                "find": "</form>",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "<script src='script.js'></script>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "script.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo script.js, selecione o formulário pelo id formCadastro e guarde a referência em uma constante chamada form, para conseguirmos escutar o envio dele.",
+              "comment": "Selecionar o formulário pelo id",
+              "answer": "const form = document.getElementById('formCadastro');",
+              "workspace": {
+                "activeFilePath": "script.js",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "script.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Adicione um listener para o evento submit do formulário, passando uma função vazia que vamos preencher nos próximos passos.",
+              "comment": "Escutar o evento de envio do formulário",
+              "answer": "form.addEventListener('submit', function (event) {\n});",
+              "workspace": {
+                "activeFilePath": "script.js",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "script.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da função de envio, impeça o comportamento padrão do formulário de recarregar a página, usando event.preventDefault().",
+              "comment": "Evitar o recarregamento automático da página",
+              "commentAnchor": {
+                "find": "form.addEventListener('submit', function (event) {",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "event.preventDefault();",
+              "workspace": {
+                "activeFilePath": "script.js",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "script.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ainda dentro da função de envio, capture os valores digitados nos campos nome e email, guardando cada um em uma constante.",
+              "comment": "Capturar os valores digitados pelo usuário",
+              "commentAnchor": {
+                "find": "form.addEventListener('submit', function (event) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "const nome = document.getElementById('nome').value;\nconst email = document.getElementById('email').value;",
+              "workspace": {
+                "activeFilePath": "script.js",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "script.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Utilizando fetch, envie uma requisição POST para http://localhost:3000/user, mandando nome e email como JSON no corpo da requisição.",
+              "comment": "Enviar os dados com fetch para http://localhost:3000/user",
+              "commentAnchor": {
+                "find": "form.addEventListener('submit', function (event) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "fetch('http://localhost:3000/user', \n{ method: 'POST',\n headers: { 'Content-Type': 'application/json' },\n body: JSON.stringify({ nome: nome, email: email }) }).then(function (response) {\n  console.log('Cadastro enviado com sucesso!');\n})\n.catch(function (erro) {\n  console.log('Erro ao enviar cadastro.');\n});",
+              "workspace": {
+                "activeFilePath": "script.js",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "script.js" }
+                ]
+              }
+            },
+            
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: montando um formulário de cadastro com fetch",
+              "content": "Nesta lição você construiu um fluxo completo de cadastro sem depender de nenhum framework:\n\n1. No index.html, criou um formulário com campos de nome e email, além de um botão de envio.\n2. Vinculou um arquivo script.js à página usando a tag script.\n3. No script.js, selecionou o formulário com document.getElementById e escutou o evento submit.\n4. Usou event.preventDefault() para impedir o recarregamento padrão da página.\n5. Capturou os valores digitados pelo usuário através da propriedade value dos inputs.\n6. Enviou esses valores para o servidor com fetch, no formato JSON, usando o método POST.\n7. Tratou o resultado da requisição com .then (sucesso) e .catch (erro).\n\nEsse é o padrão básico de qualquer formulário que se comunica com um backend: capturar dados do usuário, formatá-los, enviar via fetch e reagir à resposta do servidor."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

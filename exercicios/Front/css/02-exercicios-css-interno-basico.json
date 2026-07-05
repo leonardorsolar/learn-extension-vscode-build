@@ -1,0 +1,173 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "css-interno-basico",
+          "name": "CSS Interno - Propriedades Básicas",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o ambiente",
+              "content": "Antes de escrever qualquer código, vamos preparar o ambiente:\n\n1. Dentro da pasta, no seu projeto, crie um arquivo chamado index.html. Esse será o arquivo que o navegador vai abrir para mostrar sua página.\n\n2. Clique em próximo para iniciar os exercícios."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Digite ! e pressione Tab para gerar a estrutura básica do HTML com o Emmet dentro do arquivo index.html vazio.",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é CSS interno?",
+              "content": "Diferente do CSS inline, onde o estilo fica junto de cada tag através do atributo style, o CSS interno é escrito uma única vez, dentro de uma tag style colocada no head do arquivo. Dentro dela, você usa seletores para dizer quais elementos devem receber cada estilo.\n\nA grande vantagem é a separação entre conteúdo e estilo: o HTML fica mais limpo, e se você tiver várias tags iguais na página, como vários h1, todas recebem o mesmo estilo de uma vez só, sem precisar repetir o atributo style em cada uma."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag body, adicione um título usando a tag h1 com o texto Bem-vindo ao meu site, sem nenhum estilo por enquanto.",
+              "comment": "Adicionar título h1 sem estilo",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<h1>Bem-vindo ao meu site</h1>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como escrever a tag style e um seletor de tag?",
+              "content": "A tag style deve ficar dentro do head. Dentro dela, cada bloco de estilo começa com um seletor, que indica qual elemento será afetado, seguido de chaves. O tipo de seletor mais simples é o seletor de tag, onde você escreve apenas o nome da tag, como h1, e dentro das chaves coloca as propriedades no mesmo formato propriedade: valor; que você já usou no CSS inline.\n\nAssim, um seletor h1 dentro da style vai aplicar aquele estilo a todos os h1 da página, sem precisar tocar no HTML."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag head, adicione uma tag style contendo um seletor h1 com as propriedades color igual a blue e font-size igual a 32px, deixando todos os títulos h1 da página azuis e maiores.",
+              "comment": "Criar tag style com regra para h1",
+              "commentAnchor": {
+                "find": "<head>",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "<style>\n    h1 {\n      color: blue;\n      font-size: 32px;\n    }\n  </style>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Adicionando mais elementos e mais seletores",
+              "content": "À medida que você adiciona novos elementos no body, basta criar um novo seletor dentro da mesma tag style para estilizar cada um deles. Vamos criar um parágrafo e, logo em seguida, adicionar o seletor p dentro da style, usando as propriedades background-color, para a cor de fundo, e padding, para o espaçamento interno."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo do h1, adicione um parágrafo usando a tag p com o texto Este e um paragrafo de exemplo, sem estilo inline, já que o estilo dele vai ser definido na tag style.",
+              "comment": "Adicionar parágrafo sem estilo inline",
+              "commentAnchor": {
+                "find": "<h1>",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "<p>Este e um paragrafo de exemplo.</p>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag style, logo abaixo do seletor h1, adicione um seletor p com as propriedades background-color igual a yellow e padding igual a 10px, para estilizar o parágrafo criado.",
+              "comment": "Adicionar regra CSS para o seletor p",
+              "commentAnchor": {
+                "find": "<style>",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "p {\n      background-color: yellow;\n      padding: 10px;\n    }",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Mais um elemento: border e width",
+              "content": "Vamos repetir o mesmo processo mais uma vez, agora criando uma div no body e um seletor div dentro da style, usando as propriedades border, para desenhar uma borda, e width, para definir a largura do elemento."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo do parágrafo, adicione uma div com o texto Esta e uma div de exemplo, sem estilo inline.",
+              "comment": "Adicionar div sem estilo inline",
+              "commentAnchor": {
+                "find": "<p>Este e um paragrafo de exemplo.</p>",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "<div>Esta e uma div de exemplo.</div>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag style, logo abaixo do seletor p, adicione um seletor div com as propriedades border igual a 2px solid black e width igual a 200px, para estilizar a div criada.",
+              "comment": "Adicionar regra CSS para o seletor div",
+              "commentAnchor": {
+                "find": "<style>",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "div {\n      border: 2px solid black;\n      width: 200px;\n    }",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: CSS interno e seletores de tag",
+              "content": "Nesta lição você aprendeu:\n\n1. Que o CSS interno é escrito dentro de uma tag style, colocada no head do arquivo.\n2. Que cada bloco de estilo começa com um seletor, que define quais elementos serão afetados.\n3. Que um seletor de tag, como h1, p ou div, aplica o estilo a todos os elementos daquele tipo na página de uma só vez.\n4. As mesmas propriedades já conhecidas: color, font-size, background-color, padding, border e width, agora organizadas em um único lugar em vez de espalhadas pelo HTML.\n\nO CSS interno já resolve o problema da repetição do inline, mas ainda mistura HTML e CSS no mesmo arquivo. Na próxima lição, você vai aprender a forma externa, movendo todo esse estilo para um arquivo .css separado."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

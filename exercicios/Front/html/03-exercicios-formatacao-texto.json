@@ -1,0 +1,137 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "formatacao-texto",
+          "name": "Formatação de Texto (strong, em, small, mark)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o ambiente",
+              "content": "Antes de escrever qualquer código, vamos preparar o ambiente:\n\n1. Dentro da pasta, no seu projeto, crie um arquivo chamado index.html. Esse será o arquivo que o navegador vai abrir para mostrar sua página.\n\n2. Clique em próximo para iniciar os exercícios."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Digite ! e pressione Tab para gerar a estrutura básica do HTML com o Emmet dentro do arquivo index.html vazio.",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que usar tags de formatação em vez de só negrito e itálico visual?",
+              "content": "O HTML tem tags específicas para dar ênfase e destaque a partes de um texto: strong, em, small e mark. A diferença delas para um simples negrito ou itálico visual é que elas carregam um significado semântico, ou seja, dizem ao navegador, a leitores de tela e a mecanismos de busca o motivo daquele destaque, não apenas a aparência.\n\nUm leitor de tela, por exemplo, pode alterar a entonação da voz ao ler um texto dentro de uma tag em, algo que não aconteceria se você apenas deixasse a fonte em itálico sem essa tag."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag body, adicione um parágrafo com o texto Este curso e totalmente gratuito, destacando a palavra gratuito como algo de grande importância usando a tag strong.",
+              "comment": "Adicionar parágrafo destacando importância com strong",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<p>Este curso e totalmente <strong>gratuito</strong>.</p>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Qual a diferença entre strong e em?",
+              "content": "Enquanto strong indica que um trecho tem grande importância, quase um alerta, a tag em indica ênfase, ou seja, uma mudança no tom da frase, como se você estivesse dando uma entonação diferente ao falar aquela palavra em voz alta.\n\nVisualmente, strong costuma aparecer em negrito e em costuma aparecer em itálico, mas o motivo de usar cada uma é sempre o significado, não apenas o estilo."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo do parágrafo anterior, adicione um novo parágrafo com o texto Voce realmente vai aprender programacao do zero, dando ênfase à palavra realmente usando a tag em.",
+              "comment": "Adicionar parágrafo com ênfase usando em",
+              "commentAnchor": {
+                "find": "<p>Este curso e totalmente <strong>gratuito</strong>.</p>",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "<p>Voce <em>realmente</em> vai aprender programacao do zero.</p>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Quando usar a tag small?",
+              "content": "A tag small representa um texto de menor relevância dentro da página, geralmente exibido visualmente menor que o texto ao redor. Ela é muito usada para avisos legais, informações de direitos autorais, notas de rodapé ou pequenas observações que não fazem parte do conteúdo principal.\n\nDiferente de strong e em, que dão destaque a algo importante, small indica justamente o contrário: um texto secundário, de apoio."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No final da tag body, depois de todo o conteúdo já criado, adicione um aviso secundário usando a tag small com o texto Este conteudo pode ser atualizado sem aviso previo.",
+              "comment": "Adicionar aviso secundário com small",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "<small>Este conteudo pode ser atualizado sem aviso previo.</small>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Para que serve a tag mark?",
+              "content": "A tag mark serve para destacar visualmente um trecho de texto, chamando a atenção do usuário para aquela palavra ou frase específica, parecido com o que acontece quando você usa um marca-texto em um papel.\n\nUm uso muito comum é em resultados de busca dentro de um site, onde a palavra pesquisada pelo usuário aparece destacada em amarelo no meio do texto encontrado, ajudando o usuário a localizar rapidamente o que procurava."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Altere o primeiro parágrafo para destacar visualmente a palavra gratuito também com a tag mark, mantendo a tag strong ao redor dela, já que a palavra continua sendo importante e agora também precisa chamar a atenção visualmente.",
+              "comment": "Destacar a palavra gratuito com mark dentro do strong",
+              "commentAnchor": {
+                "find": "<p>Este curso e totalmente <strong>gratuito</strong>.</p>",
+                "position": "replace",
+                "fallback": "end"
+              },
+              "answer": "<p>Este curso e totalmente <strong><mark>gratuito</mark></strong>.</p>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: formatação semântica de texto",
+              "content": "Nesta lição você aprendeu quatro tags de formatação de texto e o significado de cada uma:\n\n1. strong indica que um trecho tem grande importância.\n2. em indica ênfase, uma mudança no tom da frase.\n3. small indica um texto de menor relevância, como avisos e notas de rodapé.\n4. mark destaca visualmente um trecho, chamando a atenção do usuário para ele.\n\nO ponto mais importante é lembrar que cada uma dessas tags carrega um significado, e não apenas uma aparência visual, o que ajuda leitores de tela, mecanismos de busca e outros usuários a entenderem melhor a intenção por trás do seu texto."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

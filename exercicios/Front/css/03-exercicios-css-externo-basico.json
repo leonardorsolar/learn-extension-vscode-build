@@ -1,0 +1,184 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "css-externo-basico",
+          "name": "CSS Externo - Propriedades Básicas",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o ambiente",
+              "content": "Antes de escrever qualquer código, vamos preparar o ambiente:\n\n1. Dentro da pasta, no seu projeto, crie um arquivo chamado index.html. Esse será o arquivo que o navegador vai abrir para mostrar sua página.\n\n2. Clique em próximo para iniciar os exercícios."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Digite ! e pressione Tab para gerar a estrutura básica do HTML com o Emmet dentro do arquivo index.html vazio.",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "styles.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é CSS externo?",
+              "content": "No CSS externo, todo o estilo fica em um arquivo separado, com extensão .css, completamente fora do HTML. Esse arquivo é conectado à página através da tag link, colocada no head, usando o atributo rel igual a stylesheet e o atributo href apontando para o caminho do arquivo CSS.\n\nEssa é a forma mais usada em projetos reais, porque separa totalmente conteúdo de estilo, permite que várias páginas HTML compartilhem o mesmo arquivo CSS, e ainda se beneficia do cache do navegador, já que o arquivo CSS não precisa ser baixado de novo em cada página do site."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag head do index.html, adicione uma tag link conectando o arquivo styles.css, usando rel igual a stylesheet e href igual a styles.css.",
+              "comment": "Conectar o arquivo styles.css usando a tag link",
+              "commentAnchor": {
+                "find": "<head>",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "<link rel=\"stylesheet\" href=\"styles.css\">",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "styles.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Escrevendo regras diretamente no arquivo CSS",
+              "content": "Com o link já configurado, tudo que for escrito no arquivo styles.css vai automaticamente estilizar o index.html, sem precisar de nenhuma tag style ou atributo style no HTML. A sintaxe dentro do arquivo .css é exatamente a mesma que você já usou dentro da tag style: um seletor seguido de chaves, com as propriedades no formato propriedade: valor;.\n\nVamos criar o mesmo h1 de antes no index.html, e em seguida ir para o styles.css para estilizá-lo."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag body do index.html, adicione um título usando a tag h1 com o texto Bem-vindo ao meu site, sem nenhum estilo.",
+              "comment": "Adicionar título h1 sem estilo",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<h1>Bem-vindo ao meu site</h1>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "styles.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo styles.css, que está vazio, crie um seletor h1 com as propriedades color igual a blue e font-size igual a 32px, para estilizar o título criado no index.html.",
+              "comment": "Criar regra CSS para h1 no arquivo externo",
+              "answer": "h1 {\n  color: blue;\n  font-size: 32px;\n}",
+              "workspace": {
+                "activeFilePath": "styles.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "styles.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Repetindo o padrão: criar no HTML, estilizar no CSS",
+              "content": "A partir de agora, sempre que você criar um novo elemento no index.html, o padrão vai ser o mesmo: criar a tag no HTML sem nenhum estilo, e depois ir até o final do styles.css para adicionar o seletor correspondente, exatamente na ordem em que os elementos aparecem na página."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo do h1 no index.html, adicione um parágrafo usando a tag p com o texto Este e um paragrafo de exemplo, sem estilo.",
+              "comment": "Adicionar parágrafo sem estilo",
+              "commentAnchor": {
+                "find": "<h1>Bem-vindo ao meu site</h1>",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "<p>Este e um paragrafo de exemplo.</p>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "styles.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No final do styles.css, logo abaixo do seletor h1, adicione um seletor p com as propriedades background-color igual a yellow e padding igual a 10px.",
+              "comment": "Criar regra CSS para p no arquivo externo",
+              "answer": "p {\n  background-color: yellow;\n  padding: 10px;\n}",
+              "workspace": {
+                "activeFilePath": "styles.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "styles.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Mais um elemento: border e width",
+              "content": "Vamos fechar a lição repetindo o padrão mais uma vez, agora com uma div no index.html e um seletor div no styles.css, usando as propriedades border e width."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo do parágrafo no index.html, adicione uma div com o texto Esta e uma div de exemplo, sem estilo.",
+              "comment": "Adicionar div sem estilo",
+              "commentAnchor": {
+                "find": "<p>Este e um paragrafo de exemplo.</p>",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "<div>Esta e uma div de exemplo.</div>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "styles.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No final do styles.css, logo abaixo do seletor p, adicione um seletor div com as propriedades border igual a 2px solid black e width igual a 200px.",
+              "comment": "Criar regra CSS para div no arquivo externo",
+              "answer": "div {\n  border: 2px solid black;\n  width: 200px;\n}",
+              "workspace": {
+                "activeFilePath": "styles.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "styles.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: as três formas de aplicar CSS",
+              "content": "Nesta lição você aprendeu a forma externa de aplicar CSS:\n\n1. O arquivo .css fica totalmente separado do HTML, e é conectado através da tag link no head, usando rel=\"stylesheet\" e href apontando para o arquivo.\n2. A sintaxe dentro do arquivo .css é a mesma dos seletores que você já usou no CSS interno, só que sem precisar de nenhuma tag style.\n3. Essa forma é a mais usada em projetos reais, por separar completamente conteúdo e estilo, permitir reaproveitamento entre páginas e se beneficiar do cache do navegador.\n\nCom isso, você já conheceu as três formas de aplicar CSS: inline, direto na tag; interno, dentro de uma tag style no head; e externo, em um arquivo .css separado. Na prática, a forma externa costuma ser a preferida para projetos com mais de uma página."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

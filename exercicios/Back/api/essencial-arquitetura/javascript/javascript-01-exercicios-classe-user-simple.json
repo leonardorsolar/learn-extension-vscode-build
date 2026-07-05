@@ -1,0 +1,164 @@
+{
+  "levels": [
+    {
+      "id": "iniciante",
+      "name": "Iniciante",
+      "themes": [
+        {
+          "id": "classes-javascript",
+          "name": "Introdução a Classes (JavaScript)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é uma classe?",
+              "content": "Uma classe é como um molde para criar objetos parecidos. Por exemplo, se você tem vários usuários em um sistema, todos eles têm nome e email — a classe descreve esse formato uma única vez, e cada usuário criado a partir dela é uma instância desse molde.\n\nNesta lição você vai criar uma classe bem simples, chamada User, com algumas propriedades e um método, para entender essa ideia na prática."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar a classe User com duas propriedades, name e email, ambas iniciadas como uma string vazia?",
+              "comment": "Criar a classe User",
+              "answer": "class User {\n  name = '';\n  email = '';\n}",
+              "workspace": {
+                "activeFilePath": "user.js",
+                "tree": [
+                  { "type": "file", "name": "user.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo as propriedades de uma classe",
+              "content": "name e email são propriedades da classe User: são os dados que cada usuário vai ter. Ao escrever name = '' direto no corpo da classe, já dizemos que toda instância de User começa com esses campos, prontos para receber um valor.\n\nMais para frente você vai ver que também é possível definir propriedades dentro de um construtor, mas essa forma direta, usada aqui, é mais simples para começar."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar dentro da classe User um método chamado sayHello, que retorna a frase Olá, meu nome é seguida do valor de this.name?",
+              "comment": "Criar o método sayHello dentro da classe User",
+              "commentAnchor": {
+                "find": "class User {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "sayHello() {\n  return 'Olá, meu nome é ' + this.name;\n}",
+              "workspace": {
+                "activeFilePath": "user.js",
+                "tree": [
+                  { "type": "file", "name": "user.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo métodos e o this",
+              "content": "sayHello é um método: uma função que vive dentro da classe e pode ser chamada por qualquer instância de User. Dentro dele, this se refere sempre à instância que chamou o método — é assim que sayHello consegue acessar o name de cada usuário específico, sem precisar receber esse valor como parâmetro."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como instanciar a classe User, guardando essa instância em uma variável constante user?",
+              "comment": "Instanciando a classe User",
+              "answer": "const user = new User();",
+              "workspace": {
+                "activeFilePath": "user.js",
+                "tree": [
+                  { "type": "file", "name": "user.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Acesse diretamente as propriedades da classe User. Em user.name e user.email preencha o nome como Maria e o email como maria@email.com?",
+              "comment": "Preenchendo as propriedades do usuário",
+              "answer": "user.name = 'Maria';\nuser.email = 'maria@email.com';",
+              "workspace": {
+                "activeFilePath": "user.js",
+                "tree": [
+                  { "type": "file", "name": "user.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar console.log para exibir o resultado de user.sayHello()?",
+              "comment": "Chamando o método sayHello",
+              "answer": "console.log(user.sayHello());",
+              "workspace": {
+                "activeFilePath": "user.js",
+                "tree": [
+                  { "type": "file", "name": "user.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como executar no terminal a classe User e ver o resultado do console.log",
+              "content": "Abra o terminal do VSCode e execute o comando:\n\n```\nnode user.js\n```\n\nIsso vai rodar o arquivo e mostrar no terminal a saída do console.log, com a frase montada pelo sayHello usando o name que você preencheu."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "representação do console.log",
+              "content": "A saída no terminal deve ser parecida com esta:\n\nOlá, meu nome é Maria\n\nRepare que o email não aparece aqui porque o sayHello só usa this.name — o email ficou guardado na instância, disponível caso você precise dele em outro momento, como em user.email."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Contrutor",
+              "content": "Agora você vai aprender a usar o construtor de uma classe, que é um método especial chamado constructor. Ele é executado automaticamente quando você cria uma instância da classe, e é o lugar certo para inicializar as propriedades com valores passados como parâmetros. Por enquanto, você aprendeu a criar propriedades diretamente no corpo da classe, que é uma forma mais simples de começar."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar o construtor para inicializar as propriedades name e email da classe User, recebendo esses valores como parâmetros?",
+              "comment": "Crie o construtor da classe User para inicializar name e email",
+              "answer": "\n\n// Delete as linhas user.name = ''; e user.email = ''; \n\n constructor(name, email) {\n  this.name = name;\n  this.email = email;\n} ",
+              "commentAnchor": {
+                "find": "class User {",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "workspace": {
+                "activeFilePath": "user.js",
+                "tree": [
+                  { "type": "file", "name": "user.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Instanciando a classe User com o construtor",
+              "content": "Agora que você tem um construtor, pode criar uma instância de User passando o nome e o email diretamente, sem precisar atribuir depois. Por exemplo:\n\n```\nconst user = new User('Maria', 'maria@example.com');\n```\n\nIsso vai criar um usuário com name igual a 'Maria' e email igual a 'maria@example.com'. Delete o user.name = 'Maria'; e user.email = 'maria@example.com'; pois não são mais necessários. \n\n Salve o arquivo." 
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como executar no terminal a classe User e ver o resultado do console.log",
+              "content": "Abra o terminal do VSCode e execute o comando:\n\n```\nnode user.js\n```\n\nIsso vai rodar o arquivo e mostrar no terminal a saída do console.log, com a frase montada pelo sayHello usando o name que você preencheu."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "representação do console.log",
+              "content": "A saída no terminal deve ser parecida com esta:\n\nOlá, meu nome é Maria\n\nRepare que o email não aparece aqui porque o sayHello só usa this.name — o email ficou guardado na instância, disponível caso você precise dele em outro momento, como em user.email."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: o que você aprendeu sobre classes",
+              "content": "Nesta lição você deu os primeiros passos com classes em JavaScript:\n\n1. Uma classe é um molde para criar objetos parecidos, com as mesmas propriedades e métodos.\n2. Propriedades, como name e email, guardam os dados de cada instância.\n3. Métodos, como sayHello, são funções que pertencem à classe e usam this para acessar os dados da instância que os chamou.\n4. Para usar uma classe, primeiro você instancia ela com new, e depois acessa suas propriedades e métodos com a notação de ponto.\n\nEsse é o alicerce que você vai usar em praticamente todo código orientado a objetos daqui para frente, incluindo as classes Repository, Service e Controller que aparecem nas próximas lições."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

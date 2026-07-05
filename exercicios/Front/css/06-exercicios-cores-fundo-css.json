@@ -1,0 +1,177 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "cores-fundo-css",
+          "name": "Cores e Fundo (color, background-color, background-image)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o ambiente",
+              "content": "Antes de escrever qualquer código, vamos preparar o ambiente:\n\n1. Dentro da pasta, no seu projeto, crie dois arquivos: index.html e style.css. O index.html será o arquivo que o navegador vai abrir para mostrar sua página, e o style.css será o arquivo onde você vai escrever as regras de estilo.\n\n2. Clique em próximo para iniciar os exercícios."},
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Digite ! e pressione Tab para gerar a estrutura básica do HTML com o Emmet dentro do arquivo index.html vazio.",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag head do index.html, adicione uma tag link conectando o arquivo style.css, usando rel igual a stylesheet e href igual a style.css.",
+              "comment": "Conectar o arquivo style.css usando a tag link",
+              "commentAnchor": {
+                "find": "<head>",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "<link rel=\"stylesheet\" href=\"style.css\">",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag body do index.html, adicione um título usando a tag h1 com o atributo id igual a titulo e o texto Cores na Web.",
+              "comment": "Adicionar h1 com id titulo",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<h1 id=\"titulo\">Cores na Web</h1>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo do h1, adicione um parágrafo usando a tag p com o atributo class igual a texto e o texto As cores transmitem sensacoes e ajudam a guiar a atencao do usuario pela pagina.",
+              "comment": "Adicionar parágrafo de exemplo",
+              "commentAnchor": {
+                "find": "<h1 id=\"titulo\">Cores na Web</h1>",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "<p class=\"texto\">As cores transmitem sensacoes e ajudam a guiar a atencao do usuario pela pagina.</p>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é a propriedade color?",
+              "content": "A propriedade color define a cor do texto de um elemento. Existem várias formas de escrever uma cor em CSS: por nome, como blue ou gray; em hexadecimal, como #2563EB, que é a forma mais usada em projetos profissionais; ou em rgb, como rgb(37, 99, 235), informando a quantidade de vermelho, verde e azul.\n\nO hexadecimal é muito comum porque a maioria das ferramentas de design, como o Figma, já exporta as cores exatamente nesse formato, facilitando a conversão do design para o código."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo style.css, que está vazio, crie um seletor de id #titulo com a propriedade color igual a #2563EB, deixando o título com essa cor de azul.",
+              "comment": "Definir a cor do título com color",
+              "answer": "#titulo {\n  color: #2563EB;\n}",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Qual a diferença entre color e background-color?",
+              "content": "Enquanto color pinta o texto, background-color pinta o fundo do elemento. As duas propriedades aceitam exatamente os mesmos formatos de cor: nome, hexadecimal ou rgb.\n\nUm cuidado importante ao usar essas duas propriedades juntas é o contraste: um texto escuro sobre um fundo escuro, por exemplo, fica praticamente ilegível, então sempre vale a pena verificar se a combinação de cores escolhida é fácil de ler."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No final do style.css, crie um seletor de tag body com a propriedade background-color igual a #F0F4FF, definindo um fundo azul bem claro para toda a página.",
+              "comment": "Definir a cor de fundo da página com background-color",
+              "answer": "body {\n  background-color: #F0F4FF;\n}",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No final do style.css, crie um seletor de classe .texto com as propriedades background-color igual a #FFFFFF e padding igual a 15px, destacando o parágrafo como se fosse um cartão branco sobre o fundo azul claro da página.",
+              "comment": "Criar efeito de cartão no parágrafo com background-color",
+              "answer": ".texto {\n  background-color: #FFFFFF;\n  padding: 15px;\n}",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é background-image e por que ela costuma vir acompanhada de outras propriedades?",
+              "content": "A propriedade background-image define uma imagem como fundo de um elemento, usando o formato url('caminho-da-imagem'). Só que, sozinha, uma imagem de fundo normalmente aparece repetida várias vezes lado a lado, no seu tamanho original, o que raramente é o resultado desejado.\n\nPor isso, ela quase sempre é usada junto com background-size, definindo como a imagem deve se ajustar ao espaço disponível, sendo cover um valor muito comum que faz a imagem cobrir todo o elemento sem distorcer; e background-repeat igual a no-repeat, evitando que a imagem se repita.\n\nManter também um background-color como o que você já definiu é uma boa prática: ele funciona como uma cor de fallback, aparecendo enquanto a imagem ainda não carregou ou caso ela falhe."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do seletor body já criado, adicione as propriedades background-image apontando para url('https://via.placeholder.com/40'), background-size igual a cover e background-repeat igual a no-repeat, para usar uma imagem de fundo corretamente ajustada.",
+              "comment": "Adicionar imagem de fundo ajustada ao body",
+              "commentAnchor": {
+                "find": "body {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "background-image: url('https://via.placeholder.com/40');\n  background-size: cover;\n  background-repeat: no-repeat;",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: cores e fundo",
+              "content": "Nesta lição você aprendeu:\n\n1. Que color define a cor do texto, e pode ser escrita por nome, hexadecimal ou rgb.\n2. Que background-color define a cor de fundo de um elemento, e deve ser escolhida pensando no contraste com o texto.\n3. Que background-image define uma imagem como fundo, e quase sempre precisa vir acompanhada de background-size e background-repeat para se ajustar corretamente ao espaço disponível.\n4. Que manter um background-color mesmo ao usar background-image é uma boa prática, servindo como cor de fallback.\n\nCores e fundo são alguns dos elementos que mais afetam a primeira impressão de uma página, tanto na questão visual quanto na legibilidade do conteúdo."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

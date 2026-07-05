@@ -1,0 +1,137 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "imagens-html",
+          "name": "Imagens (img, src, alt)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o ambiente",
+              "content": "Antes de escrever qualquer código, vamos preparar o ambiente:\n\n1. Dentro da pasta, no seu projeto, crie um arquivo chamado index.html. Esse será o arquivo que o navegador vai abrir para mostrar sua página.\n\n2. Clique em próximo para iniciar os exercícios."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Digite ! e pressione Tab para gerar a estrutura básica do HTML com o Emmet dentro do arquivo index.html vazio.",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é a tag img e o atributo src?",
+              "content": "A tag img é usada para exibir imagens dentro de uma página. Assim como a tag br, ela não tem conteúdo entre uma abertura e um fechamento, porque uma imagem não é feita de texto, então ela é uma tag de auto-fechamento.\n\nO atributo src, de source, informa de onde a imagem deve ser carregada. Pode ser o endereço de um arquivo dentro do seu próprio projeto, como imagens/foto.png, ou o link completo de uma imagem hospedada na internet."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag body, adicione uma imagem usando a tag img com o src apontando para https://via.placeholder.com/300.",
+              "comment": "Adicionar imagem usando a tag img com src",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<img src=\"https://via.placeholder.com/300\">",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que o atributo alt é tão importante?",
+              "content": "O atributo alt, de alternative text, descreve em palavras o que a imagem representa. Ele tem três funções importantes: primeiro, leitores de tela usados por pessoas com deficiência visual leem esse texto em voz alta, permitindo que elas entendam o conteúdo da imagem. Segundo, mecanismos de busca usam o alt para entender do que se trata a imagem, ajudando no posicionamento da página. Terceiro, se a imagem não carregar por algum motivo, o navegador exibe esse texto no lugar dela.\n\nPor esses motivos, toda imagem que representa conteúdo relevante para a página deveria ter um atributo alt bem descritivo."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Altere a imagem criada anteriormente para adicionar o atributo alt com o texto Imagem de exemplo mostrando um quadrado cinza, descrevendo o conteúdo da imagem para acessibilidade.",
+              "comment": "Adicionar atributo alt para acessibilidade",
+              "commentAnchor": {
+                "find": "<img src=\"https://via.placeholder.com/300\">",
+                "position": "replace",
+                "fallback": "end"
+              },
+              "answer": "<img src=\"https://via.placeholder.com/300\" alt=\"Imagem de exemplo mostrando um quadrado cinza\">",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Para que servem width e height na imagem?",
+              "content": "Os atributos width e height definem, respectivamente, a largura e a altura da imagem em pixels. Além de controlar o tamanho exibido, informar esses valores ajuda o navegador a reservar o espaço correto para a imagem antes mesmo dela terminar de carregar, evitando que o restante do conteúdo da página pule de lugar enquanto a imagem aparece."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Altere a imagem para definir explicitamente width igual a 300 e height igual a 300, garantindo que o navegador reserve o espaço correto antes da imagem carregar.",
+              "comment": "Definir width e height explícitos na imagem",
+              "commentAnchor": {
+                "find": "<img src=\"https://via.placeholder.com/300\" alt=\"Imagem de exemplo mostrando um quadrado cinza\">",
+                "position": "replace",
+                "fallback": "end"
+              },
+              "answer": "<img src=\"https://via.placeholder.com/300\" alt=\"Imagem de exemplo mostrando um quadrado cinza\" width=\"300\" height=\"300\">",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Agrupando imagem e legenda com figure e figcaption",
+              "content": "Quando uma imagem precisa de uma legenda visível na página, como em uma notícia ou um artigo, o HTML oferece duas tags semânticas para isso: figure, que agrupa a imagem e sua legenda como um bloco único, e figcaption, que representa o texto da legenda em si.\n\nEssa estrutura deixa claro, tanto para o navegador quanto para leitores de tela, que aquele texto é uma legenda relacionada diretamente à imagem ao lado dele, e não um parágrafo qualquer."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Envolva a imagem criada com a tag figure, e adicione logo abaixo dela, ainda dentro da figure, uma legenda usando figcaption com o texto Quadrado cinza de exemplo.",
+              "comment": "Agrupar imagem e legenda com figure e figcaption",
+              "commentAnchor": {
+                "find": "<img src=\"https://via.placeholder.com/300\" alt=\"Imagem de exemplo mostrando um quadrado cinza\" width=\"300\" height=\"300\">",
+                "position": "replace",
+                "fallback": "end"
+              },
+              "answer": "<figure>\n    <img src=\"https://via.placeholder.com/300\" alt=\"Imagem de exemplo mostrando um quadrado cinza\" width=\"300\" height=\"300\">\n    <figcaption>Quadrado cinza de exemplo</figcaption>\n  </figure>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: exibindo imagens com significado",
+              "content": "Nesta lição você aprendeu:\n\n1. Que a tag img exibe imagens e, assim como br, não possui tag de fechamento.\n2. Que o atributo src define de onde a imagem deve ser carregada.\n3. Que o atributo alt descreve a imagem para acessibilidade, mecanismos de busca e como texto alternativo em caso de falha no carregamento.\n4. Que width e height ajudam o navegador a reservar o espaço certo antes da imagem carregar.\n5. Que figure e figcaption permitem agrupar uma imagem com sua legenda de forma semântica.\n\nUma imagem bem estruturada não é só sobre aparência, é sobre garantir que todos os usuários, incluindo aqueles que usam leitores de tela, entendam o conteúdo dela."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

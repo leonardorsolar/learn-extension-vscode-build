@@ -1,0 +1,197 @@
+{
+  "levels": [
+    {
+      "id": "iniciante",
+      "name": "Iniciante",
+      "themes": [
+        {
+          "id": "classes-java",
+          "name": "Introducao a Classes (Java)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que e uma classe?",
+              "content": "Uma classe e como um molde para criar objetos parecidos. Em Java, classes sao a base da programacao orientada a objetos, permitindo representar entidades como User com atributos e comportamentos."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar a classe User com atributos name e email, ambos iniciados como uma string vazia?",
+              "comment": "Criar a classe User",
+              "answer": "public class User {\n    String name = \"\";\n    String email = \"\";\n\n}",
+              "workspace": {
+                "activeFilePath": "User.java",
+                "tree": [
+                  { "type": "file", "name": "User.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar o metodo sayHello dentro da classe User, que retorna a String Ola, meu nome e seguida de this.name?",
+              "comment": "Criar metodo sayHello",
+              "commentAnchor": {
+                "find": "public class User {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "\n    public String sayHello() {\n        return \"Ola, meu nome e \" + this.name;\n    }",
+              "workspace": {
+                "activeFilePath": "User.java",
+                "tree": [
+                  { "type": "file", "name": "User.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que precisamos de um metodo main em Java?",
+              "content": "Diferente de JavaScript e Python, em Java nao e possivel escrever comandos soltos no arquivo, fora de uma classe ou de um metodo. Todo codigo executavel precisa morar dentro de um metodo.\n\nPor isso, toda aplicacao Java precisa de um ponto de entrada: um metodo chamado main, com a assinatura exata public static void main(String[] args). E dentro dele que vamos instanciar o User, preencher seus atributos e chamar seus metodos."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar dentro da classe User um metodo main vazio, com a assinatura public static void main(String[] args)?",
+              "comment": "Criar o metodo main",
+              "commentAnchor": {
+                "find": "public class User {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "//Dentro da classe User crie o método main:\n\n\n    public static void main(String[] args) {\n    }",
+              "workspace": {
+                "activeFilePath": "User.java",
+                "tree": [
+                  { "type": "file", "name": "User.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do metodo main, como instanciar a classe User, guardando o resultado na variavel user?",
+              "comment": "Instanciando User dentro do main",
+              "commentAnchor": {
+                "find": "public static void main(String[] args) {",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "User user = new User();",
+              "workspace": {
+                "activeFilePath": "User.java",
+                "tree": [
+                  { "type": "file", "name": "User.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo apos instanciar o user, como preencher os atributos name e email com Maria e maria@email.com?",
+              "comment": "Preenchendo atributos",
+              "commentAnchor": {
+                "find": "User user = new User();",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "user.name = \"Maria\";\nuser.email = \"maria@email.com\";",
+              "workspace": {
+                "activeFilePath": "User.java",
+                "tree": [
+                  { "type": "file", "name": "User.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo apos preencher os atributos, como chamar o metodo sayHello e imprimir o resultado no console com System.out.println?",
+              "comment": "Chamando sayHello",
+              "commentAnchor": {
+                "find": "user.email = \"maria@email.com\";",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "System.out.println(user.sayHello());",
+              "workspace": {
+                "activeFilePath": "User.java",
+                "tree": [
+                  { "type": "file", "name": "User.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como executar o programa",
+              "content": "Salve o arquivo e abra o terminal do VSCode. Para compilar e executar em Java, use os comandos:\n\nPara compilar:\n\n javac User.java \n\n Para executar: \n\n java User \n\n O comando javac compila o arquivo User.java e gera um arquivo User.class com o bytecode. Em seguida, java User executa esse bytecode, rodando o metodo main da classe."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "representacao da saida",
+              "content": "A saida no terminal deve ser parecida com esta:\n\nOla, meu nome e Maria\n\nRepare que o email nao aparece aqui porque o sayHello so usa this.name."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Construtor em Java",
+              "content": "O construtor e um metodo especial usado para inicializar objetos quando sao criados com new. Em Java, o construtor tem o mesmo nome da classe e nao tem tipo de retorno, nem mesmo void."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar um construtor para User, que recebe name e email como parametros e inicializa os atributos da classe com esses valores?",
+              "comment": "Criar construtor",
+              "commentAnchor": {
+                "find": "public class User {",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "\n    String name = ''; \n    String email = ''; \n\n    public User(String name, String email) {\n        this.name = name;\n        this.email = email;\n    }",
+              "workspace": {
+                "activeFilePath": "User.java",
+                "tree": [
+                  { "type": "file", "name": "User.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do main, como trocar a instanciacao de User para usar o novo construtor, passando Maria e maria@email.com diretamente? Depois, apague as duas linhas que preenchiam user.name e user.email manualmente, pois nao sao mais necessarias.",
+              "comment": "Usando o construtor para instanciar User",
+              "commentAnchor": {
+                "find": "User user = new User();",
+                "position": "replace",
+                "fallback": "end"
+              },
+              "answer": "User user = new User(\"Maria\", \"maria@email.com\");",
+              "workspace": {
+                "activeFilePath": "User.java",
+                "tree": [
+                  { "type": "file", "name": "User.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como executar o programa novamente",
+              "content": "Salve o arquivo e execute novamente no terminal:\n\nPara compilar:\n\n javac User.java \n\n Para executar: \n\n java User \n\n A saida deve continuar igual: Ola, meu nome e Maria. A diferenca e que agora o objeto ja nasce com os valores corretos, sem precisar de atribuicoes manuais depois do new."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo",
+              "content": "Nesta licao voce aprendeu os primeiros passos com classes em Java:\n\n1. Uma classe e um molde para criar objetos, com atributos e metodos.\n2. Diferente de JavaScript e Python, todo codigo executavel em Java precisa estar dentro de um metodo, e o ponto de entrada da aplicacao e sempre o metodo main.\n3. Metodos como sayHello usam this para acessar os dados da instancia atual.\n4. O construtor e um metodo especial, com o mesmo nome da classe, usado para inicializar os atributos assim que o objeto e criado com new.\n\nEsse e o alicerce que voce vai usar em praticamente todo codigo orientado a objetos em Java daqui para frente."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

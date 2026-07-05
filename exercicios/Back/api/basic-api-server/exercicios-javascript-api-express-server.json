@@ -12,25 +12,39 @@
               "id": "b1a4c9f0-3e12-4a8d-9f61-1d2e3f4a5b6c",
               "type": "explanation",
               "title": "Inciando um projeto Node.js e subindo um servidor com Express",
-              "content": "Para inciar o projeto é importante:\n\n1. **No seu computador**,em documentos, **crie** uma pasta com o nome do projeto 'ProjetoAPINode'. \n\n2. **No Vscode**, clique em 'Abrir Pasta' -'Open Folder'- e selecione a pasta do projeto. \n\n3. Na extensão **Learn Extension**, clique em próximo para iniciar sua jornada."
+              "content": "Para inciar o projeto é importante:\n\n 1. **No Vscode**, veja se você está na pasta do projeto e verique se ela está vazia \n\n 2. Na extensão **Learn Extension**, clique em próximo para iniciar sua jornada."
             },
             {
               "id": "b1a4c9f0-3e12-4a8d-9f61-1d2e3f4a5b6c",
               "type": "explanation",
               "title": "Como inciar um projeto em javascript?",
-              "content": "1.Use o terminal para executar o comando 'node --version' \n\n2.O comando 'node --version' mostra a versão do Node.js instalada.\n\n3. Caso o comando não funcione, é obrigatório a instalação do Node.js." 
+              "content": "1.Use o terminal para executar o comando 'node --version' \n\nO comando 'node --version' mostra a versão do Node.js instalada.\n\n Caso o comando não funcione, é obrigatório a instalação do Node.js." 
             },
              {
               "id": "b1a4c9f0-3e12-4a8d-9f61-1d2e3f4a5b6c",
               "type": "explanation",
               "title": "Como inciar um projeto em node.js?",
-              "content": "1.Use o terminal para executar o comando 'npm init -y' \n\n2.O comando 'npm init -y' cria automaticamente o arquivo package.json."
+              "content": "1.Use o terminal para executar o comando 'npm init -y' \n\n2.O comando 'npm init -y' cria automaticamente o arquivo package.json. "
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar um arquivo .gitignore informando ao Git para ignorar a pasta node_modules e a pasta dist, onde o TypeScript vai gerar os arquivos compilados?",
+              "comment": "Criar o arquivo .gitignore",
+              "answer": "node_modules\ndist",
+              "workspace": {
+                "activeFilePath": ".gitignore",
+                "tree": [
+                  { "type": "file", "name": "package.json" },
+                  { "type": "file", "name": ".gitignore" }
+                ]
+              }
             },
             {
               "id": "b1a4c9f0-3e12-4a8d-9f61-1d2e3f4a5b6c",
               "type": "explanation",
               "title": "Como instalar a biblioteca para criar uma api?",
-              "content": "1.Use o terminal para executar o comando 'npm install express' \n\n2. O comando 'npm install express' instala o framework Express no arquivo package.json \n\n3. Criar o arquivo package-lock.json que registra exatamente as versões das dependências instaladas no projeto \n\n4. Cria a pasta node_module que contém todas as dependências do projeto."
+              "content": "Use o terminal para executar o comando 'npm install express' \n\n1. O comando 'npm install express' instala o framework Express no arquivo package.json \n\n2. Criar o arquivo package-lock.json que registra exatamente as versões das dependências instaladas no projeto \n\n3. Cria a pasta node_module que contém todas as dependências do projeto."
             },
             {
               "id": "0a62bd80-6571-4931-a462-958d5acd3c7a",
@@ -49,7 +63,7 @@
               "id": "b1a4c9f0-3e12-4a8d-9f61-1d2e3f4a5b6c",
               "type": "explanation",
               "title": "Como usar a sintaxe ECMAScript 6 (ES6)?",
-              "content": "1.Acesse o arquivo package.json \n\n2. Em 'type': 'commonjs' modifique para 'type': 'module' \n\n3. Salve o arquivo package.json"
+              "content": "Acesse o arquivo package.json \n\n1. Em 'type': 'commonjs' modifique para 'type': 'module' \n\n2. Salve o arquivo package.json"
             },
             {
               "id": "792debbd-51fe-4036-a7f0-7470962ebc30",
@@ -69,7 +83,7 @@
               "type": "exercise",
               "question": "Como criar uma rota GET na raiz (\"/\") que responde com a mensagem \"API no ar\"?",
               "comment": "rota GET/ 'API no ar'",
-              "answer": "app.get('/', (req, res) => res.send('API no ar'));",
+              "answer": "app.get('/', (req, res) => res.send('API no ar')); \n\n ou \n\n app.get('/', function(req, res) {\n  res.send('API no ar');\n});",
               "workspace": {
                 "activeFilePath": "src/server.js",
                 "tree": [
@@ -95,13 +109,19 @@
               "type": "exercise",
               "question": "Como rodar a aplicação para testar se a API está funcionando?",
               "comment": "Use o terminal e execute o comando: 'node src/server.js'",
-              "answer": "O comando node src/server.js inicia o servidor e você pode acessar a rota http://localhost:3000/ no navegador para ver a mensagem \"API no ar\".",
+              "answer": "O comando node src/server.js inicia o servidor e você pode acessar a rota http://localhost:3000/ no navegador para ver a mensagem \"API no ar\".\\ Para encerrar o servidor, pressione Ctrl + C no terminal.",
               "workspace": {
                 "activeFilePath": "src/server.js",
                 "tree": [
                   { "type": "folder", "name": "src", "children": [ { "type": "file", "name": "server.js" } ] }
                 ]
               }
+            },
+            {
+              "id": "b1a4c9f0-3e12-4a8d-9f61-1d2e3f4a5b6c",
+              "type": "explanation",
+              "title": "Como visualizar a API no navegador?",
+              "content": "1. Abra o navegador e digite na barra de endereços: http://localhost:3000/\n\n2. Você verá a mensagem \"API no ar\" exibida na página, indicando que o servidor Express está funcionando corretamente."
             },
             {
               "id": "b1a4c9f0-3e12-4a8d-9f61-1d2e3f4a5b6c",

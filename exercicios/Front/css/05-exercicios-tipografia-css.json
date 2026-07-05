@@ -1,0 +1,209 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "tipografia-css",
+          "name": "Tipografia (font-family, font-size, font-weight, text-align, line-height)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o ambiente",
+              "content": "Antes de escrever qualquer código, vamos preparar o ambiente:\n\n1. Dentro da pasta, no seu projeto, crie um arquivo chamado index.html. Esse será o arquivo que o navegador vai abrir para mostrar sua página.\n\n2. Clique em próximo para iniciar os exercícios."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Digite ! e pressione Tab para gerar a estrutura básica do HTML com o Emmet dentro do arquivo index.html vazio.",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag head do index.html, adicione uma tag link conectando o arquivo style.css, usando rel igual a stylesheet e href igual a style.css.",
+              "comment": "Conectar o arquivo style.css usando a tag link",
+              "commentAnchor": {
+                "find": "<head>",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "<link rel=\"stylesheet\" href=\"style.css\">",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag body do index.html, adicione um título usando a tag h1 com o atributo id igual a titulo e o texto Tipografia na Web.",
+              "comment": "Adicionar h1 com id titulo",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<h1 id=\"titulo\">Tipografia na Web</h1>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo do h1, adicione um parágrafo usando a tag p com o atributo class igual a texto e o texto A tipografia e um dos elementos mais importantes do design de uma pagina, pois afeta diretamente a legibilidade e a experiencia de leitura do usuario.",
+              "comment": "Adicionar parágrafo de exemplo para praticar tipografia",
+              "commentAnchor": {
+                "find": "<h1 id=\"titulo\">Tipografia na Web</h1>",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "<p class=\"texto\">A tipografia e um dos elementos mais importantes do design de uma pagina, pois afeta diretamente a legibilidade e a experiencia de leitura do usuario.</p>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é font-family?",
+              "content": "A propriedade font-family define qual fonte será usada no texto. É comum informar mais de uma fonte, separadas por vírgula, formando o que se chama de pilha de fontes: o navegador tenta usar a primeira, e se ela não estiver disponível no computador do usuário, tenta a próxima da lista.\n\nPor isso, é uma boa prática sempre terminar a lista com uma fonte genérica, como sans-serif (sem serifa, mais moderna) ou serif (com serifa, mais tradicional), garantindo que sempre exista uma opção de reserva."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo style.css, que está vazio, crie um seletor de tag body com a propriedade font-family definindo a fonte Segoe UI como preferida e sans-serif como opção de reserva.",
+              "comment": "Definir font-family geral da página",
+              "answer": "body {\n  font-family: 'Segoe UI', Arial, sans-serif;\n}",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é font-size?",
+              "content": "A propriedade font-size define o tamanho da fonte. Ela é fundamental para criar hierarquia visual: títulos costumam ter um font-size maior que parágrafos, ajudando o usuário a entender rapidamente o que é mais importante na página, mesmo antes de ler o conteúdo."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No final do style.css, crie um seletor de id #titulo com a propriedade font-size igual a 36px, deixando o título bem maior que o restante do texto.",
+              "comment": "Definir font-size do título",
+              "answer": "#titulo {\n  font-size: 36px;\n}",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é font-weight?",
+              "content": "A propriedade font-weight controla a espessura do traço da fonte, ou seja, o quão fino ou grosso o texto aparece. Os valores mais comuns são normal, que equivale a 400, e bold, que equivale a 700, mas algumas fontes aceitam uma escala numérica de 100 a 900 para variações mais precisas.\n\nUsar font-weight no CSS é a forma correta de deixar um texto em negrito quando o motivo é apenas visual, reservando a tag strong do HTML para quando o negrito representa importância real do conteúdo."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do seletor #titulo já criado, adicione a propriedade font-weight igual a 700, deixando o título com um traço mais grosso.",
+              "comment": "Adicionar font-weight ao título",
+              "commentAnchor": {
+                "find": "#titulo {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "font-weight: 700;",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é text-align?",
+              "content": "A propriedade text-align controla o alinhamento horizontal do texto dentro do elemento. Os valores mais usados são left, para alinhar à esquerda, o padrão da maioria dos idiomas ocidentais; center, para centralizar; right, para alinhar à direita; e justify, para justificar o texto, esticando os espaços entre palavras para que todas as linhas, exceto a última, ocupem a largura inteira do elemento."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do seletor #titulo, adicione a propriedade text-align igual a center, centralizando o título na página.",
+              "comment": "Centralizar o título com text-align",
+              "commentAnchor": {
+                "find": "#titulo {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "text-align: center;",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é line-height?",
+              "content": "A propriedade line-height controla a altura de cada linha de texto, ou seja, o espaçamento vertical entre uma linha e outra dentro do mesmo parágrafo. Um valor muito baixo deixa as linhas espremidas, dificultando a leitura, enquanto um valor adequado deixa o texto mais confortável de ler, especialmente em parágrafos longos.\n\nUma boa prática é usar um valor sem unidade, como 1.6, que funciona como um multiplicador do tamanho da fonte, se adaptando automaticamente caso o font-size mude no futuro."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No final do style.css, crie um seletor de classe .texto com as propriedades font-size igual a 18px e line-height igual a 1.6, deixando o parágrafo mais confortável de ler.",
+              "comment": "Definir font-size e line-height do parágrafo",
+              "answer": ".texto {\n  font-size: 18px;\n  line-height: 1.6;\n}",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: propriedades básicas de tipografia",
+              "content": "Nesta lição você aprendeu cinco propriedades fundamentais de tipografia:\n\n1. font-family define a fonte usada, sempre com uma fonte genérica de reserva no final da lista.\n2. font-size define o tamanho da fonte, criando hierarquia visual entre títulos e textos comuns.\n3. font-weight controla a espessura do traço da fonte, sendo a forma correta de aplicar negrito por motivos apenas visuais.\n4. text-align controla o alinhamento horizontal do texto, com valores como left, center, right e justify.\n5. line-height controla o espaçamento entre linhas, melhorando a legibilidade de textos mais longos.\n\nJuntas, essas propriedades são a base de qualquer trabalho de tipografia na web, e pequenas mudanças nelas podem transformar completamente a legibilidade e a aparência de uma página."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

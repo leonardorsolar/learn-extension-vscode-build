@@ -1,0 +1,243 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "unidades-medida-css",
+          "name": "Unidades de Medida (px, %, em, rem, vw, vh)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o ambiente",
+             "content": "Antes de escrever qualquer código, vamos preparar o ambiente:\n\n1. Dentro da pasta, no seu projeto, crie dois arquivos: index.html e style.css. O index.html será o arquivo que o navegador vai abrir para mostrar sua página, e o style.css será o arquivo onde você vai escrever as regras de estilo.\n\n2. Clique em próximo para iniciar os exercícios."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Digite ! e pressione Tab para gerar a estrutura básica do HTML com o Emmet dentro do arquivo index.html vazio.",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag head do index.html, adicione uma tag link conectando o arquivo style.css, usando rel igual a stylesheet e href igual a style.css.",
+              "comment": "Conectar o arquivo style.css usando a tag link",
+              "commentAnchor": {
+                "find": "<head>",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "<link rel=\"stylesheet\" href=\"style.css\">",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag body do index.html, crie uma div com class igual a caixa, e dentro dela um parágrafo com class igual a texto e o texto Este e um texto de exemplo., que vamos usar para testar diferentes unidades de medida.",
+              "comment": "Adicionar caixa com parágrafo para praticar unidades",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<div class=\"caixa\">\n    <p class=\"texto\">Este e um texto de exemplo.</p>\n  </div>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é px, a unidade absoluta?",
+              "content": "px, de pixel, é uma unidade absoluta: um valor em px sempre representa o mesmo tamanho, não importa o que estiver ao redor do elemento. É a unidade mais simples de entender, mas também a menos flexível, já que não se adapta automaticamente ao tamanho de outros elementos ou da tela do usuário."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo style.css, que está vazio, crie um seletor de classe .caixa com a propriedade width igual a 300px, definindo uma largura fixa para a caixa.",
+              "comment": "Definir largura fixa da caixa com px",
+              "answer": ".caixa {\n  width: 300px;\n}",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é %, a unidade relativa ao elemento pai?",
+              "content": "Diferente do px, a porcentagem (%) é uma unidade relativa: seu valor é calculado em cima do tamanho do elemento pai. Como a .caixa tem 300px de largura, um elemento filho com width igual a 80% vai medir 80% desses 300px, ou seja, 240px. Se a largura da caixa mudar no futuro, o elemento filho se ajusta automaticamente, sem precisar recalcular nada manualmente."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No final do style.css, crie um seletor de classe .texto com a propriedade width igual a 80%, fazendo o parágrafo ocupar 80% da largura da caixa que o envolve.",
+              "comment": "Definir largura relativa do parágrafo com porcentagem",
+              "answer": ".texto {\n  width: 80%;\n}",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o teste da unidade em",
+              "content": "Para entender a próxima unidade, o em, precisamos de um elemento aninhado dentro do parágrafo, já que o em é calculado em cima do font-size do elemento pai. Vamos adicionar um span dentro do parágrafo para isso."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Altere o parágrafo criado anteriormente para incluir, ao final do texto, um span com class igual a destaque e o texto Um trecho maior, que vamos usar para testar a unidade em.",
+              "comment": "Adicionar span dentro do parágrafo para testar em",
+              "commentAnchor": {
+                "find": "<p class=\"texto\">Este e um texto de exemplo.</p>",
+                "position": "replace",
+                "fallback": "end"
+              },
+              "answer": "<p class=\"texto\">Este e um texto de exemplo. <span class=\"destaque\">Um trecho maior</span></p>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é em e qual o seu maior risco?",
+              "content": "A unidade em é relativa ao font-size do elemento pai. Se o pai tiver font-size de 16px, um filho com font-size igual a 1.5em vai medir 24px. O problema aparece quando você tem vários níveis aninhados usando em: se o pai já teve seu font-size aumentado em em relação ao avô, e o filho aumenta em em relação ao pai, os valores vão se multiplicando em cada nível, um efeito chamado de compounding, que torna o tamanho final difícil de prever só olhando o código."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No final do style.css, crie um seletor de classe .destaque com a propriedade font-size igual a 1.5em, deixando o trecho em destaque uma vez e meia maior que o texto do parágrafo ao redor dele.",
+              "comment": "Definir tamanho do destaque relativo ao pai com em",
+              "answer": ".destaque {\n  font-size: 1.5em;\n}",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é rem e por que ela resolve o problema do em?",
+              "content": "A unidade rem, de root em, também é relativa a um font-size, mas sempre em relação ao elemento raiz da página, a tag html, e nunca em relação ao elemento pai direto. Isso significa que, não importa quantos níveis de aninhamento existam, um valor em rem sempre vai gerar o mesmo tamanho final, sem o efeito de compounding do em.\n\nPor esse motivo, rem é geralmente a escolha mais segura e previsível para definir tamanhos de fonte em um projeto."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No final do style.css, crie um seletor de tag html com a propriedade font-size igual a 16px, definindo o tamanho base que todos os valores em rem vão usar como referência.",
+              "comment": "Definir font-size base da página com html",
+              "answer": "html {\n  font-size: 16px;\n}",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do seletor .texto já criado, adicione a propriedade font-size igual a 1.2rem, um tamanho sempre calculado em cima do html, não importa o quanto o parágrafo esteja aninhado dentro de outros elementos.",
+              "comment": "Definir font-size do parágrafo com rem",
+              "commentAnchor": {
+                "find": ".texto {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "font-size: 1.2rem;",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que são vw e vh?",
+              "content": "vw, de viewport width, e vh, de viewport height, são unidades relativas ao tamanho da tela do usuário, e não a nenhum elemento pai. 1vw equivale a 1% da largura da tela, e 1vh equivale a 1% da altura da tela.\n\nElas são muito usadas para elementos que precisam ocupar uma parte fixa da tela toda, como um banner de topo que sempre ocupa uma certa altura da tela, independente de qual seja o tamanho do monitor ou celular do usuário."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo da caixa, adicione uma div com class igual a banner e o texto Banner em largura total, que vamos estilizar usando unidades de viewport.",
+              "comment": "Adicionar banner para testar vw e vh",
+              "commentAnchor": {
+                "find": "</div>",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "<div class=\"banner\">Banner em largura total</div>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No final do style.css, crie um seletor de classe .banner com as propriedades width igual a 100vw e height igual a 30vh, fazendo o banner ocupar toda a largura da tela e 30% da altura da tela.",
+              "comment": "Definir tamanho do banner com vw e vh e adicionar borda para visualização",
+              "answer": ".banner {\n  width: 100vw;\n  height: 30vh;\n border: 1px solid #000;\n}",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: quando usar cada unidade",
+              "content": "Nesta lição você aprendeu seis unidades de medida:\n\n1. px é uma unidade absoluta, sempre com o mesmo tamanho fixo.\n2. % é relativa ao elemento pai, útil para larguras que se ajustam ao contêiner.\n3. em é relativa ao font-size do elemento pai, mas corre o risco de compounding em estruturas muito aninhadas.\n4. rem é relativa apenas ao font-size do elemento raiz (html), sendo a opção mais previsível para tamanhos de fonte.\n5. vw e vh são relativas ao tamanho da tela do usuário, ideais para elementos que precisam ocupar uma parte fixa da largura ou altura da tela.\n\nNa prática, é comum combinar essas unidades: px para detalhes que realmente precisam ser fixos, rem para tipografia, % para larguras dentro de contêineres, e vw ou vh para elementos que dependem do tamanho da tela."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

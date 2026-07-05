@@ -1,0 +1,775 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "arquitetura-hexagonal-typescript-product",
+          "name": "Arquitetura Hexagonal em TypeScript (Product)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é Arquitetura Hexagonal?",
+              "content": "Até agora, nosso projeto tinha uma direção única: Controller chama Service, Service chama Repository. A Arquitetura Hexagonal (também chamada de Ports & Adapters) organiza isso de um jeito diferente: no centro fica a aplicação (as regras de negócio), e tudo que é externo — HTTP, banco de dados, fila, e-mail — só consegue conversar com esse centro através de Portas (Ports), que são interfaces.\n\nQuem implementa ou usa essas portas por fora é chamado de Adaptador (Adapter). Existem dois tipos: Adaptadores de Entrada (Driving), que acionam a aplicação — como um Controller HTTP — e Adaptadores de Saída (Driven), que a aplicação aciona para buscar ou salvar dados — como o nosso Repository.\n\nNesta lição, para deixar claro na leitura do código quem é a interface e quem é a implementação, vamos prefixar toda porta com I: a porta se chama ICreateProductUseCase, e a classe que a implementa se chama CreateProductUseCase.\n\n```mermaid\nflowchart LR\n  A[\"Adaptador de Entrada<br/>HTTP Controller\"] --> B[\"Porta de Entrada<br/>ICreateProductUseCase\"]\n  B --> D[\"CreateProductUseCase (Núcleo)\"]\n  D --> C[\"ProductRepository (Porta de Saída)\"]\n  C ~~~ E\n  E[\"InMemoryProductRepository (Adaptador de Saída)\"] -.implements.-> C\n```\n\nObserve que o fluxo da esquerda para a direita representa a comunicação da aplicação:\n\n- O **Adaptador de Entrada** (HTTP Controller) aciona a **Porta de Entrada**.\n- A **Porta de Entrada** encaminha a requisição para o **Núcleo da Aplicação**, onde ficam as regras de negócio.\n- O **Núcleo da Aplicação** utiliza apenas a **Porta de Saída**, sem conhecer sua implementação concreta.\n- O **Adaptador de Saída** implementa essa porta e é responsável por acessar recursos externos, como banco de dados, APIs ou arquivos.\n\nPerceba que o núcleo depende apenas das **interfaces (portas)**, enquanto os adaptadores dependem delas para fornecer suas implementações. Essa inversão de dependência é a principal característica da Arquitetura Hexagonal."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Arquitetura Hexagonal - Camadas -",
+              "content": "A Arquitetura Hexagonal organiza a aplicação em camadas. O **Núcleo da Aplicação** reúne a **Application** (casos de uso e portas) e o **Domain** (entidades e regras de negócio). Tudo que é externo, como HTTP e banco de dados, fica na **Infrastructure** e se comunica com o núcleo apenas por meio das **Portas (Interfaces)**.\n\n```mermaid\nflowchart LR\n\n    subgraph Infra[\"Infrastructure\"]\n        A[\"HTTP Controller\"]\n        F[\"InMemoryProductRepository\"]\n    end\n\n    subgraph Core[\"Núcleo da Aplicação\"]\n\n        subgraph App[\"Application\"]\n            B[\"Porta de Entrada<br/>ICreateProductUseCase\"]\n            C[\"CreateProductUseCase\"]\n            D[\"Porta de Saída<br/>ProductRepository\"]\n        end\n\n        subgraph Domain[\"Domain\"]\n            E[\"Product\"]\n        end\n\n    end\n\n    A --> B\n    B --> C\n    C --> E\n    C --> D\n    D ~~~ F\n    F -.implements.-> D\n```\n\nNesse modelo, a **Infrastructure** depende das **Portas**, enquanto a **Application** depende apenas do **Domain**, mantendo o núcleo desacoplado das tecnologias externas."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Estrutura de pastas",
+              "content": "```text\nsrc/\n├── server.ts\n└── modules/\n    └── product/\n        ├── application/\n        ├── domain/\n        └── infrastructure/\n```\n\nEquivalente aos caminhos:\n\n```text\nsrc/server.ts\nsrc/modules/product/application\nsrc/modules/product/domain\nsrc/modules/product/infrastructure\n```"
+            },
+             {
+              "id": "",
+              "type": "explanation",
+              "title": "Estrutura de pastas (Clean Architecture simples)",
+              "content": "```text\n🧱 Estrutura certa (Clean Architecture simples)\n\nsrc/\n├── modules/\n│   └── product/\n│       ├── domain/\n│       │   ├── product.ts\n│       │   └── product-repository.port.ts\n│       │\n│       ├── application/\n│       │   ├── create-product.usecase.ts\n│       │   └── list-product.usecase.ts\n│       │\n│       └── infrastructure/\n│           ├── controllers/\n│           │   ├── create-product.controller.ts\n│           │   └── list-product.controller.ts\n│           ├── repositories/\n│           │   └── in-memory-product.repository.ts\n│           └── product.routes.ts\n│\n└── server.ts\n```\n\n🧠 Regra simples pra nunca errar:\n\n- domain → entidades + interfaces (regras puras)\n- application → use cases (lógica do sistema)\n- infrastructure → HTTP, DB, frameworks"
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Estrutura de pastasdo projeto - Hexagonal",
+              "content": "```text\n├── src\n│   ├── modules\n│   │   └── product\n│   │       ├── application\n│   │       │   ├── create-product.usecase.ts\n│   │       │   └── list-product.usecase.ts\n│   │       ├── domain\n│   │       │   ├── create-product.port.ts\n│   │       │   ├── list-product.port.ts\n│   │       │   ├── product-repository.port.ts\n│   │       │   └── product.ts\n│   │       └── infrastructure\n│   │           ├── create-product.controller.ts\n│   │           ├── in-memory-product.repository.ts\n│   │           ├── list-product.controller.ts\n│   │           └── product.routes.ts\n│   ├── server.ts\n└── tsconfig.json\n```\n\n🧠 Regra simples pra nunca errar:\n\n- domain → entidades + interfaces (regras puras)\n- application → use cases (lógica do sistema)\n- infrastructure → HTTP, DB, frameworks"
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o projeto",
+              "content": "No Vscode certifique-se que você está dentro de uma pasta vazia, sem nenhum arquivo dentro."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como iniciar um projeto em Node.js?",
+              "content": "Use o terminal para executar o comando 'npm init -y'.\n\nEsse comando cria automaticamente o arquivo package.json, que guarda as informações do projeto."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar um arquivo .gitignore informando ao Git para ignorar as pastas node_modules e dist?",
+              "comment": "Criar o arquivo .gitignore",
+              "answer": "node_modules\ndist",
+              "workspace": {
+                "activeFilePath": ".gitignore",
+                "tree": [
+                  { "type": "file", "name": ".gitignore" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Instalando o TypeScript, o Express e os tipos",
+              "content": "1. 'npm install typescript --save-dev' — instala o compilador do TypeScript como dependência de desenvolvimento.\n\n2. 'npm install express' — instala o Express como dependência de produção.\n\n3. 'npm install --save-dev @types/node @types/express' — instala as definições de tipo do Node e do Express."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar o arquivo tsconfig.json na raiz do projeto, configurando target como ES2020, module como commonjs, rootDir como src, outDir como dist, strict como true e esModuleInterop como true?",
+              "comment": "Configurar o TypeScript com o tsconfig.json",
+              "answer": "{\n  \"compilerOptions\": {\n    \"target\": \"ES2020\",\n    \"module\": \"commonjs\",\n    \"rootDir\": \"src\",\n    \"outDir\": \"dist\",\n    \"strict\": true,\n    \"esModuleInterop\": true\n  }\n}",
+              "workspace": {
+                "activeFilePath": "tsconfig.json",
+                "tree": [
+                  { "type": "file", "name": ".gitignore" },
+                  { "type": "file", "name": "tsconfig.json" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Organizando as pastas por camada hexagonal",
+              "content": "Em vez de organizar só por módulo, dentro de src/modules/product vamos organizar por camada da arquitetura hexagonal:\n\n- domain: o coração do projeto. Guarda a entidade Product e as portas (interfaces, todas prefixadas com I) — tanto a de saída (o que a aplicação precisa do mundo externo, como o Repository) quanto as de entrada (o que o mundo externo pode pedir para a aplicação fazer, como criar ou listar produtos).\n\n- application: os casos de uso (UseCases) que implementam as portas de entrada e usam a porta de saída.\n\n- infrastructure: os adaptadores de verdade — o Repository em memória (adaptador de saída) e os Controllers e rotas HTTP (adaptadores de entrada).\n\nA regra de ouro: domain não importa nada de application nem de infrastructure. É o application e a infrastructure que dependem do domain — nunca o contrário."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo domain/product.ts, como criar a interface Product, com name (string), price (number) e um id opcional (string)?",
+              "comment": "Criar a entidade Product",
+              "answer": "interface Product {\n  id?: string;\n  name: string;\n  price: number;\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/domain/product.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" } ] } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar a interface Product usando chaves?",
+              "comment": "Exportar a entidade Product",
+              "answer": "export { Product };",
+              "workspace": {
+                "activeFilePath": "src/modules/product/domain/product.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" } ] } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Porta de saída: o que a aplicação precisa do mundo externo",
+              "content": "ProductRepository é uma porta de saída (output port): ela declara o que a aplicação precisa para guardar e consultar produtos, sem dizer onde nem como esses dados são realmente guardados. Isso é o mesmo contrato que já usávamos na lição passada — na Arquitetura Hexagonal, ele ganha esse nome mais preciso: porta.\n\n```mermaid\nflowchart LR\n  D[\"CreateProductUseCase (Núcleo)\"] --> C[\"ProductRepository (Porta de Saída)\"]\n  C ~~~ E\n  E[\"InMemoryProductRepository (Adaptador de Saída)\"] -.implements.-> C\n```"
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo domain/product-repository.port.ts, como importar Product e criar a interface ProductRepository, com os métodos findByName(name: string), que retorna um Product ou undefined, save(product: Product), que retorna um Product, e list(), que retorna uma lista de Product?",
+              "comment": "Criar a porta de saída ProductRepository",
+              "answer": "import { Product } from \"./product\";\n\ninterface ProductRepository {\n  findByName(name: string): Product | undefined;\n  save(product: Product): Product;\n  list(): Product[];\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/domain/product-repository.port.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" } ] } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar a interface ProductRepository usando chaves?",
+              "comment": "Exportar a porta de saída",
+              "answer": "export { ProductRepository };",
+              "workspace": {
+                "activeFilePath": "src/modules/product/domain/product-repository.port.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" } ] } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Portas de entrada: o que o mundo externo pode pedir à aplicação",
+              "content": "Além da porta de saída, a Arquitetura Hexagonal também formaliza portas de entrada (input ports): interfaces que descrevem cada ação que a aplicação oferece para fora. É isso que vai permitir que o Controller HTTP, mais adiante, dependa apenas dessa interface — e não da classe concreta do caso de uso.\n\nVamos criar duas: ICreateProductUseCase e IListProductUseCase. O prefixo I deixa claro, só de olhar o nome, que é uma interface — e evita confundir com a classe CreateProductUseCase, que vamos criar mais adiante para implementá-la.\n\n```mermaid\nflowchart LR\n  A[\"HTTP Controller (Adaptador de Entrada)\"] --> B[\"ICreateProductUseCase (Porta de Entrada)\"]\n  B ~~~ D\n  D[\"CreateProductUseCase (Núcleo)\"] -.implements.-> B\n```"
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo domain/create-product.port.ts, como importar Product e criar a interface ICreateProductUseCase, com um método execute que recebe data do tipo Product e retorna um Product?",
+              "comment": "Criar a porta de entrada ICreateProductUseCase",
+              "answer": "import { Product } from \"./product\";\n\ninterface ICreateProductUseCase {\n  execute(data: Product): Product;\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/domain/create-product.port.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" } ] } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar a interface ICreateProductUseCase usando chaves?",
+              "comment": "Exportar a porta de entrada de criação",
+              "answer": "export { ICreateProductUseCase };",
+              "workspace": {
+                "activeFilePath": "src/modules/product/domain/create-product.port.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" } ] } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo domain/list-product.port.ts, como importar Product e criar a interface IListProductUseCase, com um método execute que não recebe parâmetros e retorna uma lista de Product?",
+              "comment": "Criar a porta de entrada IListProductUseCase",
+              "answer": "import { Product } from \"./product\";\n\ninterface IListProductUseCase {\n  execute(): Product[];\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/domain/list-product.port.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar a interface IListProductUseCase usando chaves?",
+              "comment": "Exportar a porta de entrada de listagem",
+              "answer": "export { IListProductUseCase };",
+              "workspace": {
+                "activeFilePath": "src/modules/product/domain/list-product.port.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "domain está completo: nenhum código, só contratos",
+              "content": "Repare que a pasta domain inteira não tem nenhuma lógica de verdade — só a entidade Product e três interfaces, todas prefixadas com I. Isso é proposital: o domain é puro, sem depender de Express, sem depender de como os dados são guardados. Ele só descreve o vocabulário e as regras de conexão do projeto. Agora vamos implementar esse vocabulário na pasta application."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Aplicação: a classe CreateProductUseCase implementa a porta ICreateProductUseCase",
+              "content": "Na pasta application, vamos criar a classe CreateProductUseCase, que implementa a interface ICreateProductUseCase, e depende da interface ProductRepository para persistir os dados. Repare que agora o nome da classe e o nome da porta são quase idênticos — a única diferença é o prefixo I na interface. Isso deixa muito claro, ao ler o código, que a classe é a implementação real daquele contrato.\n\n```mermaid\nflowchart TD\n  B[\"ICreateProductUseCase (Porta)\"]\n  C[\"ProductRepository (Porta)\"]\n  D[\"CreateProductUseCase (classe)\"]\n  D -.implements.-> B\n  D --> C\n```"
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo application/create-product.usecase.ts, como importar Product e ProductRepository de domain, importar ICreateProductUseCase de domain, e criar a classe CreateProductUseCase, que implementa ICreateProductUseCase, com um construtor que já recebe e declara productRepository como propriedade privada do tipo ProductRepository, e um método execute que recebe data do tipo Product e retorna um Product?",
+              "comment": "Criar a classe CreateProductUseCase implementando a porta de entrada",
+              "answer": "import { Product } from \"../domain/product\";\nimport { ProductRepository } from \"../domain/product-repository.port\";\nimport { ICreateProductUseCase } from \"../domain/create-product.port\";\n\nclass CreateProductUseCase implements ICreateProductUseCase {\n  constructor(private productRepository: ProductRepository) {}\n\n  execute(data: Product): Product {\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/application/create-product.usecase.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" } ] }
+                  ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do método execute, como lançar um erro com a mensagem Nome do produto é obrigatório, caso data.name não tenha sido informado?",
+              "comment": "Validar se o name foi informado",
+              "commentAnchor": {
+                "find": "execute(data: Product): Product {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "if (!data.name) {\n  throw new Error(\"Nome do produto é obrigatório\");\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/application/create-product.usecase.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" } ] }
+                  ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar this.productRepository para verificar, através do findByName, se já existe um produto com o name informado, lançando um erro com a mensagem Produto já cadastrado! caso ele exista?",
+              "comment": "Verificar se o produto já existe",
+              "commentAnchor": {
+                "find": "execute(data: Product): Product {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "const existProduct = this.productRepository.findByName(data.name);\n\nif (existProduct) {\n  throw new Error(\"Produto já cadastrado!\");\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/application/create-product.usecase.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" } ] }
+                  ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Por fim, como usar this.productRepository para salvar o data recebido, retornando diretamente o resultado desse método save?",
+              "comment": "Salvar o produto através do Repository injetado",
+              "commentAnchor": {
+                "find": "execute(data: Product): Product {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "return this.productRepository.save(data);",
+              "workspace": {
+                "activeFilePath": "src/modules/product/application/create-product.usecase.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" } ] }
+                  ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar a classe CreateProductUseCase usando chaves?",
+              "comment": "Exportar a classe CreateProductUseCase",
+              "answer": "export { CreateProductUseCase };",
+              "workspace": {
+                "activeFilePath": "src/modules/product/application/create-product.usecase.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" } ] }
+                  ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo application/list-product.usecase.ts, como importar Product e ProductRepository de domain, importar IListProductUseCase de domain, e criar a classe ListProductUseCase, que implementa IListProductUseCase, com um construtor que já recebe e declara productRepository como propriedade privada, e um método execute que não recebe parâmetros e retorna this.productRepository.list()?",
+              "comment": "Criar a classe ListProductUseCase implementando a porta de entrada",
+              "answer": "import { Product } from \"../domain/product\";\nimport { ProductRepository } from \"../domain/product-repository.port\";\nimport { IListProductUseCase } from \"../domain/list-product.port\";\n\nclass ListProductUseCase implements IListProductUseCase {\n  constructor(private productRepository: ProductRepository) {}\n\n  execute(): Product[] {\n    return this.productRepository.list();\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/application/list-product.usecase.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" }, { "type": "file", "name": "list-product.usecase.ts" } ] }
+                  ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar a classe ListProductUseCase usando chaves?",
+              "comment": "Exportar a classe ListProductUseCase",
+              "answer": "export { ListProductUseCase };",
+              "workspace": {
+                "activeFilePath": "src/modules/product/application/list-product.usecase.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" }, { "type": "file", "name": "list-product.usecase.ts" } ] }
+                  ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Infraestrutura: o adaptador de saída InMemoryProductRepository",
+              "content": "Agora vamos criar o primeiro adaptador de verdade, dentro de infrastructure: o InMemoryProductRepository, que implementa a porta ProductRepository. É exatamente o mesmo código de antes — o que muda é só a pasta onde ele mora, deixando explícito que ele é um detalhe de infraestrutura, e não parte do núcleo da aplicação."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo infrastructure/in-memory-product.repository.ts, como importar Product e ProductRepository de domain, e criar a classe InMemoryProductRepository, que implementa a interface ProductRepository, com uma propriedade products tipada como Product[] e iniciada como lista vazia?",
+              "comment": "Criar o adaptador de saída InMemoryProductRepository",
+              "answer": "import { Product } from \"../domain/product\";\nimport { ProductRepository } from \"../domain/product-repository.port\";\n\nclass InMemoryProductRepository implements ProductRepository {\n  products: Product[] = [];\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/infrastructure/in-memory-product.repository.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" }, { "type": "file", "name": "list-product.usecase.ts" } ] },
+                    { "type": "folder", "name": "infrastructure", "children": [ { "type": "file", "name": "in-memory-product.repository.ts" } ] }
+                  ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da classe, como implementar o método findByName, retornando o produto da lista products cujo name seja igual ao recebido?",
+              "comment": "Implementar o findByName de verdade",
+              "commentAnchor": {
+                "find": "class InMemoryProductRepository implements ProductRepository {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "findByName(name: string): Product | undefined {\n  const productExists = this.products.find((product) => product.name === name);\n  return productExists;\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/infrastructure/in-memory-product.repository.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" }, { "type": "file", "name": "list-product.usecase.ts" } ] },
+                    { "type": "folder", "name": "infrastructure", "children": [ { "type": "file", "name": "in-memory-product.repository.ts" } ] }
+                  ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como implementar o método save, gerando um id aleatório, adicionando o produto na lista products e retornando o produto já com o id?",
+              "comment": "Implementar o save de verdade",
+              "commentAnchor": {
+                "find": "class InMemoryProductRepository implements ProductRepository {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "save(product: Product): Product {\n  const id = Math.random().toString();\n  const productWithId = { ...product, id };\n  this.products.push(productWithId);\n  return productWithId;\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/infrastructure/in-memory-product.repository.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" }, { "type": "file", "name": "list-product.usecase.ts" } ] },
+                    { "type": "folder", "name": "infrastructure", "children": [ { "type": "file", "name": "in-memory-product.repository.ts" } ] }
+                  ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como implementar o método list, retornando a lista completa de Product?",
+              "comment": "Implementar o list de verdade",
+              "commentAnchor": {
+                "find": "class InMemoryProductRepository implements ProductRepository {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "list(): Product[] {\n  return this.products;\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/infrastructure/in-memory-product.repository.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" }, { "type": "file", "name": "list-product.usecase.ts" } ] },
+                    { "type": "folder", "name": "infrastructure", "children": [ { "type": "file", "name": "in-memory-product.repository.ts" } ] }
+                  ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar a classe InMemoryProductRepository usando chaves?",
+              "comment": "Exportar o adaptador de saída",
+              "answer": "export { InMemoryProductRepository };",
+              "workspace": {
+                "activeFilePath": "src/modules/product/infrastructure/in-memory-product.repository.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" }, { "type": "file", "name": "list-product.usecase.ts" } ] },
+                    { "type": "folder", "name": "infrastructure", "children": [ { "type": "file", "name": "in-memory-product.repository.ts" } ] }
+                  ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O adaptador de entrada: o Controller depende da porta, não da classe concreta",
+              "content": "Aqui está a diferença mais importante desta lição em relação à anterior: o CreateProductController vai depender do tipo ICreateProductUseCase — a porta, com o prefixo I — e não da classe concreta CreateProductUseCase.\n\nIsso significa que, para o Controller, tanto faz qual classe está implementando ICreateProductUseCase por trás. Poderia ser a classe CreateProductUseCase que criamos, ou uma versão de teste, ou qualquer outra que cumpra o mesmo contrato.\n\n```mermaid\nflowchart LR\n  A[\"CreateProductController (Adaptador de Entrada)\"] --> B[\"ICreateProductUseCase (Porta)\"]\n  B ~~~ D[\"CreateProductUseCase (Núcleo)\"]\n  D -.implements.-> B\n```"
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo infrastructure/create-product.controller.ts, como importar Request e Response do express, importar ICreateProductUseCase de domain, e criar a classe CreateProductController com um construtor que já recebe e declara createProductUseCase como propriedade privada do tipo ICreateProductUseCase, e um método handle que recebe request e response tipados, extraindo o body da requisição?",
+              "comment": "Criar o adaptador de entrada CreateProductController dependendo da porta",
+              "answer": "import { Request, Response } from \"express\";\nimport { ICreateProductUseCase } from \"../domain/create-product.port\";\n\nclass CreateProductController {\n  constructor(private createProductUseCase: ICreateProductUseCase) {}\n\n  handle(request: Request, response: Response) {\n    const { body } = request;\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/infrastructure/create-product.controller.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" }, { "type": "file", "name": "list-product.usecase.ts" } ] },
+                    { "type": "folder", "name": "infrastructure", "children": [ { "type": "file", "name": "in-memory-product.repository.ts" }, { "type": "file", "name": "create-product.controller.ts" } ] }
+                  ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do handle, como criar um bloco try que usa this.createProductUseCase para executar o método execute passando o body, e retorna o resultado como JSON usando response.json?",
+              "comment": "Chamar o caso de uso através da porta dentro do handle",
+              "commentAnchor": {
+                "find": "handle(request: Request, response: Response) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "try {\n  const result = this.createProductUseCase.execute(body);\n  return response.json(result);\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/infrastructure/create-product.controller.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" }, { "type": "file", "name": "list-product.usecase.ts" } ] },
+                    { "type": "folder", "name": "infrastructure", "children": [ { "type": "file", "name": "in-memory-product.repository.ts" }, { "type": "file", "name": "create-product.controller.ts" } ] }
+                  ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo após o try, como criar um bloco catch que captura o erro tipado como any, e retorna uma resposta com status 400 e um JSON contendo a mensagem err com o err.message?",
+              "comment": "Tratar o erro lançado pelo caso de uso",
+              "commentAnchor": {
+                "find": "try {",
+                "position": "afterBlock",
+                "fallback": "end"
+              },
+              "answer": "catch (err: any) {\n  return response.status(400).json({\n    err: err.message,\n  });\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/infrastructure/create-product.controller.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" }, { "type": "file", "name": "list-product.usecase.ts" } ] },
+                    { "type": "folder", "name": "infrastructure", "children": [ { "type": "file", "name": "in-memory-product.repository.ts" }, { "type": "file", "name": "create-product.controller.ts" } ] }
+                  ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar a classe CreateProductController usando chaves?",
+              "comment": "Exportar o adaptador de entrada CreateProductController",
+              "answer": "export { CreateProductController };",
+              "workspace": {
+                "activeFilePath": "src/modules/product/infrastructure/create-product.controller.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" }, { "type": "file", "name": "list-product.usecase.ts" } ] },
+                    { "type": "folder", "name": "infrastructure", "children": [ { "type": "file", "name": "in-memory-product.repository.ts" }, { "type": "file", "name": "create-product.controller.ts" } ] }
+                  ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo infrastructure/list-product.controller.ts, como importar Request e Response do express, importar IListProductUseCase de domain, e criar a classe ListProductController com um construtor que já recebe e declara listProductUseCase como propriedade privada do tipo IListProductUseCase, e um método handle que recebe request e response tipados, executa this.listProductUseCase.execute() e retorna o resultado como JSON usando response.json?",
+              "comment": "Criar o adaptador de entrada ListProductController dependendo da porta",
+              "answer": "import { Request, Response } from \"express\";\nimport { IListProductUseCase } from \"../domain/list-product.port\";\n\nclass ListProductController {\n  constructor(private listProductUseCase: IListProductUseCase) {}\n\n  handle(request: Request, response: Response) {\n    const result = this.listProductUseCase.execute();\n    return response.json(result);\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/infrastructure/list-product.controller.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" }, { "type": "file", "name": "list-product.usecase.ts" } ] },
+                    { "type": "folder", "name": "infrastructure", "children": [ { "type": "file", "name": "in-memory-product.repository.ts" }, { "type": "file", "name": "create-product.controller.ts" }, { "type": "file", "name": "list-product.controller.ts" } ] }
+                  ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar a classe ListProductController usando chaves?",
+              "comment": "Exportar o adaptador de entrada ListProductController",
+              "answer": "export { ListProductController };",
+              "workspace": {
+                "activeFilePath": "src/modules/product/infrastructure/list-product.controller.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" }, { "type": "file", "name": "list-product.usecase.ts" } ] },
+                    { "type": "folder", "name": "infrastructure", "children": [ { "type": "file", "name": "in-memory-product.repository.ts" }, { "type": "file", "name": "create-product.controller.ts" }, { "type": "file", "name": "list-product.controller.ts" } ] }
+                  ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O Router continua igual, só muda de pasta",
+              "content": "O Router não faz parte do domínio nem da aplicação — ele é só o fiozinho que liga uma URL a um método do Controller. Ele também mora em infrastructure, e continua recebendo os dois Controllers já prontos como parâmetro."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo infrastructure/product.routes.ts, como importar o Router do express, o CreateProductController e o ListProductController, criando uma função chamada productRoutes, que recebe createProductController e listProductController como parâmetros, cria uma instância do Router guardando em router, e no final retorna esse router?",
+              "comment": "Criar a função productRoutes recebendo os dois controllers por parâmetro",
+              "answer": "import { Router } from \"express\";\nimport { CreateProductController } from \"./create-product.controller\";\nimport { ListProductController } from \"./list-product.controller\";\n\nfunction productRoutes(\n  createProductController: CreateProductController,\n  listProductController: ListProductController\n) {\n  const router = Router();\n\n  return router;\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/infrastructure/product.routes.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" }, { "type": "file", "name": "list-product.usecase.ts" } ] },
+                    { "type": "folder", "name": "infrastructure", "children": [ { "type": "file", "name": "in-memory-product.repository.ts" }, { "type": "file", "name": "create-product.controller.ts" }, { "type": "file", "name": "list-product.controller.ts" }, { "type": "file", "name": "product.routes.ts" } ] }
+                  ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Antes do return router, como registrar no router uma rota POST na raiz (/), chamando o handle do createProductController com bind?",
+              "comment": "Registrar a rota POST na raiz do módulo",
+              "commentAnchor": {
+                "find": "return router;",
+                "position": "before",
+                "fallback": "end"
+              },
+              "answer": "router.post(\"/\", createProductController.handle.bind(createProductController));",
+              "workspace": {
+                "activeFilePath": "src/modules/product/infrastructure/product.routes.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" }, { "type": "file", "name": "list-product.usecase.ts" } ] },
+                    { "type": "folder", "name": "infrastructure", "children": [ { "type": "file", "name": "in-memory-product.repository.ts" }, { "type": "file", "name": "create-product.controller.ts" }, { "type": "file", "name": "list-product.controller.ts" }, { "type": "file", "name": "product.routes.ts" } ] }
+                  ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo da rota POST, como registrar no router uma rota GET na raiz (/), chamando o handle do listProductController com bind?",
+              "comment": "Registrar a rota GET de listagem",
+              "commentAnchor": {
+                "find": "router.post(\"/\", createProductController.handle.bind(createProductController));",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "router.get(\"/\", listProductController.handle.bind(listProductController));",
+              "workspace": {
+                "activeFilePath": "src/modules/product/infrastructure/product.routes.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" }, { "type": "file", "name": "list-product.usecase.ts" } ] },
+                    { "type": "folder", "name": "infrastructure", "children": [ { "type": "file", "name": "in-memory-product.repository.ts" }, { "type": "file", "name": "create-product.controller.ts" }, { "type": "file", "name": "list-product.controller.ts" }, { "type": "file", "name": "product.routes.ts" } ] }
+                  ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar a função productRoutes por padrão?",
+              "comment": "Exportar a função productRoutes",
+              "answer": "export default productRoutes;",
+              "workspace": {
+                "activeFilePath": "src/modules/product/infrastructure/product.routes.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" }, { "type": "file", "name": "list-product.usecase.ts" } ] },
+                    { "type": "folder", "name": "infrastructure", "children": [ { "type": "file", "name": "in-memory-product.repository.ts" }, { "type": "file", "name": "create-product.controller.ts" }, { "type": "file", "name": "list-product.controller.ts" }, { "type": "file", "name": "product.routes.ts" } ] }
+                  ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "server.ts: a composição de tudo (composition root)",
+              "content": "É no server.ts que finalmente escolhemos as implementações concretas de cada porta, e montamos a aplicação. Esse arquivo é chamado, em Arquitetura Hexagonal, de composition root: é o único lugar que conhece todas as classes concretas — CreateProductUseCase, ListProductUseCase e os Adapters — e decide como encaixar cada peça.\n\n```mermaid\nflowchart LR\n  A[\"CreateProductController\"] --> B[\"ICreateProductUseCase (Porta)\"]\n  D[\"CreateProductUseCase (classe)\"] -.implements.-> B\n  D --> C[\"ProductRepository (Porta)\"]\n  E[\"InMemoryProductRepository\"] -.implements.-> C\n  F[\"server.ts (Composition Root)\"] -.instancia tudo.-> A\n  F -.instancia tudo.-> D\n  F -.instancia tudo.-> E\n```"
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo server.ts, como importar o express, a implementação InMemoryProductRepository, as classes CreateProductUseCase e ListProductUseCase, os adaptadores CreateProductController e ListProductController, e a função productRoutes, e criar a aplicação com express(), guardando na variável app?",
+              "comment": "Importar todas as implementações concretas e criar a aplicação",
+              "answer": "import express from \"express\";\nimport { InMemoryProductRepository } from \"./modules/product/infrastructure/in-memory-product.repository\";\nimport { CreateProductUseCase } from \"./modules/product/application/create-product.usecase\";\nimport { ListProductUseCase } from \"./modules/product/application/list-product.usecase\";\nimport { CreateProductController } from \"./modules/product/infrastructure/create-product.controller\";\nimport { ListProductController } from \"./modules/product/infrastructure/list-product.controller\";\nimport productRoutes from \"./modules/product/infrastructure/product.routes\";\n\nconst app = express();",
+              "workspace": {
+                "activeFilePath": "src/server.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" }, { "type": "file", "name": "list-product.usecase.ts" } ] },
+                    { "type": "folder", "name": "infrastructure", "children": [ { "type": "file", "name": "in-memory-product.repository.ts" }, { "type": "file", "name": "create-product.controller.ts" }, { "type": "file", "name": "list-product.controller.ts" }, { "type": "file", "name": "product.routes.ts" } ] }
+                  ] } ] }, { "type": "file", "name": "server.ts" } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como configurar a aplicação para conseguir interpretar corretamente o corpo das requisições enviadas em formato JSON?",
+              "comment": "Habilitar o parser de JSON",
+              "answer": "app.use(express.json());",
+              "workspace": {
+                "activeFilePath": "src/server.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" }, { "type": "file", "name": "list-product.usecase.ts" } ] },
+                    { "type": "folder", "name": "infrastructure", "children": [ { "type": "file", "name": "in-memory-product.repository.ts" }, { "type": "file", "name": "create-product.controller.ts" }, { "type": "file", "name": "list-product.controller.ts" }, { "type": "file", "name": "product.routes.ts" } ] }
+                  ] } ] }, { "type": "file", "name": "server.ts" } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como instanciar o InMemoryProductRepository guardando na constante productRepository, depois instanciar CreateProductUseCase e ListProductUseCase injetando o mesmo productRepository, guardando em createProductUseCase e listProductUseCase, e por fim instanciar CreateProductController e ListProductController, cada um recebendo seu respectivo caso de uso?",
+              "comment": "Compor Repository, UseCases e Controllers em cadeia",
+              "answer": "const productRepository = new InMemoryProductRepository();\nconst createProductUseCase = new CreateProductUseCase(productRepository);\nconst listProductUseCase = new ListProductUseCase(productRepository);\nconst createProductController = new CreateProductController(createProductUseCase);\nconst listProductController = new ListProductController(listProductUseCase);",
+              "workspace": {
+                "activeFilePath": "src/server.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" }, { "type": "file", "name": "list-product.usecase.ts" } ] },
+                    { "type": "folder", "name": "infrastructure", "children": [ { "type": "file", "name": "in-memory-product.repository.ts" }, { "type": "file", "name": "create-product.controller.ts" }, { "type": "file", "name": "list-product.controller.ts" }, { "type": "file", "name": "product.routes.ts" } ] }
+                  ] } ] }, { "type": "file", "name": "server.ts" } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Repare: a variável, a classe e a interface têm nomes quase iguais, de propósito",
+              "content": "const createProductUseCase = new CreateProductUseCase(productRepository); — repare nos três nomes envolvidos aqui: a variável se chama createProductUseCase (minúsculo), a classe instanciada se chama CreateProductUseCase (maiúsculo, sem I), e lá no CreateProductController, o construtor espera um parâmetro do tipo ICreateProductUseCase (com I).\n\nMesmo passando a instância concreta CreateProductUseCase para o construtor do CreateProductController, o parâmetro ali é tipado como ICreateProductUseCase. Do ponto de vista do Controller, ele não sabe e não precisa saber que existe uma classe chamada CreateProductUseCase — ele só confia que recebeu algo capaz de executar a porta. É o server.ts quem faz essa ponte entre o nome concreto e o tipo abstrato."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar o app.use para montar as rotas do produto sob o prefixo /products, chamando a função productRoutes e passando o createProductController e o listProductController como argumentos?",
+              "comment": "Montar as rotas do produto",
+              "answer": "app.use(\"/products\", productRoutes(createProductController, listProductController));",
+              "workspace": {
+                "activeFilePath": "src/server.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" }, { "type": "file", "name": "list-product.usecase.ts" } ] },
+                    { "type": "folder", "name": "infrastructure", "children": [ { "type": "file", "name": "in-memory-product.repository.ts" }, { "type": "file", "name": "create-product.controller.ts" }, { "type": "file", "name": "list-product.controller.ts" }, { "type": "file", "name": "product.routes.ts" } ] }
+                  ] } ] }, { "type": "file", "name": "server.ts" } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Por fim, como fazer a aplicação escutar a porta 3002, exibindo no terminal a mensagem Server is running on PORT 3002 assim que o servidor iniciar?",
+              "comment": "Colocar o servidor no ar",
+              "answer": "app.listen(3002, () => console.log(\"Server is running on PORT 3002\"));",
+              "workspace": {
+                "activeFilePath": "src/server.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [
+                    { "type": "folder", "name": "domain", "children": [ { "type": "file", "name": "product.ts" }, { "type": "file", "name": "product-repository.port.ts" }, { "type": "file", "name": "create-product.port.ts" }, { "type": "file", "name": "list-product.port.ts" } ] },
+                    { "type": "folder", "name": "application", "children": [ { "type": "file", "name": "create-product.usecase.ts" }, { "type": "file", "name": "list-product.usecase.ts" } ] },
+                    { "type": "folder", "name": "infrastructure", "children": [ { "type": "file", "name": "in-memory-product.repository.ts" }, { "type": "file", "name": "create-product.controller.ts" }, { "type": "file", "name": "list-product.controller.ts" }, { "type": "file", "name": "product.routes.ts" } ] }
+                  ] } ] }, { "type": "file", "name": "server.ts" } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como compilar e rodar a aplicação?",
+              "content": "1. No terminal, execute 'npx tsc' para compilar tudo que está em src para dist.\n\n2. Em seguida, execute 'node dist/server.js'.\n\nSe tudo estiver certo, a mensagem Server is running on PORT 3002 aparece no terminal."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Testando a aplicação",
+              "content": "Para criar um produto:\n\ncurl -X POST http://localhost:3002/products -H \"Content-Type: application/json\" -d '{\"name\": \"Teclado Mecanico\", \"price\": 350}'\n\nPara ver a lista, abra direto no navegador:\n\nhttp://localhost:3002/products"
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: a aplicação inteira como um hexágono",
+              "content": "Repare no caminho completo de uma requisição de criação, agora com todas as peças no lugar:\n\n```mermaid\nflowchart LR\n  Client[\"Cliente HTTP\"] --> Ctrl[\"CreateProductController\"]\n  Ctrl --> PortIn[\"ICreateProductUseCase (Porta de Entrada)\"]\n  UC[\"CreateProductUseCase (classe)\"] -.implements.-> PortIn\n  UC --> PortOut[\"ProductRepository (Porta de Saída)\"]\n  Repo[\"InMemoryProductRepository\"] -.implements.-> PortOut\n```\n\n1. domain guarda a entidade Product e três portas, todas com o prefixo I: uma de saída (ProductRepository, sem I — convenção mantida desde a lição anterior) e duas de entrada (ICreateProductUseCase, IListProductUseCase) — só interfaces, nenhuma lógica.\n2. application implementa as portas de entrada: a classe CreateProductUseCase implementa ICreateProductUseCase, e a classe ListProductUseCase implementa IListProductUseCase. Ambas contêm a regra de negócio, e dependem apenas da porta de saída.\n3. infrastructure guarda os adaptadores de verdade: InMemoryProductRepository (adaptador de saída, implementa a porta de dados) e os Controllers HTTP (adaptadores de entrada, dependem das portas ICreateProductUseCase e IListProductUseCase, nunca das classes concretas).\n4. server.ts é o composition root: o único arquivo que conhece todas as classes concretas ao mesmo tempo, e é ele quem decide qual implementação entra em cada porta.\n\nA grande vantagem prática: se um dia você trocar o Express por outro framework HTTP, ou o armazenamento em memória por um banco de dados de verdade, isso significa trocar apenas os arquivos dentro de infrastructure. O domain e o application — onde mora a regra de negócio de verdade — não precisam mudar uma linha sequer."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

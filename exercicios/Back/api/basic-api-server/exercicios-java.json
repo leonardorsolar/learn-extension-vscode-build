@@ -24,20 +24,20 @@
               "id": "",
               "type": "explanation",
               "title": "Como gerar um projeto Spring Boot?",
-              "content": "1. Acesse o site start.spring.io, conhecido como Spring Initializr, que gera a estrutura inicial do projeto.\n\n 2. Selecione Maven como gerenciador de dependências, a linguagem Java e a versão mais recente do Spring Boot.\n\n 3. Bo bloco a esquerda deixa como está.\n\n 4. No bloco a direita, adicione a dependência Spring Web, que traz tudo que é necessário para criar uma API.\n\n 5. Clique em Generate para baixar o projeto em formato zip \n\n 6.Extraia a pasta do proejto zip e abra ela no VSCode.\n\n"
+              "content": "1. Acesse o site start.spring.io, conhecido como Spring Initializr, que gera a estrutura inicial do projeto.\n\n2. Selecione Maven como gerenciador de dependências, a linguagem Java e a versão mais recente do Spring Boot.\n\n3. No bloco a esquerda deixa como está.\n\n4. No bloco a direita, adicione a dependência Spring Web, que traz tudo que é necessário para criar uma API.\n\n5. Clique em Generate para baixar o projeto em formato zip.\n\n6. Extraia a pasta do projeto zip e abra ela no VSCode."
             },
             {
               "id": "",
               "type": "explanation",
               "title": "Entendendo a estrutura do projeto Maven",
-              "content": "O arquivo pom.xml fica na raiz do projeto e lista todas as dependências, como o Spring Web.\n\nO código-fonte fica dentro da pasta src/main/java, organizada em pacotes que seguem o formato de domínio invertido, por exemplo com.example.demo.\n\nÉ dentro dessa pasta de pacotes que vamos criar as classes da nossa aplicação.\n\n No Vscode vai ser solicitado para você isntalar a extensão Extension Pack for Java."
+              "content": "O arquivo pom.xml fica na raiz do projeto e lista todas as dependências, como o Spring Web.\n\nO código-fonte fica dentro da pasta src/main/java, organizada em pacotes que seguem o formato de domínio invertido, por exemplo com.example.demo.\n\nÉ dentro dessa pasta de pacotes que vamos criar as classes da nossa aplicação.\n\nNo VSCode vai ser solicitado para você instalar a extensão Extension Pack for Java."
             },
             {
               "id": "",
               "type": "exercise",
               "question": "Como criar uma classe chamada HelloController marcada com a anotação @RestController, indicando ao Spring que essa classe vai responder requisições HTTP?",
-              "comment": "Criar o pacote de importação, criar classe controller e importar o @RestController (clique em cima do @RestController e depois em import class - Ctrl + espaço - )",
-              "answer": "package com.example.demo;\n @RestController\npublic class HelloController {\n}",
+              "comment": "Criar classe HelloController com @RestController",
+              "answer": "package com.example.demo;\n\nimport org.springframework.web.bind.annotation.RestController;\n\n@RestController\npublic class HelloController {\n}",
               "workspace": {
                 "activeFilePath": "src/main/java/com/example/demo/HelloController.java",
                 "tree": [
@@ -55,8 +55,13 @@
               "id": "",
               "type": "exercise",
               "question": "Como criar dentro da classe HelloController um método chamado helloWorld, mapeado para a rota GET na raiz (/), que retorna a String API no ar?",
-              "comment": "rota GET / API no ar",
-              "answer": "package com.example.demo;\n\nimport org.springframework.web.bind.annotation.GetMapping;\nimport org.springframework.web.bind.annotation.RestController;\n\n@RestController\npublic class HelloController {\n    @GetMapping(\"/\")\n    public String helloWorld() {\n        return \"API no ar\";\n    }\n}",
+              "comment": "Adicionar rota GET na raiz",
+              "commentAnchor": {
+                "find": "public class HelloController {",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "@RestController\npublic class HelloController {\n    @GetMapping(\"/\")\n    public String helloWorld() {\n        return \"API no ar\";\n    }\n}",
               "workspace": {
                 "activeFilePath": "src/main/java/com/example/demo/HelloController.java",
                 "tree": [
@@ -74,8 +79,8 @@
               "id": "",
               "type": "exercise",
               "question": "Como criar a classe principal DemoApplication, marcada com @SpringBootApplication, contendo o método main que inicia a aplicação?",
-              "comment": "Classe principal da aplicação",
-              "answer": "@SpringBootApplication\npublic class DemoApplication {\n    public static void main(String[] args) {\n        SpringApplication.run(DemoApplication.class, args);\n    }\n}",
+              "comment": "Veja acima a classe DemoApplication com @SpringBootApplication e o método main",
+              "answer": "package com.example.demo;\n\nimport org.springframework.boot.SpringApplication;\nimport org.springframework.boot.autoconfigure.SpringBootApplication;\n\n@SpringBootApplication\npublic class DemoApplication {\n    public static void main(String[] args) {\n        SpringApplication.run(DemoApplication.class, args);\n    }\n}",
               "workspace": {
                 "activeFilePath": "src/main/java/com/example/demo/DemoApplication.java",
                 "tree": [
@@ -91,16 +96,9 @@
             },
             {
               "id": "",
-              "type": "exercise",
-              "question": "Como rodar a aplicação para testar se a API está funcionando?",
-              "comment": "Use o terminal e execute o comando: mvn spring-boot:run",
-              "answer": "O comando 'mvn spring-boot:run' compila e inicia a aplicação, e você pode acessar o endereço http://localhost:8080/ no navegador para ver a mensagem API no ar.\n\n Caso não tenha o mvn instale o Maven no seu pc.",
-              "workspace": {
-                "activeFilePath": "src/main/java/com/example/demo/DemoApplication.java",
-                "tree": [
-                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "main", "children": [ { "type": "folder", "name": "java", "children": [ { "type": "folder", "name": "com", "children": [ { "type": "folder", "name": "example", "children": [ { "type": "folder", "name": "demo", "children": [ { "type": "file", "name": "HelloController.java" }, { "type": "file", "name": "DemoApplication.java" } ] } ] } ] } ] } ] } ] }
-                ]
-              }
+              "type": "explanation",
+              "title": "Como rodar a aplicação para testar se a API está funcionando?",
+              "content": "1. Use o terminal e execute o comando 'mvn spring-boot:run'.\n\n2. O comando compila e inicia a aplicação, e você pode acessar o endereço http://localhost:8080/ no navegador para ver a mensagem API no ar.\n\n3. Caso não tenha o mvn instalado, instale o Maven no seu computador antes de rodar o comando."
             },
             {
               "id": "",

@@ -1,0 +1,150 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "flexbox-css",
+          "name": "Flexbox (display flex, justify-content, align-items, flex-direction)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o ambiente",
+              "content": "Antes de escrever qualquer código, vamos preparar o ambiente:\n\n1. Dentro da pasta, crie dois arquivos: index.html e style.css.\n\n2. Clique em próximo para iniciar os exercícios."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Digite ! e pressione Tab para gerar a estrutura básica do HTML com o Emmet dentro do arquivo index.html vazio.",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag head do index.html, adicione uma tag link conectando o arquivo style.css, usando rel igual a stylesheet e href igual a style.css.",
+              "comment": "Conectar o arquivo style.css usando a tag link",
+              "commentAnchor": {
+                "find": "<head>",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "<link rel=\"stylesheet\" href=\"style.css\">",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag body do index.html, crie uma div com class igual a menu, contendo três divs internas com class igual a item, com os textos Inicio, Sobre e Contato, representando os links de um menu de navegação.",
+              "comment": "Criar estrutura de menu com três itens",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<div class=\"menu\">\n    <div class=\"item\">Inicio</div>\n    <div class=\"item\">Sobre</div>\n    <div class=\"item\">Contato</div>\n  </div>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é o Flexbox?",
+              "content": "Por padrão, divs se empilham uma embaixo da outra. O Flexbox é um modelo de layout do CSS que resolve isso de forma simples: basta aplicar display igual a flex em um elemento pai para que todos os seus filhos diretos passem a se organizar automaticamente em linha, lado a lado, sem precisar de float ou position.\n\nEsse elemento pai passa a ser chamado de container flexível, e os filhos passam a ser chamados de itens flexíveis. É exatamente o que precisamos para alinhar os três itens do menu na horizontal."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo style.css, que está vazio, crie um seletor de classe .menu com a propriedade display igual a flex, fazendo os três itens ficarem lado a lado em vez de empilhados.",
+              "comment": "Transformar o menu em um container flex",
+              "answer": ".menu {\n  display: flex;\n}",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é justify-content?",
+              "content": "Com o display flex ativo, os itens ficam colados um no outro, no início do container. A propriedade justify-content controla como esse espaço é distribuído ao longo do eixo principal, que por padrão é o eixo horizontal.\n\nAlguns valores comuns são flex-start, o padrão, que junta tudo no início; center, que centraliza os itens; e space-between, que empurra o primeiro item para a esquerda, o último para a direita, e distribui o espaço restante igualmente entre os itens do meio, um efeito muito comum em menus de navegação."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do seletor .menu já criado, adicione a propriedade justify-content igual a space-between, espalhando os três itens do menu ao longo de toda a largura disponível.",
+              "comment": "Distribuir os itens do menu com justify-content",
+              "commentAnchor": {
+                "find": ".menu {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "justify-content: space-between;",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é align-items?",
+              "content": "Enquanto justify-content controla o eixo principal, align-items controla o eixo cruzado, que no caso de um container em linha é o eixo vertical. Ela alinha os itens dentro da altura do container, sendo muito útil quando o container tem uma altura maior do que o conteúdo dos itens.\n\nPara ver esse efeito na prática, primeiro vamos dar uma altura ao container do menu, já que sem espaço vertical sobrando não dá para perceber a diferença do alinhamento."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do seletor .menu, adicione as propriedades height igual a 80px e align-items igual a center, dando altura ao menu e centralizando os itens verticalmente dentro dessa altura.",
+              "comment": "Centralizar os itens verticalmente com align-items",
+              "commentAnchor": {
+                "find": ".menu {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "height: 80px;\n  align-items: center;",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: os quatro pilares do Flexbox",
+              "content": "Nesta lição você aprendeu:\n\n1. Que display: flex transforma um elemento em um container flexível, organizando seus filhos automaticamente em linha.\n2. Que justify-content controla a distribuição dos itens ao longo do eixo principal, muito usado para espaçar itens de um menu.\n3. Que align-items controla o alinhamento dos itens ao longo do eixo cruzado, útil quando o container tem altura sobrando.\nO Flexbox é uma das ferramentas mais usadas no CSS moderno para alinhar e distribuir elementos, substituindo técnicas antigas e complicadas de alinhamento."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

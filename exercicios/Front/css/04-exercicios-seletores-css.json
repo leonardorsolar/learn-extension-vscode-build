@@ -1,0 +1,190 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "seletores-css",
+          "name": "Seletores CSS (tag, classe, id, universal)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o ambiente",
+              "content": "Antes de escrever qualquer código, vamos preparar o ambiente:\n\n1. Dentro da pasta, no seu projeto, crie um arquivo chamado index.html. Esse será o arquivo que o navegador vai abrir para mostrar sua página.\n\n2. Clique em próximo para iniciar os exercícios."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Digite ! e pressione Tab para gerar a estrutura básica do HTML com o Emmet dentro do arquivo index.html vazio.",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Conectando o arquivo CSS externo",
+              "content": "Assim como você já viu na lição anterior, para usar um arquivo CSS externo é preciso conectá-lo ao HTML através da tag link no head. Vamos usar esse mesmo formato aqui, mas agora o foco não vai ser as propriedades, e sim os seletores: as diferentes formas de escolher quais elementos cada regra do CSS deve afetar."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag head do index.html, adicione uma tag link conectando o arquivo style.css, usando rel igual a stylesheet e href igual a style.css.",
+              "comment": "Conectar o arquivo style.css usando a tag link",
+              "commentAnchor": {
+                "find": "<head>",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "<link rel=\"stylesheet\" href=\"style.css\">",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Quais são os tipos de seletores CSS?",
+              "content": "Um seletor é a parte do CSS que decide quais elementos vão receber aquele estilo. Existem quatro tipos principais: seletor de tag, que afeta todos os elementos daquele tipo, como body; seletor de id, que afeta apenas um único elemento específico da página; seletor de classe, que pode afetar vários elementos diferentes que compartilham a mesma classe; e seletor universal, que afeta absolutamente todos os elementos da página de uma vez.\n\nVamos praticar cada um deles a partir de agora."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag body do index.html, adicione um título usando a tag h1 com o atributo id igual a titulo e o texto Olá Turma!.",
+              "comment": "Adicionar h1 com id titulo",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<h1 id=\"titulo\">Olá Turma!</h1>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Seletor de tag e seletor de id",
+              "content": "O seletor de tag é escrito apenas com o nome da tag, como body, e afeta todos os elementos daquele tipo na página. Já o seletor de id é escrito com um sustenido (#) seguido do valor do atributo id, como #titulo, e afeta apenas o único elemento que tiver exatamente aquele id.\n\nComo o id deve ser único em toda a página, um seletor de id nunca vai acabar estilizando mais de um elemento sem querer."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo style.css, que está vazio, crie um seletor de tag body com as propriedades font-family igual a Arial e background igual a #F0F4FF, definindo um estilo geral para toda a página.",
+              "comment": "Criar seletor de tag body com estilo geral da página",
+              "answer": "body {\n  font-family: Arial;\n  background: #F0F4FF;\n}",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No final do style.css, logo abaixo do seletor body, crie um seletor de id chamado #titulo com as propriedades color igual a #2563EB, font-size igual a 40px e text-align igual a center, estilizando apenas o h1 criado anteriormente.",
+              "comment": "Criar seletor de id para o titulo",
+              "answer": "#titulo {\n  color: #2563EB;\n  font-size: 40px;\n  text-align: center;\n}",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Seletor de classe",
+              "content": "Diferente do id, que deve ser único na página, o atributo class pode se repetir em quantos elementos você quiser, e um mesmo elemento pode até ter mais de uma classe. O seletor de classe é escrito com um ponto (.) seguido do valor do atributo class, como .texto.\n\nIsso é muito útil quando você quer aplicar o mesmo estilo a vários elementos diferentes, sem precisar repetir as propriedades em cada um."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo do h1 no index.html, adicione um parágrafo usando a tag p com o atributo class igual a texto e o texto CSS é demais!.",
+              "comment": "Adicionar parágrafo com classe texto",
+              "commentAnchor": {
+                "find": "<h1 id=\"titulo\">Olá Turma!</h1>",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "<p class=\"texto\">CSS é demais!</p>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No final do style.css, logo abaixo do seletor #titulo, crie um seletor de classe .texto com as propriedades color igual a gray e font-size igual a 18px.",
+              "comment": "Criar seletor de classe para o texto",
+              "answer": ".texto {\n  color: gray;\n  font-size: 18px;\n}",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Seletor universal",
+              "content": "O seletor universal é representado por um asterisco (*) e afeta absolutamente todos os elementos da página de uma vez, sem exceção. Ele é muito usado como um reset no início do arquivo CSS, removendo margens e espaçamentos padrão que cada navegador aplica de forma diferente, garantindo que a página comece do mesmo jeito em qualquer navegador."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No topo do style.css, antes do seletor body, adicione um seletor universal com as propriedades margin igual a 0, padding igual a 0 e box-sizing igual a border-box, para resetar o espaçamento padrão do navegador.",
+              "comment": "Adicionar reset com seletor universal",
+              "commentAnchor": {
+                "find": "body {",
+                "position": "before",
+                "fallback": "top"
+              },
+              "answer": "* {\n  margin: 0;\n  padding: 0;\n  box-sizing: border-box;\n}",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: os quatro tipos de seletores",
+              "content": "Nesta lição você praticou os quatro tipos principais de seletores CSS:\n\n1. Seletor de tag, como body, que afeta todos os elementos daquele tipo.\n2. Seletor de id, como #titulo, que afeta apenas um único elemento específico.\n3. Seletor de classe, como .texto, que pode afetar vários elementos que compartilham a mesma classe.\n4. Seletor universal, representado por *, que afeta todos os elementos da página, muito usado para resets.\n\nUma observação importante para o futuro: quando mais de um seletor tenta estilizar o mesmo elemento com propriedades conflitantes, o CSS decide qual vale através de um conceito chamado especificidade, onde, de forma geral, id tem mais prioridade que classe, e classe tem mais prioridade que tag."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

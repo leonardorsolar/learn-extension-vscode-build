@@ -1,0 +1,161 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "titulos-paragrafo-br",
+          "name": "Títulos, Parágrafo e Quebra de Linha",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o ambiente",
+              "content": "Antes de escrever qualquer código, vamos preparar o ambiente:\n\n1. Dentro da pasta, no seu projeto, crie um arquivo chamado index.html. Esse será o arquivo que o navegador vai abrir para mostrar sua página.\n\n2. Clique em próximo para iniciar os exercícios."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Digite ! e pressione Tab para gerar a estrutura básica do HTML com o Emmet dentro do arquivo index.html vazio.",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que são as tags de título (h1 até h6)?",
+              "content": "O HTML tem seis níveis de título, de h1 até h6. Eles não servem só para deixar o texto grande, servem para indicar a importância e a hierarquia de cada título dentro da página, igual acontece em um documento de texto com título, subtítulo e tópicos menores.\n\nh1 é o título principal da página, o mais importante, e por boas práticas deve aparecer apenas uma vez em cada página. h2 costuma ser usado para subtítulos, marcando o início de uma nova seção dentro do conteúdo. Já os níveis menores, como h6, são usados para textos que precisam de destaque de título mas com pouca importância visual, como notas de rodapé ou legendas."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag body, adicione o título principal da página usando a tag h1 com o texto Minha Primeira Página.",
+              "comment": "Adicionar título principal com h1 dentro do body",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<h1>Minha Primeira Página</h1>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Quando usar h2 em vez de h1?",
+              "content": "Enquanto o h1 representa o assunto principal da página inteira, o h2 é usado para dividir esse conteúdo em seções. Por exemplo, em uma página pessoal, o h1 pode ser o nome da pessoa, e cada h2 pode marcar uma seção diferente, como Sobre mim, Meus projetos ou Contato.\n\nEssa hierarquia ajuda tanto o usuário a entender a organização da página quanto ferramentas de acessibilidade e mecanismos de busca a interpretar a estrutura do conteúdo."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo do h1, adicione um subtítulo de seção usando a tag h2 com o texto Sobre mim.",
+              "comment": "Adicionar subtítulo de seção com h2",
+              "commentAnchor": {
+                "find": "<h1>",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "<h2>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é a tag de parágrafo?",
+              "content": "A tag p representa um parágrafo de texto corrido, o mesmo tipo de bloco de texto que você usaria em um documento de Word. Ela é a tag mais comum para exibir conteúdo textual dentro de uma página, como uma frase, uma descrição ou um trecho de texto maior.\n\nCada navegador, por padrão, adiciona um espaçamento em branco antes e depois de cada parágrafo, para separar visualmente um bloco de texto do outro."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo do h2 Sobre mim, adicione um parágrafo usando a tag p com o texto Estou aprendendo a estruturar uma pagina web.",
+              "comment": "Adicionar parágrafo de texto com a tag p",
+              "commentAnchor": {
+                "find": "<h2>",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "<p>Estou aprendendo a estruturar uma pagina web.</p>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é a tag br e por que ela não tem fechamento?",
+              "content": "A tag br serve para forçar uma quebra de linha dentro de um mesmo bloco de conteúdo, sem precisar iniciar um novo parágrafo. É útil, por exemplo, em um endereço ou em uma frase que você quer dividir visualmente em duas linhas, mesmo estando dentro do mesmo p.\n\nDiferente das tags que você usou até agora, como h1, h2 e p, a tag br não tem conteúdo dentro dela, então ela não precisa de uma tag de fechamento como h1. Ela é chamada de tag de auto-fechamento, e sua forma correta de escrita moderna é br seguido de uma barra antes do fechamento, assim: br />. Esse tipo de tag existe porque não faria sentido ter algo como br conteúdo /br, já que uma quebra de linha não tem conteúdo, ela é só um comando."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Altere o parágrafo criado anteriormente para dividir o texto em duas linhas usando a tag br: a primeira linha deve conter Estou aprendendo a estruturar uma pagina web, e a segunda linha deve conter Este e o meu primeiro projeto.",
+              "comment": "A tag <p> foi deletada para agora você usar a tag br para quebrar o texto do parágrafo em duas linhas",
+              "commentAnchor": {
+                "find": "<p>",
+                "position": "replace",
+                "fallback": "end"
+              },
+              "answer": "<p>Estou aprendendo a estruturar uma pagina web.<br />Este e o meu primeiro projeto.</p>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Usando h6 como rodapé de página",
+              "content": "Como o h6 é o menor nível de título, ele é uma boa escolha para textos que precisam de destaque de título, mas sem chamar muita atenção visual, como uma nota de rodapé, um aviso legal ou uma legenda de imagem.\n\nVamos usar o h6 para adicionar uma pequena nota no final da página, depois de todo o conteúdo principal."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No final da tag body, depois de todo o conteúdo já criado, adicione uma nota de rodapé usando a tag h6 com o texto Pagina criada para fins de estudo.",
+              "comment": "Adicionar nota de rodapé com h6 no final do body",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "<h6>Pagina criada para fins de estudo</h6>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: hierarquia de títulos, parágrafo e quebra de linha",
+              "content": "Nesta lição você aprendeu:\n\n1. Que os títulos vão de h1 até h6 e representam níveis de importância, não apenas tamanho de fonte.\n2. Que h1 é o título principal da página e deve aparecer apenas uma vez.\n3. Que h2 é usado para marcar subtítulos de seções dentro do conteúdo.\n4. Que a tag p representa um parágrafo de texto corrido.\n5. Que a tag br força uma quebra de linha e não possui tag de fechamento, por não ter conteúdo dentro dela, sendo escrita como br />.\n6. Que h6, por ser o menor nível de título, é uma boa escolha para notas de rodapé ou legendas.\n\nCom essas tags, você já consegue estruturar o conteúdo textual de uma página com hierarquia e organização visual."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

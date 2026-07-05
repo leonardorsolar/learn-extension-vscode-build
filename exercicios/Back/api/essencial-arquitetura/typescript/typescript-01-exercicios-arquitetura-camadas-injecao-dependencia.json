@@ -1,0 +1,1372 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "inversao-dependencia-typescript-product",
+          "name": "Inversão de Dependência em TypeScript (Product)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que vamos fazer nesta lição?",
+              "content": "Agora vamos iniciar um projeto TypeScript, que tem uma palavra-chave própria para contratos: interface. O compilador do TypeScript passa a garantir, antes mesmo de rodar o código, que qualquer classe que implemente essa interface tenha todos os métodos exigidos.\n\nAlém disso, vamos acrescentar uma funcionalidade nova: listar todos os produtos cadastrados, numa rota que você pode abrir direto no navegador."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Fluxo da requisição",
+              "content": "Veja como a requisição percorre as camadas, e como a inversão de dependência aparece no fluxo:\n\n```mermaid\nflowchart TD\n  A[Client] --> B[Controller]\n  B --> C[Service]\n  C --> D[\"ProductRepository (Interface)\"]\n  E[InMemoryProductRepository] -.implements.-> D\n  D ~~~ E\n```"
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o projeto",
+              "content": "No Vscode certifique-se que você está dentro de uma pasta vazia, sem nenhum arquivo dentro."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como iniciar um projeto em Node.js?",
+              "content": "Use o terminal para executar o comando 'npm init -y'.\n\nEsse comando cria automaticamente o arquivo package.json, que guarda as informações do projeto."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar um arquivo .gitignore informando ao Git para ignorar as pastas node_modules e dist?",
+              "comment": "Criar o arquivo .gitignore",
+              "answer": "node_modules\ndist",
+              "workspace": {
+                "activeFilePath": ".gitignore",
+                "tree": [
+                  { "type": "file", "name": ".gitignore" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que ignorar node_modules e agora também dist?",
+              "content": "node_modules guarda as bibliotecas instaladas, e pode ser recriada com npm install. A pasta dist é nova nesta lição: é para lá que o compilador do TypeScript vai jogar o código JavaScript gerado a partir dos seus arquivos .ts. Como esse código é sempre gerado de novo a partir do que você escreve em src, não faz sentido versionar ele também."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Instalando o TypeScript",
+              "content": "Use o terminal para executar o comando 'npm install typescript --save-dev'.\n\nO --save-dev (ou -D) registra o TypeScript como uma dependência de desenvolvimento no package.json, dentro de devDependencies. Isso significa que ele é uma ferramenta usada só enquanto você programa e compila o projeto, e não algo que precisa estar instalado onde a aplicação já compilada for rodar."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Instalando o Express e os tipos",
+              "content": "1. Use o terminal para executar 'npm install express', para instalar o framework normalmente, como dependência de produção.\n\n2. Em seguida, execute 'npm install --save-dev @types/node @types/express'.\n\nO Express, por padrão, foi escrito em JavaScript e não conhece tipos do TypeScript. Os pacotes @types trazem as definições de tipo dessas bibliotecas, para que o TypeScript saiba, por exemplo, o que é um Request e um Response do Express."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar o arquivo tsconfig.json na raiz do projeto, configurando target como ES2020, module como commonjs, rootDir como src, outDir como dist, strict como true e esModuleInterop como true?",
+              "comment": "Configurar o TypeScript com o tsconfig.json",
+              "answer": "{\n  \"compilerOptions\": {\n    \"target\": \"ES2020\",\n    \"module\": \"commonjs\",\n    \"rootDir\": \"src\",\n    \"outDir\": \"dist\",\n    \"strict\": true,\n    \"esModuleInterop\": true\n  }\n}",
+              "workspace": {
+                "activeFilePath": "tsconfig.json",
+                "tree": [
+                  { "type": "file", "name": ".gitignore" },
+                  { "type": "file", "name": "tsconfig.json" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo o tsconfig.json",
+              "content": "rootDir diz onde ficam seus arquivos .ts (src), e outDir diz para onde vai o JavaScript gerado (dist) — essa separação é o motivo de termos ignorado a pasta dist no .gitignore.\n\n target define a versão do JavaScript gerada na compilação. module define o sistema de módulos usado (commonjs é o padrão do Node.js, com require por baixo dos panos).\n\nstrict liga um conjunto de verificações mais rígidas do compilador, incluindo a obrigatoriedade de implementar interfaces corretamente. \n\n esModuleInterop facilita importar bibliotecas como o Express com a sintaxe import."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Organizando o projeto por módulos",
+              "content": "Vamos organizar o projeto por módulo, dentro de src/modules/product. A diferença agora é que os arquivos vão ter extensão .ts, e vamos usar interface de verdade para o contrato do Repository."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "TypeScript tem interface de verdade!",
+              "content": "Lembra da classe ProductRepository que criamos em JavaScript, só com métodos que lançavam erro? Em TypeScript, isso tem um nome e uma sintaxe própria: interface. Uma interface não gera nenhum código quando compilada — ela existe só em tempo de compilação, para o TypeScript conferir se as classes estão cumprindo o contrato.\n\nAlém do contrato do Repository, vamos criar também uma interface Product, descrevendo o formato de um produto: um name (string), um price (number), e um id opcional (string), já que o id só existe depois que o produto é salvo. \n\n A importância da interface não é simplesmente 'ter um lugar para declarar métodos'. Ela resolve vários problemas de organização, manutenção e segurança do código."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo product.repository.ts, como criar a interface Product com name (string), price (number) e um id opcional (string), e a interface ProductRepository com os métodos findByName(name: string), que retorna um Product ou undefined, save(product: Product), que retorna um Product, e list(), que retorna uma lista de Product?",
+              "comment": "Criar as interfaces Product e ProductRepository",
+              "answer": "interface Product {\n  id?: string;\n  name: string;\n  price: number;\n}\n\ninterface ProductRepository {\n  findByName(name: string): Product | undefined;\n  save(product: Product): Product;\n  list(): Product[];\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/product.repository.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.ts" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar as interfaces Product e ProductRepository usando chaves?",
+              "comment": "Exportar as interfaces do contrato",
+              "answer": "export { Product, ProductRepository };",
+              "workspace": {
+                "activeFilePath": "src/modules/product/product.repository.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.ts" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "A diferença entre a classe abstrata e a interface",
+              "content": "Na versão em JavaScript, se uma classe esquecesse de implementar um método do contrato, você só descobriria o problema quando o código rodasse e o erro Método não implementado fosse lançado.\n\nCom a interface do TypeScript, o compilador verifica isso antes mesmo de rodar: se você criar uma classe implements ProductRepository e esquecer de escrever, por exemplo, o método list, o TypeScript já mostra um erro de compilação avisando que a classe implementa a interface de forma incorreta. É um erro pego mais cedo, direto no editor."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Implementando o contrato: InMemoryProductRepository",
+              "content": "Agora vamos criar a implementação concreta, que guarda os produtos em memória, exatamente como antes, mas agora anotada com os tipos do TypeScript.\n\n```mermaid\nflowchart TD\n  D[\"ProductRepository (Interface)\"]\n  E[InMemoryProductRepository] -.implements.-> D\n  D ~~~ E\n\n```"
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo in.memory.product.repository.ts, como importar Product e ProductRepository, e criar a classe InMemoryProductRepository, que implementa a interface ProductRepository, com uma propriedade products tipada como Product[] e iniciada como lista vazia?",
+              "comment": "Criar a implementação concreta InMemoryProductRepository",
+              "answer": "import { Product, ProductRepository } from \"./product.repository\";\n\nclass InMemoryProductRepository implements ProductRepository {\n  products: Product[] = [];\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/in.memory.product.repository.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.ts" }, { "type": "file", "name": "in.memory.product.repository.ts" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da classe, como implementar o método findByName, recebendo name como string e retornando um Product ou undefined, buscando o produto da lista products cujo name seja igual ao recebido?",
+              "comment": "Implementar o findByName de verdade",
+              "commentAnchor": {
+                "find": "class InMemoryProductRepository implements ProductRepository {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "findByName(name: string): Product | undefined {\n  const productExists = this.products.find((product) => product.name === name);\n  return productExists;\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/in.memory.product.repository.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.ts" }, { "type": "file", "name": "in.memory.product.repository.ts" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como implementar o método save, recebendo product como Product e retornando um Product, gerando um id aleatório, adicionando na lista products e retornando o produto já com o id?",
+              "comment": "Implementar o save de verdade",
+              "commentAnchor": {
+                "find": "class InMemoryProductRepository implements ProductRepository {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "save(product: Product): Product {\n  const id = Math.random().toString();\n  const productWithId = { ...product, id };\n  this.products.push(productWithId);\n  return productWithId;\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/in.memory.product.repository.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.ts" }, { "type": "file", "name": "in.memory.product.repository.ts" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como implementar o método list, que retorna a lista completa de Product?",
+              "comment": "Implementar o list de verdade",
+              "commentAnchor": {
+                "find": "class InMemoryProductRepository implements ProductRepository {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "list(): Product[] {\n  return this.products;\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/in.memory.product.repository.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.ts" }, { "type": "file", "name": "in.memory.product.repository.ts" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar a classe InMemoryProductRepository usando chaves?",
+              "comment": "Exportar a implementação concreta",
+              "answer": "export { InMemoryProductRepository };",
+              "workspace": {
+                "activeFilePath": "src/modules/product/in.memory.product.repository.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.ts" }, { "type": "file", "name": "in.memory.product.repository.ts" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Teste rápido: tente apagar um método",
+              "content": "Antes de seguir, um experimento: apague, só por curiosidade, o método list que você acabou de criar e veja o que acontece na linha da classe. O TypeScript vai sublinhar InMemoryProductRepository com um erro, avisando que a classe implementa ProductRepository de forma incompleta. Depois, pode desfazer (Ctrl+Z) e seguir para a próxima etapa — isso é o compilador garantindo o contrato por você."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Um atalho do TypeScript para injeção de dependência",
+              "content": "Em JavaScript, para injetar uma dependência, escrevíamos o construtor assim: \n\n constructor(productRepository) {\n\n  this.productRepository = productRepository;\n}\n\n O TypeScript tem um atalho para isso: se você colocar um modificador de acesso, como private, direto na frente do parâmetro do construtor, ele já cria a propriedade na classe e já faz essa atribuição sozinho, sem precisar escrever \n\n this.productRepository = productRepository. Vamos usar esse atalho a partir de agora."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Criando o CreateProductService (Service)",
+              "content": "\n\n```mermaid\nflowchart TD\n  C[Service]\n  C --> D[\"ProductRepository (Interface)\"]\n  E[InMemoryProductRepository] -.implements.-> D\n  D ~~~ E\n\n```"
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo create.product.service.ts, como importar Product e ProductRepository, e criar a classe CreateProductService com um construtor que já recebe e declara productRepository como uma propriedade privada do tipo ProductRepository, usando o atalho do TypeScript, e um método execute que recebe data do tipo Product e retorna um Product?",
+              "comment": "Criar a classe CreateProductService usando o atalho de injeção do TypeScript",
+              "answer": "import { Product, ProductRepository } from \"./product.repository\";\n\nclass CreateProductService {\n  constructor(private productRepository: ProductRepository) {}\n\n  execute(data: Product): Product {\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/create.product.service.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.ts" }, { "type": "file", "name": "in.memory.product.repository.ts" }, { "type": "file", "name": "create.product.service.ts" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Onde está a inversão de dependência aqui?",
+              "content": "Repare que o tipo do parâmetro é ProductRepository — a interface, a abstração — e não InMemoryProductRepository. O import no topo do arquivo confirma isso: ele aponta para product.repository.ts, o contrato, não para a implementação concreta.\n\nIsso é a mesma ideia da lição anterior, só que agora reforçada pelo próprio compilador: se alguém tentar injetar aqui um objeto que não siga a interface ProductRepository, o TypeScript vai acusar erro de tipo antes mesmo de rodar."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Observe o input e o retorno do método execute",
+              "content": "O método execute recebe data do tipo Product e retorna um Product. Veja que em typescript apresenta tipagem definida."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do método execute, como lançar um erro com a mensagem Nome do produto é obrigatório, caso data.name não tenha sido informado?",
+              "comment": "Validar se o name foi informado",
+              "commentAnchor": {
+                "find": "execute(data: Product): Product {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "if (!data.name) {\n  throw new Error(\"Nome do produto é obrigatório\");\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/create.product.service.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.ts" }, { "type": "file", "name": "in.memory.product.repository.ts" }, { "type": "file", "name": "create.product.service.ts" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar this.productRepository para verificar, através do findByName, se já existe um produto com o name informado, lançando um erro com a mensagem Produto já cadastrado! caso ele exista?",
+              "comment": "Verificar se o produto já existe",
+              "commentAnchor": {
+                "find": "execute(data: Product): Product {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "const existProduct = this.productRepository.findByName(data.name);\n\nif (existProduct) {\n  throw new Error(\"Produto já cadastrado!\");\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/create.product.service.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.ts" }, { "type": "file", "name": "in.memory.product.repository.ts" }, { "type": "file", "name": "create.product.service.ts" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Por fim, como usar this.productRepository para salvar o data recebido, retornando diretamente o resultado desse método save?",
+              "comment": "Salvar o produto através do Repository injetado",
+              "commentAnchor": {
+                "find": "execute(data: Product): Product {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "return this.productRepository.save(data);",
+              "workspace": {
+                "activeFilePath": "src/modules/product/create.product.service.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.ts" }, { "type": "file", "name": "in.memory.product.repository.ts" }, { "type": "file", "name": "create.product.service.ts" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Observe o retorno do método execute que está declaro como Product",
+              "content": "O método execute retorna o resultado do save, que é um Product. Esse Product já tem o id gerado, e é exatamente esse objeto que o Controller vai receber para enviar de volta na resposta da requisição."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar a classe CreateProductService usando chaves?",
+              "comment": "Exportar a classe CreateProductService",
+              "answer": "export { CreateProductService };",
+              "workspace": {
+                "activeFilePath": "src/modules/product/create.product.service.ts",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.ts" }, { "type": "file", "name": "in.memory.product.repository.ts" }, { "type": "file", "name": "create.product.service.ts" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Nova regra de negócio: listar produtos",
+              "content": "Até aqui, o único caso de uso é criar um produto. Vamos adicionar um segundo: listar todos os produtos já cadastrados. Seguindo o mesmo padrão do projeto — uma classe por caso de uso — vamos criar um Service novo, ListProductService, em vez de colocar essa lógica dentro do CreateProductService.\n\nRepare que esse novo Service vai depender exatamente da mesma abstração, ProductRepository. Esse é outro benefício da inversão de dependência: dois casos de uso diferentes (criar e listar) podem compartilhar o mesmo contrato de acesso a dados, sem se conhecerem um ao outro."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo list.product.service.ts, como importar Product e ProductRepository, e criar a classe ListProductService, com um construtor que já recebe e declara productRepository como propriedade privada do tipo ProductRepository, e um método execute que não recebe parâmetros e retorna a lista de produtos usando this.productRepository.list()?",
+              "comment": "Criar a classe ListProductService",
+              "answer": "import { Product, ProductRepository } from \"./product.repository\";\n\nclass ListProductService {\n  constructor(private productRepository: ProductRepository) {}\n\n  execute(): Product[] {\n    return this.productRepository.list();\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/list.product.service.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "modules",
+                        "children": [
+                          {
+                            "type": "folder",
+                            "name": "product",
+                            "children": [
+                              {
+                                "type": "file",
+                                "name": "product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "in.memory.product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.service.ts"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar a classe ListProductService usando chaves?",
+              "comment": "Exportar a classe ListProductService",
+              "answer": "export { ListProductService };",
+              "workspace": {
+                "activeFilePath": "src/modules/product/list.product.service.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "modules",
+                        "children": [
+                          {
+                            "type": "folder",
+                            "name": "product",
+                            "children": [
+                              {
+                                "type": "file",
+                                "name": "product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "in.memory.product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.service.ts"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Camada 3: um Controller por caso de uso",
+              "content": "Assim como fizemos com os Services, o Controller também vai seguir uma classe por caso de uso: CreateProductController, para o POST, e ListProductController, para o GET. Cada um com um único método handle, e uma única responsabilidade.\n\nAlém de manter o mesmo padrão de organização usado nos Services, isso evita um problema prático: colocar duas ações diferentes dentro da mesma classe, uma logo depois da outra, deixa o código com blocos try/catch e chaves aninhadas mais difíceis de editar com segurança. Mantendo um método por classe, cada arquivo fica pequeno, direto, e mais fácil de expandir no futuro."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Fluxo da requisição",
+                "content": "Veja como a requisição percorre as camadas e como a controller aparece no fluxo:\n\n```mermaid\nflowchart TD\n A[Client] --> B[Controller]\n  B --> C[Service]\n  C --> D[\"ProductRepository (Interface)\"]\n  E[InMemoryProductRepository] -.implements.-> D\n  D ~~~ E\n```"
+
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo create.product.controller.ts, como importar Request e Response do express e o CreateProductService, e criar a classe CreateProductController com um construtor que já recebe e declara createProductService como propriedade privada, e um método handle que recebe request e response tipados, extraindo o body da requisição?",
+              "comment": "Criar a classe CreateProductController",
+              "answer": "import { Request, Response } from \"express\";\nimport { CreateProductService } from \"./create.product.service\";\n\nclass CreateProductController {\n  constructor(private createProductService: CreateProductService) {}\n\n  handle(request: Request, response: Response) {\n    const { body } = request;\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/create.product.controller.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "modules",
+                        "children": [
+                          {
+                            "type": "folder",
+                            "name": "product",
+                            "children": [
+                              {
+                                "type": "file",
+                                "name": "product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "in.memory.product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.controller.ts"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do handle, como criar um bloco try que usa this.createProductService para executar o método execute passando o body, e retorna o resultado como JSON usando response.json?",
+              "comment": "Chamar a camada de serviço dentro do método handle",
+              "commentAnchor": {
+                "find": "handle(request: Request, response: Response) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "try {\n  const result = this.createProductService.execute(body);\n  return response.json(result);\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/create.product.controller.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "modules",
+                        "children": [
+                          {
+                            "type": "folder",
+                            "name": "product",
+                            "children": [
+                              {
+                                "type": "file",
+                                "name": "product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "in.memory.product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.controller.ts"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo após o try, como criar um bloco catch que captura o erro tipado como any, e retorna uma resposta com status 400 e um JSON contendo a mensagem err com o err.message?",
+              "comment": "Tratar o erro lançado pelo Service",
+              "commentAnchor": {
+                "find": "try {",
+                "position": "afterBlock",
+                "fallback": "end"
+              },
+              "answer": "catch (err: any) {\n  return response.status(400).json({\n    err: err.message,\n  });\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/create.product.controller.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "modules",
+                        "children": [
+                          {
+                            "type": "folder",
+                            "name": "product",
+                            "children": [
+                              {
+                                "type": "file",
+                                "name": "product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "in.memory.product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.controller.ts"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que catch (err: any)?",
+              "content": "Por padrão, o TypeScript trata o erro capturado no catch como unknown, um tipo que obriga a verificar o que ele realmente é antes de usar. Para manter as coisas simples nesta lição, anotamos explicitamente como any, dizendo ao compilador para não verificar o tipo desse valor e liberar o acesso direto a err.message."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar a classe CreateProductController usando chaves?",
+              "comment": "Exportar a classe CreateProductController",
+              "answer": "export { CreateProductController };",
+              "workspace": {
+                "activeFilePath": "src/modules/product/create.product.controller.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "modules",
+                        "children": [
+                          {
+                            "type": "folder",
+                            "name": "product",
+                            "children": [
+                              {
+                                "type": "file",
+                                "name": "product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "in.memory.product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.controller.ts"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O ListProductController é bem mais simples",
+              "content": "Como listar produtos não tem uma validação que possa falhar, o ListProductController nem precisa de try/catch — só chama o Service e devolve o resultado."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo list.product.controller.ts, como importar Request e Response do express e o ListProductService, e criar a classe ListProductController com um construtor que já recebe e declara listProductService como propriedade privada, e um método handle que recebe request e response tipados, executa this.listProductService.execute() e retorna o resultado como JSON usando response.json?",
+              "comment": "Criar a classe ListProductController",
+              "answer": "import { Request, Response } from \"express\";\nimport { ListProductService } from \"./list.product.service\";\n\nclass ListProductController {\n  constructor(private listProductService: ListProductService) {}\n\n  handle(request: Request, response: Response) {\n    const result = this.listProductService.execute();\n    return response.json(result);\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/list.product.controller.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "modules",
+                        "children": [
+                          {
+                            "type": "folder",
+                            "name": "product",
+                            "children": [
+                              {
+                                "type": "file",
+                                "name": "product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "in.memory.product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.controller.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.controller.ts"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar a classe ListProductController usando chaves?",
+              "comment": "Exportar a classe ListProductController",
+              "answer": "export { ListProductController };",
+              "workspace": {
+                "activeFilePath": "src/modules/product/list.product.controller.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "modules",
+                        "children": [
+                          {
+                            "type": "folder",
+                            "name": "product",
+                            "children": [
+                              {
+                                "type": "file",
+                                "name": "product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "in.memory.product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.controller.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.controller.ts"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Camada 4: o Router recebe os dois Controllers",
+              "content": "O Router vai receber os dois Controllers como parâmetros da função, e registrar a rota POST com o CreateProductController, e a rota GET com o ListProductController. Os dois continuam usando bind, já que ambos usam this dentro do handle."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo product.routes.ts, como importar o Router do express, o CreateProductController e o ListProductController, criando uma função chamada productRoutes, que recebe createProductController e listProductController como parâmetros, cria uma instância do Router guardando em router, e no final retorna esse router?",
+              "comment": "Criar a função productRoutes recebendo os dois controllers por parâmetro",
+              "answer": "import { Router } from \"express\";\nimport { CreateProductController } from \"./create.product.controller\";\nimport { ListProductController } from \"./list.product.controller\";\n\nfunction productRoutes(\n  createProductController: CreateProductController,\n  listProductController: ListProductController\n) {\n  const router = Router();\n\n  return router;\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/product.routes.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "modules",
+                        "children": [
+                          {
+                            "type": "folder",
+                            "name": "product",
+                            "children": [
+                              {
+                                "type": "file",
+                                "name": "product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "in.memory.product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.controller.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.controller.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "product.routes.ts"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Antes do return router, como registrar no router uma rota POST na raiz (/), chamando o handle do createProductController com bind?",
+              "comment": "Registrar a rota POST na raiz do módulo",
+              "commentAnchor": {
+                "find": "return router;",
+                "position": "before",
+                "fallback": "end"
+              },
+              "answer": "router.post(\"/\", createProductController.handle.bind(createProductController));",
+              "workspace": {
+                "activeFilePath": "src/modules/product/product.routes.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "modules",
+                        "children": [
+                          {
+                            "type": "folder",
+                            "name": "product",
+                            "children": [
+                              {
+                                "type": "file",
+                                "name": "product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "in.memory.product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.controller.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.controller.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "product.routes.ts"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo da rota POST, como registrar no router uma rota GET na raiz (/), chamando o handle do listProductController com bind?",
+              "comment": "Registrar a rota GET de listagem",
+              "commentAnchor": {
+                "find": "router.post(\"/\", createProductController.handle.bind(createProductController));",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "router.get(\"/\", listProductController.handle.bind(listProductController));",
+              "workspace": {
+                "activeFilePath": "src/modules/product/product.routes.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "modules",
+                        "children": [
+                          {
+                            "type": "folder",
+                            "name": "product",
+                            "children": [
+                              {
+                                "type": "file",
+                                "name": "product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "in.memory.product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.controller.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.controller.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "product.routes.ts"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar a função productRoutes por padrão?",
+              "comment": "Exportar a função productRoutes",
+              "answer": "export default productRoutes;",
+              "workspace": {
+                "activeFilePath": "src/modules/product/product.routes.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "modules",
+                        "children": [
+                          {
+                            "type": "folder",
+                            "name": "product",
+                            "children": [
+                              {
+                                "type": "file",
+                                "name": "product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "in.memory.product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.controller.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.controller.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "product.routes.ts"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "server.ts: o ponto único de instanciação",
+              "content": "É no server.ts que escolhemos a implementação concreta (InMemoryProductRepository) e montamos toda a cadeia de injeção. Agora vamos instanciar os dois Services e os dois Controllers, entregando cada Service ao seu respectivo Controller."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo server.ts, como importar o express, a implementação InMemoryProductRepository, o CreateProductService, o ListProductService, o CreateProductController, o ListProductController e o productRoutes, e criar a aplicação com express(), guardando na variável app?",
+              "comment": "Importar todas as dependências e criar a aplicação",
+              "answer": "import express from \"express\";\nimport { InMemoryProductRepository } from \"./modules/product/in.memory.product.repository\";\nimport { CreateProductService } from \"./modules/product/create.product.service\";\nimport { ListProductService } from \"./modules/product/list.product.service\";\nimport { CreateProductController } from \"./modules/product/create.product.controller\";\nimport { ListProductController } from \"./modules/product/list.product.controller\";\nimport productRoutes from \"./modules/product/product.routes\";\n\nconst app = express();",
+              "workspace": {
+                "activeFilePath": "src/server.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "modules",
+                        "children": [
+                          {
+                            "type": "folder",
+                            "name": "product",
+                            "children": [
+                              {
+                                "type": "file",
+                                "name": "product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "in.memory.product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.controller.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.controller.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "product.routes.ts"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "file",
+                        "name": "server.ts"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como configurar a aplicação para conseguir interpretar corretamente o corpo das requisições enviadas em formato JSON?",
+              "comment": "Habilitar o parser de JSON",
+              "answer": "app.use(express.json());",
+              "workspace": {
+                "activeFilePath": "src/server.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "modules",
+                        "children": [
+                          {
+                            "type": "folder",
+                            "name": "product",
+                            "children": [
+                              {
+                                "type": "file",
+                                "name": "product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "in.memory.product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.controller.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.controller.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "product.routes.ts"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "file",
+                        "name": "server.ts"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como instanciar o InMemoryProductRepository guardando na constante productRepository, depois o CreateProductService e o ListProductService injetando o mesmo productRepository, e por fim o CreateProductController e o ListProductController, cada um recebendo seu respectivo Service?",
+              "comment": "Instanciar Repository, Services e Controllers em cadeia",
+              "answer": "const productRepository = new InMemoryProductRepository();\nconst createProductService = new CreateProductService(productRepository);\nconst listProductService = new ListProductService(productRepository);\nconst createProductController = new CreateProductController(createProductService);\nconst listProductController = new ListProductController(listProductService);",
+              "workspace": {
+                "activeFilePath": "src/server.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "modules",
+                        "children": [
+                          {
+                            "type": "folder",
+                            "name": "product",
+                            "children": [
+                              {
+                                "type": "file",
+                                "name": "product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "in.memory.product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.controller.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.controller.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "product.routes.ts"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "file",
+                        "name": "server.ts"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Os dois Services compartilhando a mesma instância",
+              "content": "Repare que productRepository é criado uma única vez, e a mesma instância é injetada tanto no CreateProductService quanto no ListProductService. É por isso que um produto criado pelo POST aparece na listagem do GET: os dois Services enxergam a mesma lista products por trás do productRepository, mesmo cada um sendo usado por um Controller diferente."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar o app.use para montar as rotas do produto sob o prefixo /products, chamando a função productRoutes e passando o createProductController e o listProductController como argumentos?",
+              "comment": "Montar as rotas do produto",
+              "answer": "app.use(\"/products\", productRoutes(createProductController, listProductController));",
+              "workspace": {
+                "activeFilePath": "src/server.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "modules",
+                        "children": [
+                          {
+                            "type": "folder",
+                            "name": "product",
+                            "children": [
+                              {
+                                "type": "file",
+                                "name": "product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "in.memory.product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.controller.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.controller.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "product.routes.ts"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "file",
+                        "name": "server.ts"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Por fim, como fazer a aplicação escutar a porta 3002, exibindo no terminal a mensagem Server is running on PORT 3002 assim que o servidor iniciar?",
+              "comment": "Colocar o servidor no ar",
+              "answer": "app.listen(3002, () => console.log(\"Server is running on PORT 3002\"));",
+              "workspace": {
+                "activeFilePath": "src/server.ts",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "src",
+                    "children": [
+                      {
+                        "type": "folder",
+                        "name": "modules",
+                        "children": [
+                          {
+                            "type": "folder",
+                            "name": "product",
+                            "children": [
+                              {
+                                "type": "file",
+                                "name": "product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "in.memory.product.repository.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.service.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "create.product.controller.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "list.product.controller.ts"
+                              },
+                              {
+                                "type": "file",
+                                "name": "product.routes.ts"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "file",
+                        "name": "server.ts"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como compilar e rodar a aplicação em TypeScript?",
+              "content": "Diferente do JavaScript, o Node.js não executa arquivos .ts diretamente. É preciso compilar primeiro:\n\n1. No terminal, execute 'npx tsc'. Isso lê o tsconfig.json, compila tudo que está em src, e gera os arquivos .js equivalentes dentro de dist.\n\n2. Em seguida, execute 'node dist/server.js'.\n\nSe tudo estiver certo, a mensagem Server is running on PORT 3002 aparece no terminal, e a aplicação já está pronta para receber requisições em http://localhost:3002."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Visualizando a listagem no navegador",
+              "content": "Abra o navegador e acesse:\n\nhttp://localhost:3002/products\n\nComo o navegador faz uma requisição GET por padrão, essa rota vai cair certinho no handle do ListProductController, que devolve a lista de produtos como JSON. Se você ainda não cadastrou nenhum produto, a resposta deve ser uma lista vazia: []."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Cadastrando um produto e atualizando a listagem",
+              "content": "Para criar um produto, use o comando curl no terminal, já que o navegador não faz POST sozinho:\n\ncurl -X POST http://localhost:3002/products -H \"Content-Type: application/json\" -d '{\"name\": \"Teclado Mecanico\", \"price\": 350}'\n\nDepois disso, volte ao navegador e atualize a página http://localhost:3002/products — o produto que você acabou de cadastrar deve aparecer na lista, já com um id gerado."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: inversão de dependência com TypeScript",
+              "content": "Nesta lição você aprendeu a inversão de dependência em TypeScript, agora apoiada pelos recursos reais do TypeScript:\n\n1. A interface ProductRepository agora é um contrato, e o contrato agora é verificado pelo compilador, não em tempo de execução.\n2. InMemoryProductRepository implementa esse contrato com implements, e o TypeScript garante que todos os métodos exigidos existam.\n3. CreateProductService e ListProductService usaram o atalho do TypeScript (private productRepository: ProductRepository) para já declarar e injetar a dependência no construtor.\n4. Seguindo o mesmo padrão dos Services, o Controller foi dividido em dois: CreateProductController e ListProductController, cada um com uma única responsabilidade e um único método handle — o que também evita misturar blocos try/catch de ações diferentes dentro da mesma classe.\n5. O Router registra a rota POST com o CreateProductController e a rota GET com o ListProductController, e o server.ts injeta cada Service no seu respectivo Controller, ambos compartilhando a mesma instância de InMemoryProductRepository.\n\nA arquitetura em camadas continua a mesma da lição em JavaScript. O que muda é que, em TypeScript, o contrato da inversão de dependência deixa de ser uma convenção mantida na cabeça de quem programa, e passa a ser garantido pelo compilador — e, com um Controller por caso de uso, cada arquivo fica pequeno o bastante para crescer sem virar um emaranhado de chaves."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

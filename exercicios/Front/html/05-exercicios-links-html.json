@@ -1,0 +1,155 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "links-html",
+          "name": "Links (a, href, target)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o ambiente",
+              "content": "Antes de escrever qualquer código, vamos preparar o ambiente:\n\n1. Dentro da pasta, no seu projeto, crie um arquivo chamado index.html. Esse será o arquivo que o navegador vai abrir para mostrar sua página.\n\n2. Clique em próximo para iniciar os exercícios."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Digite ! e pressione Tab para gerar a estrutura básica do HTML com o Emmet dentro do arquivo index.html vazio.",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é a tag a e o atributo href?",
+              "content": "A tag a, de anchor, é a tag responsável por criar links em uma página, permitindo que o usuário navegue para outro endereço ao clicar. É graças a ela que a internet é uma rede de páginas conectadas entre si, o próprio significado da palavra hipertexto.\n\nO atributo href, de hypertext reference, é onde você informa para onde esse link deve levar o usuário: pode ser outro site, outra página do mesmo projeto, ou até um ponto específico dentro da própria página."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag body, crie um link usando a tag a com href apontando para https://www.google.com e o texto Visite o Google.",
+              "comment": "Criar link externo para o Google",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<a href=\"https://www.google.com\">Visite o Google</a>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Para que serve o atributo target?",
+              "content": "Por padrão, ao clicar em um link, o navegador substitui a página atual pela nova. Se você quiser que o link abra em uma nova aba, mantendo a página original aberta, use o atributo target com o valor _blank.\n\nEssa prática é comum quando o link leva o usuário para fora do seu site, como uma rede social ou uma fonte externa, evitando que ele perca o conteúdo que estava lendo."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Altere o link criado anteriormente para que ele abra em uma nova aba, adicionando o atributo target com o valor _blank, já que esse link leva para um site externo.",
+              "comment": "Adicionar target blank para abrir link em nova aba",
+              "commentAnchor": {
+                "find": "<a href=\"https://www.google.com\">Visite o Google</a>",
+                "position": "replace",
+                "fallback": "end"
+              },
+              "answer": "<a href=\"https://www.google.com\" target=\"_blank\">Visite o Google</a>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que são links internos ou âncoras de página?",
+              "content": "Além de apontar para outros sites, o href também pode apontar para um ponto específico dentro da própria página, o que é muito usado em menus que levam o usuário direto para uma seção mais abaixo, sem precisar rolar manualmente.\n\nPara isso, o valor do href começa com um sinal de jogo da velha (#) seguido do id do elemento de destino, por exemplo href=\"#sobre\". O navegador então rola automaticamente até o elemento que tiver esse mesmo id."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo do link do Google, crie um novo link com href apontando para #sobre e o texto Ir para sobre, que futuramente vai levar o usuário até uma seção mais abaixo na mesma página.",
+              "comment": "Criar link interno apontando para a seção sobre",
+              "commentAnchor": {
+                "find": "<a href=\"https://www.google.com\" target=\"_blank\">Visite o Google</a>",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "<a href=\"#sobre\">Ir para sobre</a>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No final da tag body, depois de todo o conteúdo já criado, adicione um título usando a tag h2 com o id sobre e o texto Sobre, para que o link criado anteriormente tenha um destino de verdade.",
+              "comment": "Criar seção de destino com id sobre",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "<h2 id=\"sobre\">Sobre</h2>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Links para email e telefone",
+              "content": "O href também pode ser usado para abrir o aplicativo de email ou de telefone do usuário diretamente. Para email, o valor começa com mailto: seguido do endereço, como mailto:contato@teste.com. Para telefone, o valor começa com tel: seguido do número.\n\nAo clicar nesse tipo de link, o navegador ou o celular do usuário abre automaticamente o programa padrão de email ou o discador, já com o destinatário ou número preenchido."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo do título Sobre, adicione um parágrafo com um link de email usando mailto, com o texto Envie um email para contato@teste.com, apontando para o endereço contato@teste.com.",
+              "comment": "Adicionar link de email usando mailto",
+              "commentAnchor": {
+                "find": "<h2 id=\"sobre\">Sobre</h2>",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "<p>Envie um email para <a href=\"mailto:contato@teste.com\">contato@teste.com</a></p>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: navegação com links",
+              "content": "Nesta lição você aprendeu:\n\n1. Que a tag a cria links, e o atributo href define para onde o link aponta.\n2. Que target=\"_blank\" faz o link abrir em uma nova aba, útil para links externos.\n3. Que um href começando com # aponta para um id dentro da própria página, criando uma âncora interna.\n4. Que href também aceita mailto: para email e tel: para telefone, abrindo o aplicativo padrão do usuário.\n\nOs links são a base da navegação na web, conectando páginas, seções e até outros meios de comunicação, como email e telefone."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

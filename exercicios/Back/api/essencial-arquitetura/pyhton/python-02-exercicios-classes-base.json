@@ -1,0 +1,378 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Junior",
+      "themes": [
+        {
+          "id": "arquitetura-camadas-python",
+          "name": "Arquitetura em Camadas (Python)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que vamos construir nesta licao?",
+              "content": "Vamos exercitar a criacao das 3 classes mais usadas na arquitetura em camadas:\n\n- Repository: cuida do acesso aos dados.\n- Service: contem a regra de negocio (as validacoes e decisoes do sistema).\n- Controller: recebe a requisicao e devolve a resposta.\n\nVamos construir de baixo para cima: primeiro o Repository, depois o Service, e por ultimo o Controller. Em cada camada, voce vai ver como criar a classe, instanciar ela e usar seus metodos, antes de passar para a proxima. Tudo em Python, usando classes puras, sem frameworks."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o projeto",
+              "content": "No VSCode, certifique-se que voce esta dentro de uma pasta vazia, sem nenhum arquivo dentro."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Camada 1: o que e o Repository?",
+              "content": "O Repository e a camada mais proxima dos dados. E ele quem sabe como buscar, salvar, atualizar ou apagar informacoes, seja em um banco de dados de verdade ou, como no nosso caso, em uma lista guardada na memoria do programa.\n\nNenhuma outra camada deveria acessar os dados diretamente, sempre passando pelo Repository. Assim, se um dia voce trocar a lista em memoria por um banco de dados real, so precisa alterar essa camada, sem mexer no restante da aplicacao."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar a classe UserRepository, com um construtor __init__ que inicializa self.users como uma lista vazia, que vai funcionar como nosso banco de dados em memoria?",
+              "comment": "Criar a classe UserRepository",
+              "answer": "class UserRepository:\n    def __init__(self):\n        self.users = []",
+              "workspace": {
+                "activeFilePath": "src/repositories/user_repository.py",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user_repository.py" } ] }, { "type": "folder", "name": "services", "children": [] }, { "type": "folder", "name": "controllers", "children": [] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que inicializar self.users dentro do __init__?",
+              "content": "Em Python, se voce escrever users = [] direto no corpo da classe (fora do __init__), essa lista vira um atributo de classe, compartilhado por todas as instancias de UserRepository. Como listas sao mutaveis, isso causaria um bug serio: adicionar um usuario em uma instancia afetaria todas as outras.\n\nPor isso, sempre que o atributo for uma lista, dicionario ou outro objeto mutavel, ele deve ser criado dentro do __init__, garantindo que cada instancia tenha sua propria copia isolada.\n\nEm um banco de dados de verdade, uma busca por username seria escrita como uma consulta, algo como SELECT * FROM USERS WHERE USERNAME = 'valor' LIMIT 1. Metodos como find_by_username fariam esse papel aqui, de forma simplificada, direto na lista em memoria."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar o metodo save, que recebe um dicionario user, adiciona esse usuario na lista self.users e retorna o proprio usuario salvo?",
+              "comment": "Criar metodo save dentro do Repository",
+              "commentAnchor": {
+                "find": "self.users = []",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "\n    def save(self, user):\n        self.users.append(user)\n        return user",
+              "workspace": {
+                "activeFilePath": "src/repositories/user_repository.py",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user_repository.py" } ] }, { "type": "folder", "name": "services", "children": [] }, { "type": "folder", "name": "controllers", "children": [] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo como instanciar uma classe em Python",
+              "content": "Para criar uma instancia de uma classe em Python, chamamos o nome da classe seguido de parenteses, sem a palavra new que existe em outras linguagens. Por exemplo, UserRepository() cria um novo objeto que e uma instancia da classe UserRepository. Cada vez que fazemos isso, uma nova instancia e criada, com suas proprias variaveis e metodos."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como instanciar a classe UserRepository, guardando essa instancia na variavel user_repository, logo abaixo de tudo que ja escrevemos no arquivo?",
+              "comment": "Criando uma instancia da classe UserRepository",
+              "answer": "user_repository = UserRepository()",
+              "workspace": {
+                "activeFilePath": "src/repositories/user_repository.py",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user_repository.py" } ] }, { "type": "folder", "name": "services", "children": [] }, { "type": "folder", "name": "controllers", "children": [] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo como usar uma instancia de classe",
+              "content": "Depois de criar uma instancia de uma classe, acessamos seus atributos e metodos usando a notacao de ponto. Por exemplo, se fizermos repo = UserRepository(), podemos acessar a lista de usuarios com repo.users e chamar o metodo save com repo.save(user). Cada instancia mantem seu proprio estado, entao instancias diferentes podem ter listas de usuarios diferentes."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar o user_repository para salvar dois usuarios de teste no repositorio, chamando o metodo save duas vezes com dicionarios contendo username e password?",
+              "comment": "Salvando dados no repositorio de usuarios",
+              "answer": "user_repository.save({'username': 'user1', 'password': '123456'})\n\nuser_repository.save({'username': 'user2', 'password': 'abcdef'})",
+              "workspace": {
+                "activeFilePath": "src/repositories/user_repository.py",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user_repository.py" } ] }, { "type": "folder", "name": "services", "children": [] }, { "type": "folder", "name": "controllers", "children": [] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar print para visualizar a lista de usuarios salvos, acessando user_repository.users?",
+              "comment": "Exibindo a lista de usuarios do repositorio",
+              "answer": "print(user_repository.users)",
+              "workspace": {
+                "activeFilePath": "src/repositories/user_repository.py",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user_repository.py" } ] }, { "type": "folder", "name": "services", "children": [] }, { "type": "folder", "name": "controllers", "children": [] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que print(user_repository.users) e nao print(user_repository)?",
+              "content": "Diferente do console.log do JavaScript, que ja mostra as propriedades de um objeto automaticamente, em Python o comando print(user_repository) mostraria apenas algo como <UserRepository object at 0x...>, sem detalhes uteis, a menos que a classe defina um metodo especial chamado __repr__.\n\nPor isso, para ver o estado que nos interessa, imprimimos diretamente o atributo user_repository.users."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como executar no terminal a classe UserRepository e ver o resultado do print",
+              "content": "Para executar o arquivo user_repository.py no terminal, voce precisa ter o Python instalado no seu computador.\n\nVerifique se seu arquivo esta salvo.\n\nAbra o terminal do VSCode e execute o comando:\n\npython src/repositories/user_repository.py\n\nou \n\npython3 src/repositories/user_repository.py\n\nCaso nao funcione, tente python3 no lugar de python.\n\nIsso vai rodar o arquivo e mostrar no terminal a saida do print, com a lista de usuarios salvos no repositorio."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "representacao da saida do print",
+              "content": "A saida no terminal deve ser parecida com esta:\n\n[{'username': 'user1', 'password': '123456'}, {'username': 'user2', 'password': 'abcdef'}]\n\nCada item da lista e um dicionario representando um usuario, com seu username e password. Essa lista e o que vai ser usado (de forma simplificada) pelo Service para validar e montar o objeto final do usuario."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é dicionário em Python?",
+              "content": "Um dicionário em Python é uma estrutura de dados que armazena pares de chave-valor. Cada chave é única e é usada para acessar o valor associado a ela."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Camada 2: o que e o Service?",
+              "content": "O Service e onde mora a regra de negocio da aplicacao: validacoes e transformacoes nos dados antes deles seguirem adiante.\n\nNesta licao, o CreateUserService recebe os dados de um cadastro, valida se o username foi informado, e monta o objeto final do usuario - sem se preocupar ainda com onde esses dados serao guardados."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo create_user_service.py, como criar a classe CreateUserService com um metodo execute, que recebe data e lanca um erro com a mensagem Username e obrigatorio caso data.get('username') nao tenha sido informado?",
+              "comment": "Criar a classe CreateUserService e validar o username",
+              "answer": "class CreateUserService:\n    def execute(self, data):\n        if not data.get('username'):\n            raise Exception('Username e obrigatorio')",
+              "workspace": {
+                "activeFilePath": "src/services/create_user_service.py",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user_repository.py" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create_user_service.py" } ] }, { "type": "folder", "name": "controllers", "children": [] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que e o raise Exception?",
+              "content": "O raise Exception() e a forma de lancar um erro em Python. Quando o metodo execute da classe CreateUserService nao encontra um username valido, ele lanca um erro com a mensagem Username e obrigatorio. Isso interrompe a execucao do codigo e permite que o erro seja tratado adequadamente, geralmente em um bloco try/except."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Classe CreateUserService",
+              "content": "A classe CreateUserService tem um metodo execute que recebe um dicionario data. O metodo se chama execute porque e responsavel por executar a logica de criacao do usuario (CreateUserService). Dentro dele, ha uma validacao para verificar se data.get('username') foi informado. Se nao for, o metodo lanca um erro com a mensagem Username e obrigatorio. Essa validacao garante que o cadastro de usuario nao prossiga sem um username valido."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do execute, logo apos a validacao, como pegar data.get('username') e data.get('password') em variaveis separadas, montar um dicionario chamado object_user com user e password, e retornar esse dicionario?",
+              "comment": "Montar o object_user e retornar o dicionario do usuario",
+              "commentAnchor": {
+                "find": "raise Exception('Username e obrigatorio')",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "\n        user = data.get('username')\n        password = data.get('password')\n        object_user = {'user': user, 'password': password}\n\n        return object_user",
+              "workspace": {
+                "activeFilePath": "src/services/create_user_service.py",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user_repository.py" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create_user_service.py" } ] }, { "type": "folder", "name": "controllers", "children": [] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar um dicionario chamado request, simulando os dados que chegariam para o cadastro, com username 'user1' e password '123456'?",
+              "comment": "Criar o dicionario request de teste que viria do Controller",
+              "answer": "request = {'username': 'user1', 'password': '123456'}",
+              "workspace": {
+                "activeFilePath": "src/services/create_user_service.py",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user_repository.py" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create_user_service.py" } ] }, { "type": "folder", "name": "controllers", "children": [] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como instanciar a classe CreateUserService, guardando na variavel create_user_service?",
+              "comment": "Instanciando o CreateUserService",
+              "answer": "create_user_service = CreateUserService()",
+              "workspace": {
+                "activeFilePath": "src/services/create_user_service.py",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user_repository.py" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create_user_service.py" } ] }, { "type": "folder", "name": "controllers", "children": [] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como chamar create_user_service.execute passando o request, guardando o resultado na variavel output?",
+              "comment": "Executando o metodo execute passando o request como parametro",
+              "answer": "output = create_user_service.execute(request)",
+              "workspace": {
+                "activeFilePath": "src/services/create_user_service.py",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user_repository.py" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create_user_service.py" } ] }, { "type": "folder", "name": "controllers", "children": [] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar print para exibir o output retornado pelo Service?",
+              "comment": "Exibindo o resultado do Service",
+              "answer": "print(output)",
+              "workspace": {
+                "activeFilePath": "src/services/create_user_service.py",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user_repository.py" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create_user_service.py" } ] }, { "type": "folder", "name": "controllers", "children": [] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como executar no terminal a classe CreateUserService e ver o resultado do print",
+              "content": "Abra o terminal do VSCode e execute o comando:\n\npython src/services/create_user_service.py\n\nou \n\npython3 src/services/create_user_service.py\n\nComo o request tem um username preenchido, o execute nao lanca erro, monta o object_user e retorna ele para a variavel output."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "representacao do print do Service",
+              "content": "A saida no terminal deve ser parecida com esta:\n\n{'user': 'user1', 'password': '123456'}\n\nRepare que o dicionario retornado usa as chaves user e password, e nao username e password como veio no request - foi exatamente isso que fizemos ao montar object_user dentro do execute.\n\nEsse dicionario e o que o CreateUserService devolve para o Controller."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Camada 3: o que e o Controller?",
+              "content": "O Controller e a porta de entrada da aplicacao: e ele quem recebe a requisicao e devolve a resposta. Numa API de verdade, o handle chamaria o Service dentro de um try, deixando o except pronto para capturar qualquer erro que o Service lancasse.\n\nNesta licao, para focar no conceito de request/response, o handle monta a resposta diretamente, mas ja usando essa mesma estrutura de try/except, retornando um dicionario com status e body em cada caso."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo user_controller.py, como criar a classe UserController com um metodo handle, que recebe request, pega username e password de request['body'], e monta um dicionario chamado result com user e password?",
+              "comment": "Criar a classe UserController e montar o result",
+              "answer": "class UserController:\n    def handle(self, request):\n        user = request['body']['username']\n        password = request['body']['password']\n        result = {'user': user, 'password': password}",
+              "workspace": {
+                "activeFilePath": "src/controllers/user_controller.py",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user_repository.py" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create_user_service.py" } ] }, { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user_controller.py" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo apos montar o result, como criar um bloco try que retorna um dicionario com status 200 e o result em body? Logo em seguida, como criar um except que captura o erro e retorna um dicionario com status 400 e um body contendo err com a mensagem do erro?",
+              "comment": "Criar o try retornando a resposta de sucesso e o except retornando a resposta de erro",
+              "commentAnchor": {
+                "find": "result = {'user': user, 'password': password}",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "\n        try:\n            return {'status': 200, 'body': result}\n        except Exception as err:\n            return {'status': 400, 'body': {'err': str(err)}}",
+              "workspace": {
+                "activeFilePath": "src/controllers/user_controller.py",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user_repository.py" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create_user_service.py" } ] }, { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user_controller.py" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "o que e o try e except?",
+              "content": "O try/except e uma estrutura de controle de fluxo usada para lidar com excecoes (erros) em Python. O bloco try contem o codigo que pode gerar um erro, e se algum erro ocorrer dentro desse bloco, a execucao e interrompida e o controle e passado para o bloco except. O except recebe o erro (aqui chamado de err), permitindo tratar o erro de forma adequada, como registrar uma mensagem ou retornar uma resposta de erro. Isso ajuda a evitar que erros nao tratados quebrem a aplicacao."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar um dicionario chamado request, simulando uma requisicao de teste, com body contendo username 'user1' e password '123456'?",
+              "comment": "Criar o dicionario request de teste",
+              "answer": "request = {'body': {'username': 'user1', 'password': '123456'}}",
+              "workspace": {
+                "activeFilePath": "src/controllers/user_controller.py",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user_repository.py" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create_user_service.py" } ] }, { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user_controller.py" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que usar o body?",
+              "content": "Em uma API de verdade, o body da requisicao e onde ficam os dados enviados pelo cliente, como informacoes de cadastro ou login. No nosso exemplo, estamos simulando esse comportamento criando um dicionario request com uma chave body que contem username e password. Isso nos permite testar o Controller de forma semelhante a como ele seria usado em um cenario real, recebendo dados do cliente."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como instanciar a classe UserController, guardando na variavel user_controller?",
+              "comment": "Instanciando o Controller",
+              "answer": "user_controller = UserController()",
+              "workspace": {
+                "activeFilePath": "src/controllers/user_controller.py",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user_repository.py" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create_user_service.py" } ] }, { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user_controller.py" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como chamar user_controller.handle passando o request, guardando o resultado na variavel output?",
+              "comment": "Executando o Controller com o request de teste",
+              "answer": "output = user_controller.handle(request)",
+              "workspace": {
+                "activeFilePath": "src/controllers/user_controller.py",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user_repository.py" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create_user_service.py" } ] }, { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user_controller.py" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar print para exibir o output retornado pelo Controller?",
+              "comment": "Exibindo o resultado do Controller",
+              "answer": "print(output)",
+              "workspace": {
+                "activeFilePath": "src/controllers/user_controller.py",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user_repository.py" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create_user_service.py" } ] }, { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user_controller.py" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como executar no terminal a classe UserController e ver o resultado do print",
+              "content": "Abra o terminal do VSCode e execute o comando:\n\npython src/controllers/user_controller.py\n\nou\n\npython3 src/controllers/user_controller.py\n\nO handle recebe o request, monta o result a partir de request['body'], e o try retorna a resposta de sucesso com status 200."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "representacao do print do Controller",
+              "content": "A saida no terminal deve ser parecida com esta:\n\n{'status': 200, 'body': {'user': 'user1', 'password': '123456'}}\n\nRepare na estrutura: status guarda o codigo da resposta, e body guarda os dados - a mesma ideia usada por frameworks Python como o FastAPI ou o Flask quando voce monta uma resposta HTTP."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: entendendo o caminho de uma requisicao",
+              "content": "Nesta licao voce praticou a criacao de tres classes em Python, cada uma com uma responsabilidade clara:\n\n1. O UserRepository guarda dados em memoria, com o metodo save, sempre inicializando listas dentro do __init__ para evitar atributos compartilhados entre instancias.\n2. O CreateUserService valida os dados recebidos e monta o dicionario final do usuario no metodo execute, lancando excecoes com raise Exception quando algo esta invalido.\n3. O UserController recebe uma requisicao simulada no handle, monta a resposta dentro de um try, com um except pronto para capturar erros, e devolve um dicionario com status e body.\n\nRepare que, nesta licao, cada classe foi praticada de forma isolada, no seu proprio arquivo - e assim que fica mais facil entender o que cada camada faz sozinha, antes de conectar tudo de verdade (Controller chamando Service, Service chamando Repository) usando import entre os arquivos do projeto."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,366 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "arquitetura-camadas-node",
+          "name": "Arquitetura em Camadas (Node.js)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que vamos construir nesta lição?",
+              "content": "Vamos exercitar a criação das 3 classes mais usadas na arquitetura em camadas:\n\n- Repository: cuida do acesso aos dados.\n- Service: contém a regra de negócio (as validações e decisões do sistema).\n- Controller: recebe a requisição e devolve a resposta.\n\nVamos construir de baixo para cima: primeiro o Repository, depois o Service, e por último o Controller. Em cada camada, você vai ver como criar a classe, instanciar ela e usar seus métodos, antes de passar para a próxima."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o projeto",
+              "content": "No Vscode certifique-se que você está dentro de uma pasta vazia, sem nehuma arquivo dentro."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Camada 1: o que é o Repository?",
+              "content": "O Repository é a camada mais próxima dos dados. É ele quem sabe como buscar, salvar, atualizar ou apagar informações, seja em um banco de dados de verdade ou, como no nosso caso, em uma lista guardada na memória do programa.\n\nNenhuma outra camada deveria acessar os dados diretamente, sempre passando pelo Repository. Assim, se um dia você trocar a lista em memória por um banco de dados real, só precisa alterar essa camada, sem mexer no restante da aplicação."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar a classe UserRepository com uma propriedade chamada users, iniciada como uma lista vazia, que vai funcionar como nosso banco de dados em memória?",
+              "comment": "Criar a classe UserRepository",
+              "answer": "//Pose-se escolher construir com ou sem contrutor em javascript.\n\n\nclass UserRepository {\n  users = [];\n} \n ou \n\nclass UserRepository {\n  constructor() {\n    this.users = [];\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/repositories/user.repository.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [] }, { "type": "folder", "name": "controllers", "children": [] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Pensando como um banco de dados de verdade",
+              "content": "A função find do array percorre a lista de usuários e devolve o primeiro item que tiver o username igual ao que foi passado. Se nenhum for encontrado, ela retorna undefined, que representa a ausência de um valor.\n\nEm um banco de dados de verdade, essa mesma busca seria escrita como uma consulta SQL, algo como SELECT * FROM USERS WHERE USERNAME = 'valor' LIMIT 1. O método findByUsername faz exatamente esse papel aqui: é a nossa versão simplificada dessa consulta, guardada em memória em vez de em um banco real."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar o método save, que recebe um objeto user, adiciona esse usuário na lista users e retorna o próprio usuário salvo?",
+              "comment": "Criar método save dentro do Repository",
+              "commentAnchor": {
+                "find": "class UserRepository {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "save(user) {\n  this.users.push(user);\n  return user;\n}",
+              "workspace": {
+                "activeFilePath": "src/repositories/user.repository.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [] }, { "type": "folder", "name": "controllers", "children": [] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo como instanciar uma classe",
+              "content": "Para criar uma instância de uma classe, usamos a palavra-chave new seguida do nome da classe e parênteses. Por exemplo, new UserRepository() cria um novo objeto que é uma instância da classe UserRepository. Cada vez que usamos new, uma nova instância é criada, com suas próprias propriedades e métodos."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como instanciar a classe UserRepository, guardando essa instância na constante userRepository, logo abaixo de tudo que já escrevemos no arquivo?",
+              "comment": "Criando uma instância da classe UserRepository",
+              "answer": "const userRepository = new UserRepository();",
+              "workspace": {
+                "activeFilePath": "src/repositories/user.repository.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [] }, { "type": "folder", "name": "controllers", "children": [] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo como usar uma instância de classe",
+              "content": "Depois de criar uma instância de uma classe, podemos acessar suas propriedades e métodos usando a notação de ponto. Por exemplo, se fizermos const repo = new UserRepository(), podemos acessar a lista de usuários com repo.users e chamar o método save com repo.save(user). Cada instância mantém seu próprio estado, então diferentes instâncias podem ter listas de usuários diferentes."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar o userRepository para salvar dois usuários de teste no repositório, chamando o método save duas vezes?",
+              "comment": "Salvando dados no repositório de usuários",
+              "answer": "userRepository.save({ username: 'user1', password: '123456' });\n\nuserRepository.save({ username: 'user2', password: 'abcdef' });",
+              "workspace": {
+                "activeFilePath": "src/repositories/user.repository.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [] }, { "type": "folder", "name": "controllers", "children": [] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar console.log para visualizar o estado atual do objeto userRepository, incluindo a lista de usuários salvos?",
+              "comment": "Exibindo o estado do objeto userRepository",
+              "answer": "console.log(userRepository);",
+              "workspace": {
+                "activeFilePath": "src/repositories/user.repository.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [] }, { "type": "folder", "name": "controllers", "children": [] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como executar no terminal a classe UserRepository e ver o resultado do console.log",
+              "content": "Para executar o arquivo user.repository.js no terminal, você precisa ter o Node.js instalado no seu computador.\n\n Verifique se seus arquivo está  salvo.\n\n Abra o terminal do vscode e execute o seguinte comando:\n\n```\nnode src/repositories/user.repository.js\n```\n\nIsso vai rodar o arquivo e você verá a saída do console.log no terminal, mostrando o estado atual do objeto userRepository, incluindo a lista de usuários salvos."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "representação do objeto no console.log",
+              "content": "É o estado atual da instância da classe UserRepository: \n\n UserRepository {\n  users: [\n    { username: 'user1', password: '123456' },\n    { username: 'user2', password: 'abcdef' }\n  ]\n}\n\nO console.log mostra que a propriedade users contém uma lista com dois objetos, cada um representando um usuário com seu username e password. Este objeto que vai ser usado pelo Service para validar e montar o objeto final do usuário."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Camada 2: o que é o Service?",
+              "content": "O Service é onde mora a regra de negócio da aplicação: validações e transformações nos dados antes deles seguirem adiante.\n\nNesta lição, o CreateUserService recebe os dados de um cadastro, valida se o username foi informado, e monta o objeto final do usuário — sem se preocupar ainda com onde esses dados serão guardados."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo create.user.service.js, como criar a classe CreateUserService com um método execute, que recebe data e lança um erro com a mensagem Username é obrigatório caso data.username não tenha sido informado?",
+              "comment": "Criar a classe CreateUserService e validar o username",
+              "answer": "class CreateUserService {\n  execute(data) {\n    if (!data.username) {\n      throw new Error(\"Username é obrigatório\");\n    }\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/services/create.user.service.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] }, { "type": "folder", "name": "controllers", "children": [] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é o throw new Error?",
+              "content": "O throw new Error() é uma forma de lançar um erro em JavaScript. Quando o método execute da classe CreateUserService não encontra um username válido, ele lança um erro com a mensagem \"Username é obrigatório\". Isso interrompe a execução do código e permite que o erro seja tratado adequadamente."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Classe CreateUserService",
+              "content": "A classe CreateUserService tem um método execute que recebe um objeto data. O método execute tem esse nome pois o metodo é responsável por executar a lógica de criação do usuário(CreateUserService). Dentro do método, há uma validação para verificar se data.username foi informado. Se não for, o método lança um erro com a mensagem \"Username é obrigatório\". Essa validação garante que o cadastro de usuário não prossiga sem um username válido."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do execute, como pegar data.username e data.password em variáveis separadas, montar um objeto chamado objectUser com user e password, e retornar esse objeto?",
+              "comment": "Montar o objectUser e retornar o objeto do usuário",
+              "commentAnchor": {
+                "find": "execute(data) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "const user = data.username;\nconst password = data.password;\nconst objectUser = { user, password };\n\nreturn objectUser;",
+              "workspace": {
+                "activeFilePath": "src/services/create.user.service.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] }, { "type": "folder", "name": "controllers", "children": [] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar um objeto chamado request, simulando os dados que chegariam para o cadastro, com username 'user1' e password '123456'?",
+              "comment": "Criar o objeto request de teste que virá do Controller",
+              "answer": "const request = { username: 'user1', password: '123456' };",
+              "workspace": {
+                "activeFilePath": "src/services/create.user.service.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] }, { "type": "folder", "name": "controllers", "children": [] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como instanciar a classe CreateUserService, guardando na constante createUserService?",
+              "comment": "Instanciando o CreateUserService",
+              "answer": "const createUserService = new CreateUserService();",
+              "workspace": {
+                "activeFilePath": "src/services/create.user.service.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] }, { "type": "folder", "name": "controllers", "children": [] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como chamar createUserService.execute passando o request, guardando o resultado na constante output?",
+              "comment": "Executando o método execute passando o request como parâmetro",
+              "answer": "const output = createUserService.execute(request);",
+              "workspace": {
+                "activeFilePath": "src/services/create.user.service.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] }, { "type": "folder", "name": "controllers", "children": [] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar console.log para exibir o output retornado pelo Service?",
+              "comment": "Exibindo o resultado do Service",
+              "answer": "console.log(output);",
+              "workspace": {
+                "activeFilePath": "src/services/create.user.service.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] }, { "type": "folder", "name": "controllers", "children": [] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como executar no terminal a classe CreateUserService e ver o resultado do console.log",
+              "content": "Abra o terminal do VSCode e execute o comando:\n\n```\nnode src/services/create.user.service.js\n```\n\nComo o request tem um username preenchido, o execute não lança erro, monta o objectUser e retorna ele para a constante output."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "representação do console.log do Service",
+              "content": "A saída no terminal deve ser parecida com esta:\n\n{ user: 'user1', password: '123456' }\n\nRepare que o objeto retornado usa as chaves user e password, e não username e password como veio no request — foi exatamente isso que fizemos ao montar objectUser dentro do execute.\n\n Este objeto é o que o CreateUserService devolve para o Controller."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Camada 3: o que é o Controller?",
+              "content": "O Controller é a porta de entrada da aplicação: é ele quem recebe a requisição e devolve a resposta. Numa API de verdade, o handle chamaria o Service dentro de um try, deixando o catch pronto para capturar qualquer erro que o Service lançasse.\n\nNesta lição, para focar no conceito de request/response, o handle monta a resposta diretamente, mas já usando essa mesma estrutura de try/catch, retornando um objeto com status e body em cada caso."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo user.controller.js, como criar a classe UserController com um método handle, que recebe request, pega username e password de request.body, e monta um objeto chamado result com user e password?",
+              "comment": "Criar a classe UserController e montar o result",
+              "answer": "class UserController {\n  handle(request) {\n    const user = request.body.username;\n    const password = request.body.password;\n    const result = { user, password };\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/controllers/user.controller.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] }, { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do handle, como criar um bloco try que retorna um objeto com status 200 e o result em body? Logo após o try, como criar um catch que captura o erro e retorna um objeto com status 400 e um body contendo err com a mensagem do erro?",
+              "comment": "Criar o try retornando a resposta de sucesso e o catch retornando a resposta de erro",
+              "commentAnchor": {
+                "find": "handle(request) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "try {\n  return { status: 200, body: result };\n}catch (err) {\n  return { status: 400, body: { err: err.message } };\n}",
+              "workspace": {
+                "activeFilePath": "src/controllers/user.controller.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] }, { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "o que é o try e catch?",
+              "content": "O try/catch é uma estrutura de controle de fluxo usada para lidar com exceções (erros) em JavaScript. O bloco try contém o código que pode gerar um erro, e se algum erro ocorrer dentro desse bloco, a execução é interrompida e o controle é passado para o bloco catch. O catch recebe o erro como parâmetro, permitindo que você trate o erro de forma adequada, como registrando uma mensagem ou retornando uma resposta de erro. Isso ajuda a evitar que erros não tratados quebrem a aplicação."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar um objeto chamado request, simulando uma requisição de teste, com body contendo username 'user1' e password '123456'?",
+              "comment": "Criar o objeto request de teste",
+              "answer": "const request = { body: { username: 'user1', password: '123456' } };",
+              "workspace": {
+                "activeFilePath": "src/controllers/user.controller.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] }, { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Porque usar o body?",
+              "content": "Em uma API de verdade, o body da requisição é onde ficam os dados enviados pelo cliente, como informações de cadastro ou login. No nosso exemplo, estamos simulando esse comportamento criando um objeto request com uma propriedade body que contém username e password. Isso nos permite testar o Controller de forma semelhante a como ele seria usado em um cenário real, recebendo dados do cliente."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como instanciar a classe UserController, guardando na constante userController?",
+              "comment": "Instanciando o Controller",
+              "answer": "const userController = new UserController();",
+              "workspace": {
+                "activeFilePath": "src/controllers/user.controller.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] }, { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como chamar userController.handle passando o request, guardando o resultado na constante output?",
+              "comment": "Executando o Controller com o request de teste",
+              "answer": "const output = userController.handle(request);",
+              "workspace": {
+                "activeFilePath": "src/controllers/user.controller.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] }, { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar console.log para exibir o output retornado pelo Controller?",
+              "comment": "Exibindo o resultado do Controller",
+              "answer": "console.log(output);",
+              "workspace": {
+                "activeFilePath": "src/controllers/user.controller.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] }, { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como executar no terminal a classe UserController e ver o resultado do console.log",
+              "content": "Abra o terminal do VSCode e execute o comando:\n\n```\nnode src/controllers/user.controller.js\n```\n\nO handle recebe o request, monta o result a partir de request.body, e o try retorna a resposta de sucesso com status 200."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "representação do console.log do Controller",
+              "content": "A saída no terminal deve ser parecida com esta:\n\n{ status: 200, body: { user: 'user1', password: '123456' } }\n\nRepare na estrutura: status guarda o código da resposta, e body guarda os dados — a mesma ideia usada por frameworks como o Express quando você faz response.status(200).json(body)."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: entendendo o caminho de uma requisição",
+              "content": "Nesta lição você praticou a criação de três classes, cada uma com uma responsabilidade clara:\n\n1. O UserRepository guarda dados em memória, com o método save.\n2. O CreateUserService valida os dados recebidos e monta o objeto final do usuário no método execute.\n3. O UserController recebe uma requisição simulada no handle, monta a resposta dentro de um try, com um catch pronto para capturar erros, e devolve um objeto com status e body.\n\nRepare que, nesta lição, cada classe foi praticada de forma isolada, no seu próprio arquivo — é assim que fica mais fácil entender o que cada camada faz sozinha, antes de conectar tudo de verdade (Controller chamando Service, Service chamando Repository) com import e export."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,492 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "arquitetura-camadas-injecao-dependencia",
+          "name": "Arquitetura em Camadas com Injeção de Dependência (Product)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que vamos construir nesta lição?",
+              "content": "Vamos construir de novo uma aplicação organizada em camadas — Repository, Service e Controller — mas desta vez o domínio é product, e vamos mudar uma coisa importante: nenhuma classe vai mais criar sua própria dependência internamente com new.\n\nEm vez disso, cada classe vai receber pronta, de fora, a dependência que ela precisa, através do construtor. Isso se chama injeção de dependência, e todas as instanciações — de Repository, Service e Controller — vão acontecer num único lugar: o server.js."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o projeto",
+              "content": "No Vscode certifique-se que você está dentro de uma pasta vazia, sem nenhum arquivo dentro."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como iniciar um projeto em Node.js?",
+              "content": "Use o terminal para executar o comando 'npm init -y'.\n\nEsse comando cria automaticamente o arquivo package.json, que guarda as informações do projeto (nome, versão, dependências instaladas etc.). É esse arquivo que o npm consulta sempre que você instala ou remove uma biblioteca."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar um arquivo .gitignore informando ao Git para ignorar a pasta node_modules, evitando que ela seja enviada ao repositório?",
+              "comment": "Criar o arquivo .gitignore",
+              "answer": "node_modules",
+              "workspace": {
+                "activeFilePath": ".gitignore",
+                "tree": [
+                  { "type": "file", "name": ".gitignore" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que ignorar a pasta node_modules?",
+              "content": "A pasta node_modules guarda todas as bibliotecas que o projeto usa, e pode ficar com milhares de arquivos e muitos megabytes de tamanho. Como qualquer pessoa consegue recriar essa pasta apenas rodando npm install, não faz sentido enviar ela para o repositório Git — isso só deixaria o repositório pesado e lento para clonar.\n\nO arquivo .gitignore serve exatamente para isso: listar arquivos e pastas que o Git deve ignorar e nunca versionar."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como instalar a biblioteca para criar uma API?",
+              "content": "1. Use o terminal para executar o comando 'npm install express'.\n\n2. Esse comando faz três coisas: instala o framework Express e registra ele como dependência no package.json; cria o arquivo package-lock.json, que trava exatamente as versões instaladas; e cria a pasta node_modules, onde o código do Express (e de tudo que ele depende) realmente fica salvo."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Habilitando import e organizando o projeto por módulos",
+              "content": "Antes de começar a escrever código, dois ajustes:\n\n1. Para poder usar a sintaxe import (em vez de require), abra o package.json e troque \"type\": \"commonjs\" por \"type\": \"module\".\n\n2. Vamos organizar por módulo: dentro de src, criamos a pasta modules, e dentro dela uma pasta para cada domínio da aplicação. Como desta vez o domínio é product, vamos criar src/modules/product, e é lá que vai morar o Repository, o Service, o Controller e as Rotas desse domínio.\n\nA ordem em que vamos construir importa: primeiro o Repository, depois o Service, depois o Controller, depois as Rotas, e por último o server.js — e é justamente no server.js que, desta vez, todas as instâncias vão ser criadas."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Camada 1: o que é o Repository?",
+              "content": "O Repository é a camada mais próxima dos dados. É ele quem sabe como buscar, salvar, atualizar ou apagar informações, seja em um banco de dados de verdade ou, como no nosso caso, em uma lista guardada na memória do programa.\n\nNesta lição, o Repository vai cuidar dos produtos da aplicação, por isso a classe se chama ProductRepository."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar a classe ProductRepository com uma propriedade chamada products, iniciada como uma lista vazia, que vai funcionar como nosso banco de dados em memória?",
+              "comment": "Criar a classe ProductRepository",
+              "answer": "class ProductRepository {\n  products = [];\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/product.repository.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar dentro da classe ProductRepository um método findByName, que recebe um name e retorna o produto da lista products cujo name seja igual ao recebido?",
+              "comment": "Criar método findByName dentro do Repository",
+              "commentAnchor": {
+                "find": "class ProductRepository {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "findByName(name) {\n  const productExists = this.products.find((product) => product.name === name);\n  return productExists;\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/product.repository.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Pensando como um banco de dados de verdade",
+              "content": "A função find do array percorre a lista de produtos e devolve o primeiro item que tiver o name igual ao que foi passado. Se nenhum for encontrado, ela retorna undefined.\n\nEm um banco de dados de verdade, essa mesma busca seria escrita como uma consulta SQL, algo como SELECT * FROM PRODUCTS WHERE NAME = 'valor' LIMIT 1. O método findByName faz esse papel aqui, guardando os dados em memória em vez de em um banco real."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar o método save, que recebe um objeto product, gera um id aleatório para ele, adiciona esse produto na lista products e retorna o produto já com o id?",
+              "comment": "Criar método save dentro do Repository",
+              "commentAnchor": {
+                "find": "class ProductRepository {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "save(product) {\n  const id = Math.random().toString();\n  const productWithId = { ...product, id };\n  this.products.push(productWithId);\n  return productWithId;\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/product.repository.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo o spread operator ...product",
+              "content": "A sintaxe { ...product, id } usa o spread operator, representado pelas três reticências. Ele copia todas as propriedades que já existem dentro de product, como name e price, para um novo objeto, e em seguida adiciona a propriedade id a esse novo objeto.\n\nIsso evita que precisemos copiar cada propriedade manualmente, e garante que o objeto original, product, não seja alterado diretamente — só o novo objeto productWithId é que carrega o id."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar a classe ProductRepository, usando chaves, para que ela possa ser importada em outros arquivos?",
+              "comment": "Exportar a classe ProductRepository",
+              "answer": "export { ProductRepository };",
+              "workspace": {
+                "activeFilePath": "src/modules/product/product.repository.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que exportar a classe, e não uma instância pronta?",
+              "content": "Repare que agora exportamos a própria classe ProductRepository, e não um new ProductRepository() já pronto como em lições anteriores.\n\nIsso é proposital: quem vai decidir quando e onde criar a instância do Repository não é mais este arquivo — é o server.js, que vai criar essa instância e entregá-la para quem precisar dela. Esse é o primeiro passo da injeção de dependência, que vamos entender melhor a seguir."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é injeção de dependência?",
+              "content": "Até agora, quando uma classe precisava de outra, ela criava essa dependência sozinha, dentro do próprio método, usando new. O problema é que isso deixa as duas classes muito coladas uma na outra: se um dia você quiser trocar essa dependência, por exemplo por uma versão falsa para testes, precisaria alterar o código de dentro da classe.\n\nInjeção de dependência é a ideia de inverter isso: em vez de a classe criar o que ela precisa, ela recebe essa dependência já pronta, de fora, geralmente através do construtor. A classe só declara o que espera receber, sem se preocupar em saber como esse objeto foi criado."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como a injeção acontece no construtor",
+              "content": "Na prática, a classe declara um construtor que recebe um parâmetro, por exemplo constructor(productRepository), e logo em seguida guarda esse valor recebido em uma propriedade da própria instância, com this.productRepository = productRepository.\n\nclass CreateProductService {\n  constructor(productRepository) {\n    this.productRepository = productRepository;\n  }\n\n\n}\n\nA partir daí, qualquer método dessa classe pode usar this.productRepository para chamar os métodos do Repository, sem nunca ter dado new ProductRepository() dentro dela. Quem decide qual objeto entra ali é sempre quem cria a instância dessa classe, lá fora."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo create.product.service.js, como criar a classe CreateProductService com um construtor que recebe productRepository e guarda ele em this.productRepository, e um método execute que recebe data?",
+              "comment": "Criar a classe CreateProductService com injeção de dependência no construtor",
+              "answer": "class CreateProductService {\n  constructor(productRepository) {\n    this.productRepository = productRepository;\n  }\n\n  execute(data) {\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/create.product.service.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.js" }, { "type": "file", "name": "create.product.service.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que este arquivo não importa o ProductRepository?",
+              "content": "Repare que o create.product.service.js não tem nenhum import do ProductRepository. Isso é intencional: a classe CreateProductService não precisa saber onde o Repository foi definido, nem como ele foi criado — ela só espera receber, pelo construtor, um objeto que tenha os métodos findByName e save.\n\nEsse é um dos maiores ganhos da injeção de dependência: o Service fica desacoplado de uma implementação específica do Repository."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do método execute, como lançar um erro com a mensagem Nome do produto é obrigatório, caso data.name não tenha sido informado?",
+              "comment": "Validar se o name foi informado",
+              "commentAnchor": {
+                "find": "execute(data) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "if (!data.name) {\n  throw new Error(\"Nome do produto é obrigatório\");\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/create.product.service.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.js" }, { "type": "file", "name": "create.product.service.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo o throw new Error",
+              "content": "O comando throw interrompe imediatamente a execução da função e lança um erro. Se esse erro não for tratado em algum lugar, ele quebra a aplicação. É por isso que, mais adiante, o Controller vai usar um bloco try/catch para capturar esse erro e transformar ele em uma resposta HTTP adequada."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar this.productRepository para verificar, através do findByName, se já existe um produto com o name informado, lançando um erro com a mensagem Produto já cadastrado! caso ele exista?",
+              "comment": "Verificar se o produto já existe",
+              "commentAnchor": {
+                "find": "execute(data) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "const existProduct = this.productRepository.findByName(data.name);\n\nif (existProduct) {\n  throw new Error(\"Produto já cadastrado!\");\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/create.product.service.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.js" }, { "type": "file", "name": "create.product.service.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Por fim, como usar this.productRepository para salvar o data recebido, retornando diretamente o resultado desse método save?",
+              "comment": "Salvar o produto através do Repository injetado",
+              "commentAnchor": {
+                "find": "execute(data) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "return this.productRepository.save(data);",
+              "workspace": {
+                "activeFilePath": "src/modules/product/create.product.service.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.js" }, { "type": "file", "name": "create.product.service.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar a classe CreateProductService usando chaves?",
+              "comment": "Exportar a classe CreateProductService",
+              "answer": "export { CreateProductService };",
+              "workspace": {
+                "activeFilePath": "src/modules/product/create.product.service.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.js" }, { "type": "file", "name": "create.product.service.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Camada 3: o que é o Controller?",
+              "content": "O Controller é a porta de entrada da aplicação. É ele quem recebe a requisição HTTP, extrai as informações necessárias dela, chama a camada de Service para executar a regra de negócio, e devolve uma resposta HTTP adequada.\n\nAssim como fizemos no Service, o Controller também vai receber sua dependência — o CreateProductService — através do construtor, em vez de criá-la sozinho."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo product.controller.js, como criar a classe ProductController com um construtor que recebe createProductService e guarda ele em this.createProductService, e um método handle que recebe request e response, extraindo o body da requisição?",
+              "comment": "Criar a classe ProductController com injeção de dependência no construtor",
+              "answer": "class ProductController {\n  constructor(createProductService) {\n    this.createProductService = createProductService;\n  }\n\n  handle(request, response) {\n    const { body } = request;\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/product.controller.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.js" }, { "type": "file", "name": "create.product.service.js" }, { "type": "file", "name": "product.controller.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do handle, como criar um bloco try que usa this.createProductService para executar o método execute passando o body, e retorna o resultado como JSON usando response.json?",
+              "comment": "Chamar a camada de serviço injetada dentro do método handle",
+              "commentAnchor": {
+                "find": "handle(request, response) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "try {\n  const result = this.createProductService.execute(body);\n  return response.json(result);\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/product.controller.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.js" }, { "type": "file", "name": "create.product.service.js" }, { "type": "file", "name": "product.controller.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo após o try, como criar um bloco catch que captura o erro, e retorna uma resposta com status 400 e um JSON contendo a mensagem err com o err.message?",
+              "comment": "Tratar o erro lançado pelo Service",
+              "commentAnchor": {
+                "find": "try {",
+                "position": "afterBlock",
+                "fallback": "end"
+              },
+              "answer": "catch (err) {\n  return response.status(400).json({\n    err: err.message,\n  });\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/product.controller.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.js" }, { "type": "file", "name": "create.product.service.js" }, { "type": "file", "name": "product.controller.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo o status 400 e o try/catch completo",
+              "content": "O status 400 significa Bad Request, e é o código correto para avisar quem fez a requisição que o problema está nos dados enviados, como um produto que já existe ou que não foi informado.\n\nCom o try/catch, se o Service lançar um erro com throw, o catch captura esse erro na variável err, e conseguimos ler a mensagem através de err.message, devolvendo ela de forma organizada na resposta."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar a classe ProductController usando chaves?",
+              "comment": "Exportar a classe ProductController",
+              "answer": "export { ProductController };",
+              "workspace": {
+                "activeFilePath": "src/modules/product/product.controller.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.js" }, { "type": "file", "name": "create.product.service.js" }, { "type": "file", "name": "product.controller.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Camada 4: o Router também recebe sua dependência",
+              "content": "O Router do Express permite declarar as rotas de um domínio num arquivo separado, em vez de declarar tudo dentro do server.js. Seguindo a mesma ideia de injeção de dependência, o arquivo de rotas não vai mais instanciar o Controller sozinho — ele vai receber o productController já pronto, como parâmetro de uma função."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo product.routes.js, como importar o Router do express e criar uma função chamada productRoutes, que recebe um productController como parâmetro, cria uma instância do Router guardando em router, e no final retorna esse router?",
+              "comment": "Criar a função productRoutes recebendo o controller por parâmetro",
+              "answer": "import { Router } from \"express\";\n\nfunction productRoutes(productController) {\n  const router = Router();\n\n  return router;\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/product/product.routes.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.js" }, { "type": "file", "name": "create.product.service.js" }, { "type": "file", "name": "product.controller.js" }, { "type": "file", "name": "product.routes.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Antes do return router, como registrar no router uma rota POST na raiz (/), chamando o handle do productController, usando bind para garantir que o this dentro do handle continue apontando para o productController?",
+              "comment": "Registrar a rota POST na raiz do módulo",
+              "commentAnchor": {
+                "find": "return router;",
+                "position": "before",
+                "fallback": "end"
+              },
+              "answer": "router.post(\"/\", productController.handle.bind(productController));",
+              "workspace": {
+                "activeFilePath": "src/modules/product/product.routes.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.js" }, { "type": "file", "name": "create.product.service.js" }, { "type": "file", "name": "product.controller.js" }, { "type": "file", "name": "product.routes.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que precisamos do bind aqui?",
+              "content": "Agora que o handle usa this.createProductService dentro dele, o valor de this precisa continuar sendo o productController quando o Express chamar essa função. O problema é que, ao passar productController.handle direto como referência para o router.post, o Express chama essa função sozinha, sem saber de qual objeto ela veio — e nesse caso, this deixa de apontar para o productController.\n\nO método bind resolve isso: productController.handle.bind(productController) cria uma nova versão da função handle que já carrega, para sempre, a informação de que this deve ser o productController, não importa como ela seja chamada depois."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar a função productRoutes por padrão, para que ela possa ser importada no server.js?",
+              "comment": "Exportar a função productRoutes",
+              "answer": "export default productRoutes;",
+              "workspace": {
+                "activeFilePath": "src/modules/product/product.routes.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.js" }, { "type": "file", "name": "create.product.service.js" }, { "type": "file", "name": "product.controller.js" }, { "type": "file", "name": "product.routes.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Última etapa: o server.js como ponto único de instanciação",
+              "content": "Chegou a hora de montar tudo. Diferente das lições anteriores, agora nenhuma classe cria sua própria dependência — todo mundo espera receber pronto. Isso significa que alguém, em algum lugar, precisa efetivamente dar os new e ligar as pontas. Esse lugar é o server.js.\n\nÉ aqui que vamos criar o ProductRepository, depois o CreateProductService (entregando o Repository para ele), depois o ProductController (entregando o Service para ele), e por fim montar as rotas entregando o Controller para a função productRoutes."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo server.js, como importar o express, o ProductRepository, o CreateProductService, o ProductController e o productRoutes, e criar a aplicação com express(), guardando na variável app?",
+              "comment": "Importar todas as dependências e criar a aplicação",
+              "answer": "import express from \"express\";\nimport { ProductRepository } from \"./modules/product/product.repository.js\";\nimport { CreateProductService } from \"./modules/product/create.product.service.js\";\nimport { ProductController } from \"./modules/product/product.controller.js\";\nimport productRoutes from \"./modules/product/product.routes.js\";\n\nconst app = express();",
+              "workspace": {
+                "activeFilePath": "src/server.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.js" }, { "type": "file", "name": "create.product.service.js" }, { "type": "file", "name": "product.controller.js" }, { "type": "file", "name": "product.routes.js" } ] } ] }, { "type": "file", "name": "server.js" } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como configurar a aplicação para conseguir interpretar corretamente o corpo das requisições enviadas em formato JSON?",
+              "comment": "Habilitar o parser de JSON",
+              "answer": "app.use(express.json());",
+              "workspace": {
+                "activeFilePath": "src/server.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.js" }, { "type": "file", "name": "create.product.service.js" }, { "type": "file", "name": "product.controller.js" }, { "type": "file", "name": "product.routes.js" } ] } ] }, { "type": "file", "name": "server.js" } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que precisamos do express.json()?",
+              "content": "Por padrão, o Express não sabe interpretar o corpo de uma requisição enviado em JSON — ele chegaria como um texto puro. O middleware express.json() lê esse texto e transforma automaticamente em um objeto JavaScript, disponibilizando ele em request.body. Sem essa linha, o body usado no Controller chegaria undefined."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como instanciar o ProductRepository, depois o CreateProductService injetando o productRepository no construtor, e depois o ProductController injetando o createProductService no construtor?",
+              "comment": "Instanciar Repository, Service e Controller, injetando as dependências em cadeia",
+              "answer": "const productRepository = new ProductRepository();\nconst createProductService = new CreateProductService(productRepository);\nconst productController = new ProductController(createProductService);",
+              "workspace": {
+                "activeFilePath": "src/server.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.js" }, { "type": "file", "name": "create.product.service.js" }, { "type": "file", "name": "product.controller.js" }, { "type": "file", "name": "product.routes.js" } ] } ] }, { "type": "file", "name": "server.js" } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Repare na ordem das instanciações",
+              "content": "A ordem aqui não é por acaso. O ProductRepository é criado primeiro porque ele não depende de mais nada. Em seguida, o CreateProductService é criado recebendo esse productRepository já pronto no construtor. Por último, o ProductController é criado recebendo o createProductService já pronto.\n\nCada new já nasce com tudo que precisa, entregue de fora. É isso, na prática, que chamamos de injeção de dependência: nenhuma classe caça sua dependência sozinha, alguém entrega ela pronta."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar o app.use para montar as rotas do produto sob o prefixo /products, chamando a função productRoutes e passando o productController como argumento?",
+              "comment": "Montar as rotas do produto, injetando o controller na função productRoutes",
+              "answer": "app.use(\"/products\", productRoutes(productController));",
+              "workspace": {
+                "activeFilePath": "src/server.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.js" }, { "type": "file", "name": "create.product.service.js" }, { "type": "file", "name": "product.controller.js" }, { "type": "file", "name": "product.routes.js" } ] } ] }, { "type": "file", "name": "server.js" } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Por fim, como fazer a aplicação escutar a porta 3002, exibindo no terminal a mensagem Server is running on PORT 3002 assim que o servidor iniciar?",
+              "comment": "Colocar o servidor no ar",
+              "answer": "app.listen(3002, () => console.log(\"Server is running on PORT 3002\"));",
+              "workspace": {
+                "activeFilePath": "src/server.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "product", "children": [ { "type": "file", "name": "product.repository.js" }, { "type": "file", "name": "create.product.service.js" }, { "type": "file", "name": "product.controller.js" }, { "type": "file", "name": "product.routes.js" } ] } ] }, { "type": "file", "name": "server.js" } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como visualizar se a aplicação está rodando corretamente na rota products",
+              "content": "No arquivo  src/modules/product/product.routes.js, inclua a rota acima do post: \n\nrouter.get(\"/\", (req, res) => { return res.send(\"rota user ok\"); });\n\n Acesse no navegaddor: \n\n http://localhost:3002/products no navegador \n\n ou use o comando curl no terminal:\n\ncurl http://localhost:3002/products\n\nSe tudo estiver certo, a resposta deve ser rota user ok."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como rodar a aplicação para testar se a API está funcionando?",
+              "content": "1. Salve os arquivos e no terminal, execute o comando 'node src/server.js'.\n\n2. Se tudo estiver certo, a mensagem Server is running on PORT 3002 aparece no terminal.\n\n3. A partir daí, a aplicação já está pronta para receber requisições em http://localhost:3002."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como realizar uma requisição para criar um produto na rota POST /products?",
+              "content": "Como a rota /products espera um POST com um corpo em JSON, use o comando curl no terminal:\n\ncurl -X POST http://localhost:3002/products -H \"Content-Type: application/json\" -d '{\"name\": \"Teclado Mecanico\", \"price\": 350}'\n\nSe tudo funcionar, a resposta deve trazer o mesmo produto enviado, agora com um id gerado pelo Repository."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: injeção de dependência na prática",
+              "content": "Nesta lição você reconstruiu a arquitetura em camadas usando injeção de dependência:\n\n1. O ProductRepository não sabe de ninguém, e por isso é o primeiro a ser instanciado.\n2. O CreateProductService declara no construtor que precisa de um productRepository, e recebe ele pronto — sem nunca dar new ProductRepository() dentro de si mesmo.\n3. O ProductController declara no construtor que precisa de um createProductService, e recebe ele pronto da mesma forma.\n4. A função productRoutes recebe o productController como parâmetro, e usa bind para manter o this correto ao registrar o handle como rota.\n5. Todo esse encadeamento de new — Repository, depois Service, depois Controller — acontece num único lugar: o server.js, que funciona como o ponto de montagem de toda a aplicação.\n\nEssa é a diferença entre uma classe criar sua própria dependência e uma classe receber sua dependência: com injeção de dependência, cada classe fica mais simples de entender e de testar, porque ela só se importa com o que faz, não com quem cria as peças que ela usa."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

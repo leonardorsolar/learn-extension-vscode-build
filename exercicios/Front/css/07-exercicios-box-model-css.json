@@ -1,0 +1,181 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "box-model-css",
+          "name": "Box Model (margin, padding, border, width, height)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o ambiente",
+              "content": "Antes de escrever qualquer código, vamos preparar o ambiente:\n\n1. Dentro da pasta, no seu projeto, crie dois arquivos: index.html e style.css. O index.html será o arquivo que o navegador vai abrir para mostrar sua página, e o style.css será o arquivo onde você vai escrever as regras de estilo.\n\n2. Clique em próximo para iniciar os exercícios."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Digite ! e pressione Tab para gerar a estrutura básica do HTML com o Emmet dentro do arquivo index.html vazio.",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag head do index.html, adicione uma tag link conectando o arquivo style.css, usando rel igual a stylesheet e href igual a style.css.",
+              "comment": "Conectar o arquivo style.css usando a tag link",
+              "commentAnchor": {
+                "find": "<head>",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "<link rel=\"stylesheet\" href=\"style.css\">",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag body do index.html, adicione uma div com o atributo class igual a caixa e o texto Esta e uma caixa de exemplo., que vamos usar para estudar o box model.",
+              "comment": "Adicionar div para praticar box model",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<div class=\"caixa\">Esta e uma caixa de exemplo.</div>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é o box model?",
+              "content": "Todo elemento HTML é tratado pelo navegador como uma caixa retangular, formada por quatro camadas, de dentro para fora: o conteúdo, que é o texto ou os elementos internos; o padding, um espaçamento interno entre o conteúdo e a borda; o border, a borda visível ao redor da caixa; e o margin, um espaçamento externo entre essa caixa e os elementos vizinhos.\n\nUma boa forma de imaginar isso é pensar em um quadro na parede: o conteúdo é a pintura em si, o padding é a margem interna do quadro entre a pintura e a moldura, o border é a moldura, e o margin é o espaço vazio entre esse quadro e o próximo quadro na parede."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo style.css, que está vazio, crie um seletor de classe .caixa com as propriedades width igual a 250px e height igual a 100px, definindo o tamanho do conteúdo da caixa.",
+              "comment": "Definir width e height da caixa",
+              "answer": ".caixa {\n  width: 250px;\n  height: 100px;\n}",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é padding?",
+              "content": "Padding é o espaçamento interno entre o conteúdo da caixa e a borda dela. Sem padding, o texto costuma ficar colado exatamente na borda, o que dificulta a leitura e deixa o visual apertado. Você pode definir um único valor para os quatro lados de uma vez, como fizemos com width e height, ou valores diferentes para cada lado, algo que você vai aprender em lições futuras."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do seletor .caixa já criado, adicione a propriedade padding igual a 20px, criando um respiro entre o texto e a borda da caixa.",
+              "comment": "Adicionar padding interno à caixa",
+              "commentAnchor": {
+                "find": ".caixa {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "padding: 20px;",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é border?",
+              "content": "Border desenha uma borda visível ao redor do padding, logo depois dele. Ela costuma ser escrita em uma única linha, informando três valores juntos: a espessura, como 2px; o estilo do traço, como solid para uma linha contínua, dashed para tracejada, ou dotted para pontilhada; e a cor, como black."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do seletor .caixa, adicione a propriedade border igual a 2px solid #2563EB, dando à caixa uma borda azul sólida.",
+              "comment": "Adicionar borda à caixa",
+              "commentAnchor": {
+                "find": ".caixa {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "border: 2px solid #2563EB;",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é margin e qual a diferença para padding?",
+              "content": "Margin é o espaçamento externo, entre a borda da caixa e os elementos vizinhos, fora dela. É fácil confundir margin com padding, mas a diferença é justamente essa: padding fica dentro da borda, empurrando o conteúdo para dentro; margin fica fora da borda, empurrando outros elementos para longe da caixa.\n\nSe você tivesse duas caixas lado a lado, o margin seria responsável pelo espaço vazio entre elas, enquanto o padding continuaria controlando apenas o respiro interno de cada caixa individualmente."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do seletor .caixa, adicione a propriedade margin igual a 30px, criando um espaço entre a caixa e os elementos ao redor dela.",
+              "comment": "Adicionar margin externo à caixa",
+              "commentAnchor": {
+                "find": ".caixa {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "margin: 30px;",
+              "workspace": {
+                "activeFilePath": "style.css",
+                "tree": [
+                  { "type": "file", "name": "index.html" },
+                  { "type": "file", "name": "style.css" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Um cuidado comum: box-sizing",
+              "content": "Por padrão, o navegador soma padding e border ao width e height que você definiu, então uma caixa com width de 250px, padding de 20px e border de 2px acaba ocupando, na prática, bem mais do que 250px de largura total. Isso costuma surpreender iniciantes.\n\nMuitos projetos resolvem isso adicionando a propriedade box-sizing: border-box em um seletor universal logo no início do arquivo CSS, o que faz o navegador incluir o padding e a border dentro do width e height informados, em vez de somá-los. Você já viu esse seletor universal em uma lição anterior, e agora sabe exatamente por que ele costuma incluir essa propriedade."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: as quatro camadas do box model",
+              "content": "Nesta lição você aprendeu:\n\n1. Que todo elemento é uma caixa formada por conteúdo, padding, border e margin, nessa ordem de dentro para fora.\n2. Que width e height definem o tamanho do conteúdo da caixa.\n3. Que padding cria espaço interno entre o conteúdo e a borda.\n4. Que border desenha uma borda visível, com espessura, estilo e cor.\n5. Que margin cria espaço externo entre a caixa e os elementos vizinhos, sendo o oposto do padding em termos de posição.\n\nEntender o box model é essencial para controlar espaçamentos e alinhamentos em qualquer layout CSS daqui para frente."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

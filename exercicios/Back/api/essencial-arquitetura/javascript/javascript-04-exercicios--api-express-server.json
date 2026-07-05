@@ -1,0 +1,181 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "api-express",
+          "name": "API Express (Server)",
+          "lines": [
+             {
+              "type": "explanation",
+              "title": "Objetivo",
+              "content": "Vamos construir uma API simples em Javascript para entender como o servidor funciona com Express."
+            },
+            {
+              "type": "explanation",
+              "title": "MAS ANTES, Como seria um fluxo de um projeto completo em Node.js",
+              "content": "HTTP Request\n\n ↓ \n\n Server\n\n ↓ \n\n UserController\n\n ↓ \n\n CreateUserService\n\n ↓ \n\n UserRepository\n\n ↓ \n\n Banco de Dados"
+            },
+             {
+              "type": "explanation",
+              "title": "Responsabilidades",
+              "content": "Server recebe a URL.\n\n ↓ \n\nController recebe a requisição.\n\n ↓ \n\nService contém a regra de negócio.\n\n ↓ \n\nRepository acessa os dados."
+            },
+            {
+              "type": "exercise",
+              "question": "Em qual camada são configurados o servidor Express e as rotas da aplicação?",
+              "comment": "Entender arquitetura",
+              "answer": "Server"
+            },
+            {
+              "type": "exercise",
+              "question": "Em qual camada as requisições HTTP são recebidas e encaminhadas para a regra de negócio?",
+              "comment": "Entender arquitetura",
+              "answer": "Controller"
+            },
+            {
+              "type": "exercise",
+              "question": "Em qual camada fica a regra de negócio da aplicação?",
+              "comment": "Entender arquitetura",
+              "answer": "CreateUserService"
+            },
+            {
+              "type": "exercise",
+              "question": "Em qual camada ocorre o acesso aos dados, como consultas e gravações no banco de dados??",
+              "comment": "Entender arquitetura",
+              "answer": "UserRepository"
+            },
+             {
+              "type": "explanation",
+              "title": "O que vamos aprender aqui?",
+              "content": "HTTP Request\n\n ↓ \n\n Server\n\n \n\n Vamos aprender a criar um servidor com Express, definir rotas e responder a requisições HTTP."
+            },
+            {
+              "id": "b1a4c9f0-3e12-4a8d-9f61-1d2e3f4a5b6c",
+              "type": "explanation",
+              "title": "Inciando um projeto Node.js e subindo um servidor com Express",
+              "content": "Para inciar o projeto é importante:\n\n 1. **No Vscode**, veja se você está na pasta do projeto e verique se ela está vazia \n\n 2. Na extensão **Learn Extension**, clique em próximo para iniciar sua jornada."
+            },
+            {
+              "id": "b1a4c9f0-3e12-4a8d-9f61-1d2e3f4a5b6c",
+              "type": "explanation",
+              "title": "Como inciar um projeto em javascript?",
+              "content": "1.Use o terminal para executar o comando 'node --version' \n\nO comando 'node --version' mostra a versão do Node.js instalada.\n\n Caso o comando não funcione, é obrigatório a instalação do Node.js." 
+            },
+             {
+              "id": "b1a4c9f0-3e12-4a8d-9f61-1d2e3f4a5b6c",
+              "type": "explanation",
+              "title": "Como inciar um projeto em node.js?",
+              "content": "1.Use o terminal para executar o comando 'npm init -y' \n\n2.O comando 'npm init -y' cria automaticamente o arquivo package.json. "
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar um arquivo .gitignore informando ao Git para ignorar a pasta node_modules e a pasta dist, onde o TypeScript vai gerar os arquivos compilados?",
+              "comment": "Criar o arquivo .gitignore",
+              "answer": "node_modules\ndist",
+              "workspace": {
+                "activeFilePath": ".gitignore",
+                "tree": [
+                  { "type": "file", "name": "package.json" },
+                  { "type": "file", "name": ".gitignore" }
+                ]
+              }
+            },
+            {
+              "id": "b1a4c9f0-3e12-4a8d-9f61-1d2e3f4a5b6c",
+              "type": "explanation",
+              "title": "Como instalar a biblioteca para criar uma api?",
+              "content": "Use o terminal para executar o comando 'npm install express' \n\n1. O comando 'npm install express' instala o framework Express no arquivo package.json \n\n2. Criar o arquivo package-lock.json que registra exatamente as versões das dependências instaladas no projeto \n\n3. Cria a pasta node_module que contém todas as dependências do projeto."
+            },
+            {
+              "id": "0a62bd80-6571-4931-a462-958d5acd3c7a",
+              "type": "exercise",
+              "question": "Como importar a biblioteca Express utilizando a sintaxe ECMAScript 6 (ES6)?",
+              "comment": "Importar a biblioteca Express",
+              "answer": "import express from 'express';",
+              "workspace": {
+                "activeFilePath": "src/server.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "file", "name": "server.js" } ] }
+                ]
+              }
+            },
+            {
+              "id": "b1a4c9f0-3e12-4a8d-9f61-1d2e3f4a5b6c",
+              "type": "explanation",
+              "title": "Como usar a sintaxe ECMAScript 6 (ES6)?",
+              "content": "Acesse o arquivo package.json \n\n1. Em 'type': 'commonjs' modifique para 'type': 'module' \n\n2. Salve o arquivo package.json"
+            },
+            {
+              "id": "792debbd-51fe-4036-a7f0-7470962ebc30",
+              "type": "exercise",
+              "question": "Como criar uma instância da aplicação Express e armazená-la na variável app?",
+              "comment": "Instânciar a aplicação",
+              "answer": "const app = express();",
+              "workspace": {
+                "activeFilePath": "src/server.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "file", "name": "server.js" } ] }
+                ]
+              }
+            },
+            {
+              "id": "7f788798-2d62-4679-bccb-aa66a40f4bee",
+              "type": "exercise",
+              "question": "Como criar uma rota GET na raiz (\"/\") que responde com a mensagem \"API no ar\"?",
+              "comment": "rota GET/ 'API no ar'",
+              "answer": "app.get('/', (req, res) => res.send('API no ar')); \n\n ou \n\n app.get('/', function(req, res) {\n  res.send('API no ar');\n});",
+              "workspace": {
+                "activeFilePath": "src/server.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "file", "name": "server.js" } ] }
+                ]
+              }
+            },
+            {
+              "id": "4960ac5f-c1f6-422d-abc2-715d682fe259",
+              "type": "exercise",
+              "question": "Como fazer a aplicação escutar requisições na porta 3000?",
+              "comment": "porta de escuta",
+              "answer": "app.listen(3000);",
+              "workspace": {
+                "activeFilePath": "src/server.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "file", "name": "server.js" } ] }
+                ]
+              }
+            },
+            {
+              "id": "4960ac5f-c1f6-422d-abc2-715d682fe259",
+              "type": "exercise",
+              "question": "Como rodar a aplicação para testar se a API está funcionando?",
+              "comment": "Use o terminal e execute o comando: 'node src/server.js'",
+              "answer": "O comando node src/server.js inicia o servidor e você pode acessar a rota http://localhost:3000/ no navegador para ver a mensagem \"API no ar\".\\ Para encerrar o servidor, pressione Ctrl + C no terminal.",
+              "workspace": {
+                "activeFilePath": "src/server.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "file", "name": "server.js" } ] }
+                ]
+              }
+            },
+            {
+              "id": "b1a4c9f0-3e12-4a8d-9f61-1d2e3f4a5b6c",
+              "type": "explanation",
+              "title": "Como visualizar a API no navegador?",
+              "content": "1. Abra o navegador e digite na barra de endereços: http://localhost:3000/\n\n2. Você verá a mensagem \"API no ar\" exibida na página, indicando que o servidor Express está funcionando corretamente."
+            },
+            {
+              "id": "b1a4c9f0-3e12-4a8d-9f61-1d2e3f4a5b6c",
+              "type": "explanation",
+              "title": "Resumo: montando uma API Express",
+              "content": "Nesta lição você aprendeu o fluxo básico para subir um servidor com Express:\n\n1. **Importar** a biblioteca com `import express from 'express'`.\n2. **Instanciar** a aplicação com `express()`.\n3. **Definir rotas** com métodos como `app.get(...)`, que recebem a requisição (`req`) e a resposta (`res`).\n4. **Escutar** uma porta com `app.listen(3000)` para o servidor começar a aceitar conexões.\n\nEsse padrão se repete em quase todo backend Node.js: importar → instanciar → configurar rotas/middlewares → escutar porta."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

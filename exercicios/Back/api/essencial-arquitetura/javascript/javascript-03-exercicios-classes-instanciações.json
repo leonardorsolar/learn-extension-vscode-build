@@ -1,0 +1,308 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "integracao-camadas-import-export",
+          "name": "Integrando as Camadas com Import e Export",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que vamos construir nesta lição?",
+              "content": "Agora vamos conectar de verdade as tres camadas usando import e export. Dessa vez o fluxo vai ser real:\n\n- O main.js chama o Controller.\n- O Controller chama o Service.\n- O Service chama o Repository.\n\nCada arquivo vai importar apenas a camada de baixo, formando uma cadeia. Vamos construir de baixo para cima: primeiro o Repository, depois o Service (que importa o Repository), depois o Controller (que importa o Service), e por ultimo o main.js (que importa o Controller)."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Antes de comecar: conferindo o Node.js",
+              "content": "Abra o terminal do VSCode e digite node -v para conferir a versao instalada. No Node.js v24, o suporte a import e export (ES Modules) ja e' bem estavel.\n\nAinda assim, para o Node aceitar import e export dentro de arquivos .js, o arquivo package.json do projeto precisa ter a linha type: module. Confira isso antes de continuar; caso nao tenha, adicione essa linha no package.json, senao o Node vai acusar erro ao executar os arquivos."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo src/repositories/user.repository.js, como criar a classe UserRepository com um construtor que inicia a propriedade users como uma lista vazia?",
+              "comment": "Criar a classe UserRepository",
+              "answer": "class UserRepository {\n  constructor() {\n    this.users = [];\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/repositories/user.repository.js",
+                "tree": [
+                  { "type": "file", "name": "main.js" },
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da classe UserRepository, como criar o metodo save, que recebe um usuario, adiciona ele na lista users e retorna o proprio usuario salvo?",
+              "comment": "Criar metodo save dentro do Repository",
+              "commentAnchor": {
+                "find": "class UserRepository {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "save(user) {\n  this.users.push(user);\n  return user;\n}",
+              "workspace": {
+                "activeFilePath": "src/repositories/user.repository.js",
+                "tree": [
+                  { "type": "file", "name": "main.js" },
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Para que a classe UserRepository possa ser usada em outro arquivo, ao final do arquivo, como exporta-la usando export entre chaves?",
+              "comment": "Exportar a classe UserRepository",
+              "answer": "export { UserRepository };",
+              "workspace": {
+                "activeFilePath": "src/repositories/user.repository.js",
+                "tree": [
+                  { "type": "file", "name": "main.js" },
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Import nomeado: importando entre chaves",
+              "content": "Quando uma classe e' exportada com export { NomeDaClasse }, ela precisa ser importada da mesma forma, usando chaves: import { NomeDaClasse } from caminho.\n\nO caminho e' sempre relativo ao arquivo atual. Como o Service esta' dentro de src/services e o Repository esta' dentro de src/repositories, o caminho sobe uma pasta com ../ antes de entrar em repositories."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo src/services/create.user.service.js, como importar a classe UserRepository do arquivo user.repository.js, que fica na pasta repositories, ao lado da pasta services?",
+              "comment": "Importar a classe UserRepository para acessar os seus metodos",
+              "answer": "import { UserRepository } from '../repositories/user.repository.js';",
+              "workspace": {
+                "activeFilePath": "src/services/create.user.service.js",
+                "tree": [
+                  { "type": "file", "name": "main.js" },
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo do import, como criar a classe CreateUserService com um metodo execute que recebe data_input e lanca um erro com a mensagem Username e obrigatorio caso data_input.username nao tenha sido informado?",
+              "comment": "Criar a classe CreateUserService e validar o username",
+              "answer": "class CreateUserService {\n  execute(data_input) {\n    if (!data_input.username) {\n      throw new Error('Username e obrigatorio');\n    }\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/services/create.user.service.js",
+                "tree": [
+                  { "type": "file", "name": "main.js" },
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do execute, depois da validacao, como instanciar a classe UserRepository e usar o metodo save para salvar o data_input, guardando o retorno na constante output?",
+              "comment": "Instanciando o Repository e salvando os dados",
+              "commentAnchor": {
+                "find": "execute(data_input) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "const userRepository = new UserRepository();\nconst output = userRepository.save(data_input);",
+              "workspace": {
+                "activeFilePath": "src/services/create.user.service.js",
+                "tree": [
+                  { "type": "file", "name": "main.js" },
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ainda dentro do execute, logo apos salvar no Repository, como retornar o output para quem chamou o metodo?",
+              "comment": "Retornar o output do metodo save do Repository",
+              "commentAnchor": {
+                "find": "execute(data_input) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "return output;",
+              "workspace": {
+                "activeFilePath": "src/services/create.user.service.js",
+                "tree": [
+                  { "type": "file", "name": "main.js" },
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar a classe CreateUserService usando export entre chaves?",
+              "comment": "Exportar a classe CreateUserService",
+              "answer": "export { CreateUserService };",
+              "workspace": {
+                "activeFilePath": "src/services/create.user.service.js",
+                "tree": [
+                  { "type": "file", "name": "main.js" },
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo src/controllers/user.controller.js, como importar a classe CreateUserService do arquivo create.user.service.js, que fica na pasta services, ao lado da pasta controllers?",
+              "comment": "Importar a classe CreateUserService para acessar os seus metodos",
+              "answer": "import { CreateUserService } from '../services/create.user.service.js';",
+              "workspace": {
+                "activeFilePath": "src/controllers/user.controller.js",
+                "tree": [
+                  { "type": "file", "name": "main.js" },
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo do import, como criar a classe UserController com um metodo handle, que recebe request, instancia o CreateUserService e chama o execute passando request.body, guardando o retorno na constante output?",
+              "comment": "Criar a classe UserController instanciando e executando o Service",
+              "answer": "class UserController {\n  handle(request) {\n    const createUserService = new CreateUserService();\n    const output = createUserService.execute(request.body);\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/controllers/user.controller.js",
+                "tree": [
+                  { "type": "file", "name": "main.js" },
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do handle, como criar um try que retorna um objeto com status 200 e o output em body? Logo apos, como criar um catch que captura o erro e retorna um objeto com status 400 e um body contendo err com a mensagem do erro?",
+              "comment": "Criar o try retornando a resposta de sucesso e o catch retornando a resposta de erro",
+              "commentAnchor": {
+                "find": "handle(request) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "try {\n  return { status: 200, body: output };\n} catch (err) {\n  return { status: 400, body: { err: err.message } };\n}",
+              "workspace": {
+                "activeFilePath": "src/controllers/user.controller.js",
+                "tree": [
+                  { "type": "file", "name": "main.js" },
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar a classe UserController usando export entre chaves?",
+              "comment": "Exportar a classe UserController",
+              "answer": "export { UserController };",
+              "workspace": {
+                "activeFilePath": "src/controllers/user.controller.js",
+                "tree": [
+                  { "type": "file", "name": "main.js" },
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O main.js: o ponto de entrada do projeto",
+              "content": "O main.js fica na raiz do projeto, fora da pasta src. E' o arquivo que voce' vai executar no terminal, e e' ele quem inicia toda a cadeia: ele chama o Controller, que chama o Service, que chama o Repository.\n\nComo o main.js esta' na raiz e o Controller esta' dentro de src/controllers, o caminho do import comeca com ./src/."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo main.js, na raiz do projeto, como importar a classe UserController do arquivo que fica em src/controllers/user.controller.js?",
+              "comment": "Importar a classe UserController para acessar os seus metodos",
+              "answer": "import { UserController } from './src/controllers/user.controller.js';",
+              "workspace": {
+                "activeFilePath": "main.js",
+                "tree": [
+                  { "type": "file", "name": "main.js" },
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo do import, como criar um objeto chamado request_input, simulando a requisicao que viria do formulario do front end, com body contendo username user1 e password 123456?",
+              "comment": "Requisicao que vem do formulário do front end",
+              "answer": "const request_input = { body: { username: 'user1', password: '123456' } };",
+              "workspace": {
+                "activeFilePath": "main.js",
+                "tree": [
+                  { "type": "file", "name": "main.js" },
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como instanciar a classe UserController e chamar o metodo handle passando o request_input, guardando o retorno na constante output?",
+              "comment": "Instanciando o Controller e executando o metodo handle",
+              "answer": "const userController = new UserController();\nconst output = userController.handle(request_input);",
+              "workspace": {
+                "activeFilePath": "main.js",
+                "tree": [
+                  { "type": "file", "name": "main.js" },
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar console.log para exibir o output retornado pelo Controller?",
+              "comment": "Exibindo o resultado do Controller",
+              "answer": "console.log(output);",
+              "workspace": {
+                "activeFilePath": "main.js",
+                "tree": [
+                  { "type": "file", "name": "main.js" },
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "controllers", "children": [ { "type": "file", "name": "user.controller.js" } ] }, { "type": "folder", "name": "repositories", "children": [ { "type": "file", "name": "user.repository.js" } ] }, { "type": "folder", "name": "services", "children": [ { "type": "file", "name": "create.user.service.js" } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como executar o main.js no terminal",
+              "content": "Confira novamente se o package.json tem a linha type: module. Depois, no terminal do VSCode, na raiz do projeto, execute:\n\n```\nnode main.js\n```\n\nLembre-se de salvar todos os arquivos.\n\nO Node vai seguir a cadeia toda: main.js chama o Controller, o Controller chama o Service, o Service chama o Repository e salva o usuario, e o resultado final aparece no console.log como um objeto com status 200 e o usuario salvo dentro de body."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O retorno da Controller",
+              "content": "o resultado do Controller e' um objeto com status e body. O status 200 indica sucesso, e o body contem o usuario salvo. Se voce' tentar executar o main.js sem informar o username no request_input, o Service vai lancar um erro, que sera' capturado pelo Controller e retornara' um objeto com status 400 e a mensagem de erro dentro de body.err."
+            },
+             {
+              "id": "",
+              "type": "explanation",
+              "title": "Porque precisamos da bliblioteca Express para criar uma API",
+              "content": "O Express e' uma biblioteca que facilita a criacao de APIs em Node.js. Ele fornece uma forma padronizada de lidar com requisicoes HTTP, rotas, middlewares e respostas. Sem o Express, voce teria que lidar manualmente com o objeto http do Node.js, o que pode ser mais complexo e verboso.\n\nCom o Express, voce pode definir rotas de forma simples, como app.get('/users', handler) ou app.post('/users', handler), e o framework cuida de toda a parte de parsing da requisicao, envio de resposta e tratamento de erros. Isso permite que voce foque na logica da aplicacao, como criar usuarios, autenticar, etc., sem se preocupar com os detalhes do protocolo HTTP."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: a cadeia completa entre as camadas",
+              "content": "Nesta licao voce conectou de verdade as tres camadas usando import e export:\n\n1. O UserRepository guarda os dados em memoria e foi exportado com export { UserRepository }.\n2. O CreateUserService importou o UserRepository, validou o username e usou o metodo save para persistir os dados, retornando o resultado.\n3. O UserController importou o CreateUserService, chamou o execute dentro de um try/catch, e devolveu uma resposta padronizada com status e body.\n4. O main.js, na raiz do projeto, importou o UserController e disparou toda a cadeia com uma unica chamada a handle.\n\nEssa e' a diferenca entre camadas isoladas e camadas integradas: agora, uma requisicao percorre Controller, Service e Repository em sequencia, exatamente como funciona em uma aplicacao real."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,513 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "arquitetura-camadas-node",
+          "name": "Arquitetura em Camadas (Node.js)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que vamos construir nesta lição?",
+              "content": "Nesta lição você vai aprender a arquitetura em camadas e aprender a modularizar uma aplicação para escalibilidade. Será construindo o módulo user. Vamos separar a aplicação em três responsabilidades diferentes: \n\n -Controller: recebe a requisição HTTP e devolve a resposta.\n\n - Service: contém a regra de negócio (as validações e decisões do sistema).\n\n - Repository: cuida do acesso aos dados.\n\n Cada camada só conhece a camada logo abaixo dela. O Controller fala com o Service, e o Service fala com o Repository — o Controller nunca fala diretamente com o Repository. Essa organização deixa o código mais fácil de manter e de testar."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o projeto",
+              "content": "No Vscode certifique-se que você está dentro de uma pasta vazia, sem nehuma arquivo dentro."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como iniciar um projeto em Node.js?",
+              "content": "Use o terminal para executar o comando 'npm init -y'.\n\n Esse comando cria automaticamente o arquivo package.json, que guarda as informações do projeto (nome, versão, dependências instaladas etc.). É esse arquivo que o npm consulta sempre que você instala ou remove uma biblioteca."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar um arquivo .gitignore informando ao Git para ignorar a pasta node_modules, evitando que ela seja enviada ao repositório?",
+              "comment": "Criar o arquivo .gitignore",
+              "answer": "node_modules",
+              "workspace": {
+                "activeFilePath": ".gitignore",
+                "tree": [
+                  { "type": "file", "name": ".gitignore" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que ignorar a pasta node_modules?",
+              "content": "A pasta node_modules guarda todas as bibliotecas que o projeto usa, e pode ficar com milhares de arquivos e muitos megabytes de tamanho. Como qualquer pessoa consegue recriar essa pasta apenas rodando npm install, não faz sentido enviar ela para o repositório Git — isso só deixaria o repositório pesado e lento para clonar.\n\nO arquivo .gitignore serve exatamente para isso: listar arquivos e pastas que o Git deve ignorar e nunca versionar."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como instalar a biblioteca para criar uma API?",
+              "content": "Use o terminal para executar o comando 'npm install express'.\n\n Esse comando faz três coisas: instala o framework Express e registra ele como dependência no package.json; cria o arquivo package-lock.json, que trava exatamente as versões instaladas (garantindo que outra pessoa que baixar o projeto use as mesmas versões); e cria a pasta node_modules, onde o código do Express (e de tudo que ele depende) realmente fica salvo."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Habilitando import para usar o ECMA6?",
+              "content": "Antes de começar a escrever código, um ajuste:\n\n 1. Para poder usar a sintaxe import (em vez de require), abra o package.json e troque \"type\": \"commonjs\" por \"type\": \"module\", assim como você já fez em lições anteriores.\n\n. O ECMA6 é a versão mais recente do JavaScript, e a sintaxe import/export é uma das novidades que ela trouxe. Com isso, podemos importar e exportar módulos de forma mais clara e organizada."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Organizando o projeto por módulos - Modularização",
+              "content": "Desta vez, ao invés de separar a aplicação por camada solta (uma pasta so' de repositories, outra so' de services, outra so' de controllers), vamos organizar por módulo: dentro de src, criamos a pasta modules, e dentro dela uma pasta para cada domínio da aplicação. Como estamos lidando com usuários, vamos criar src/modules/user, e e' dentro dela que vai morar o Repository, o Service, o Controller e as Rotas desse dominio, todos juntos.\n\nEssa organizacao facilita encontrar tudo que diz respeito a usuário num único lugar, e fica ainda mais fácil de escalar quando a aplicacao cresce e ganha outros dominios, como product ou order, cada um com sua propria pasta dentro de modules.\n\nA ordem em que vamos construir importa: primeiro o Repository (a base, que mexe com os dados), depois o Service (que usa o Repository), depois o Controller (que usa o Service), depois as Rotas (que usam o Controller), e por ultimo o server.js, que junta tudo e sobe o servidor."
+            },
+             {
+              "type": "explanation",
+              "title": "Fluxo do projeto em Node.js",
+              "content": "HTTP Request\n(Origem da requisição HTTP -navegador-.)\n\n↓\n\nServer\n(Inicializa o Express e recebe as conexões HTTP.)\n\n↓\n\nRouter\n(Analisa a rota e encaminha a requisição para a Controller correta.)\n\n↓\n\nUserController\n(Recebe a requisição, extrai os dados e chama a regra de negócio.)\n\n↓\n\nCreateUserService\n(Executa a regra de negócio da aplicação.)\n\n↓\n\nUserRepository\n(Realiza o acesso aos dados, salvando e consultando usuários.)\n\nNão usaremos Banco de Dados. Utilizaremos um banco em memória, ou seja, uma lista de usuários armazenada na memória do programa."
+            },
+             {
+              "type": "explanation",
+              "title": "Responsabilidade das camadas",
+              "content": "\n\nController recebe a requisição.\n\n ↓ \n\nService contém a regra de negócio.\n\n ↓ \n\nRepository acessa os dados."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Camada 1: o que é o Repository?",
+              "content": "O Repository é a camada mais próxima dos dados. É ele quem sabe como buscar, salvar, atualizar ou apagar informações, seja em um banco de dados de verdade ou, como no nosso caso, em uma lista guardada na memória do programa.\n\nNenhuma outra camada deveria acessar os dados diretamente, sempre passando pelo Repository. Assim, se um dia você trocar a lista em memória por um banco de dados real, só precisa alterar essa camada, sem mexer no restante da aplicação."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar a classe UserRepository com uma propriedade chamada users, iniciada como uma lista vazia, que vai funcionar como nosso banco de dados em memória?",
+              "comment": "Criar a classe UserRepository",
+              "answer": "class UserRepository {\n  users = [];\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/user/user.repository.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "user", "children": [ { "type": "file", "name": "user.repository.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar dentro da classe UserRepository um método findByUsername, que recebe um username e retorna o usuário da lista users cujo username seja igual ao recebido?",
+              "comment": "Criar método findByUsername dentro do Repository",
+              "commentAnchor": {
+                "find": "class UserRepository {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "findByUsername(username) {\n  const userExists = this.users.find((user) => user.username === username);\n  return userExists;\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/user/user.repository.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "user", "children": [ { "type": "file", "name": "user.repository.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Pensando como um banco de dados de verdade",
+              "content": "A função find do array percorre a lista de usuários e devolve o primeiro item que tiver o username igual ao que foi passado. Se nenhum for encontrado, ela retorna undefined, que representa a ausência de um valor.\n\nEm um banco de dados de verdade, essa mesma busca seria escrita como uma consulta SQL, algo como SELECT * FROM USERS WHERE USERNAME = 'valor' LIMIT 1. O método findByUsername faz exatamente esse papel aqui: é a nossa versão simplificada dessa consulta, guardada em memória em vez de em um banco real."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar o método save, que recebe um objeto user, adiciona esse usuário na lista users e retorna o usuário salvo?",
+              "comment": "Criar método save dentro do Repository",
+              "commentAnchor": {
+                "find": "class UserRepository {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "save(user) {\n  this.users.push(user);\n  return user;\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/user/user.repository.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "user", "children": [ { "type": "file", "name": "user.repository.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo o método save",
+              "content": "O método save recebe o objeto user pronto, usa push para adicionar ele na lista users, e em seguida retorna esse mesmo user. push é o método padrão dos arrays em JavaScript para adicionar um novo item ao final da lista.\n\nRepare que aqui o Repository não inventa nada no objeto recebido, apenas guarda ele e devolve de volta — é o jeito mais simples possível de persistir um dado em memória."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar dentro da classe UserRepository um método list, que retorna a lista completa de users?",
+              "comment": "Criar método list dentro do Repository",
+              "commentAnchor": {
+                "find": "class UserRepository {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "list() {\n  return this.users;\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/user/user.repository.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "user", "children": [ { "type": "file", "name": "user.repository.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Para que serve o método list?",
+              "content": "O método list simplesmente devolve a lista inteira de users, sem nenhum filtro. Ele vai ser útil mais para frente, quando quisermos criar uma rota para o cliente conseguir ver todos os usuários já cadastrados, ao invés de apenas criar novos."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como exportar, por padrão, já uma instância pronta da classe UserRepository, ao invés de exportar a classe em si?",
+              "comment": "Exportar uma instância única do Repository",
+              "answer": "export default new UserRepository();",
+              "workspace": {
+                "activeFilePath": "src/modules/user/user.repository.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "user", "children": [ { "type": "file", "name": "user.repository.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que exportar uma instância e não a classe?",
+              "content": "Ao usar new UserRepository() no próprio arquivo e exportar esse resultado, garantimos que toda parte da aplicação que importar esse arquivo vai receber sempre a mesma instância, com a mesma lista users por trás.\n\nSe cada arquivo criasse sua própria instância com new UserRepository(), cada um teria sua própria lista de usuários separada, e os dados salvos em um lugar não apareceriam em outro. Esse padrão de garantir uma única instância compartilhada é chamado de Singleton."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Camada 2: o que é o Service?",
+              "content": "O Service é onde mora a regra de negócio da aplicação, ou seja, as validações e decisões que fazem sentido para o seu problema específico, como não deixar cadastrar um username que já existe.\n\nO Service não sabe nada sobre requisição e resposta HTTP — essa parte é responsabilidade do Controller. Ele apenas recebe dados, aplica as regras, conversa com o Repository quando precisa buscar ou salvar algo, e devolve um resultado."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo create.user.service.js, dentro da mesma pasta do Repository, como importar o UserRepository, e criar a classe CreateUserService com um método execute que recebe data?",
+              "comment": "Criar a classe CreateUserService",
+              "answer": "import UserRepository from \"./user.repository.js\";\n\nclass CreateUserService {\n  execute(data) {\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/user/create.user.service.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "user", "children": [ { "type": "file", "name": "user.repository.js" }, { "type": "file", "name": "create.user.service.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do método execute, como lançar um erro com a mensagem Username é obrigatório, caso data.username não tenha sido informado?",
+              "comment": "Validar se o username foi informado",
+              "commentAnchor": {
+                "find": "execute(data) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "if (!data.username) {\n  throw new Error(\"Username é obrigatório\");\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/user/create.user.service.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "user", "children": [ { "type": "file", "name": "user.repository.js" }, { "type": "file", "name": "create.user.service.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo o throw new Error",
+              "content": "O comando throw interrompe imediatamente a execução da função e lança um erro. Quando usamos throw new Error(\"mensagem\"), criamos um objeto de erro com uma mensagem explicando o que deu errado.\n\nSe esse erro não for tratado em algum lugar, ele quebra a aplicação. É por isso que, mais adiante, o Controller vai usar um bloco try/catch para capturar esse erro e transformar ele em uma resposta HTTP adequada, ao invés de deixar o servidor quebrar."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar o UserRepository para verificar, através do findByUsername, se já existe um usuário com o username informado, lançando um erro com a mensagem Usuário já cadastrado! caso ele exista?",
+              "comment": "Verificar se o usuário já existe",
+              "commentAnchor": {
+                "find": "execute(data) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "const existUser = UserRepository.findByUsername(data.username);\n\nif (existUser) {\n  throw new Error(\"Usuário já cadastrado!\");\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/user/create.user.service.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "user", "children": [ { "type": "file", "name": "user.repository.js" }, { "type": "file", "name": "create.user.service.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Por fim, como usar o UserRepository para salvar o data recebido, retornando diretamente o resultado desse método save?",
+              "comment": "Salvar o usuário através do Repository",
+              "commentAnchor": {
+                "find": "execute(data) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "return UserRepository.save(data);",
+              "workspace": {
+                "activeFilePath": "src/modules/user/create.user.service.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "user", "children": [ { "type": "file", "name": "user.repository.js" }, { "type": "file", "name": "create.user.service.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que devolver o retorno do Repository?",
+              "content": "Ao usar return antes de UserRepository.save(data), o resultado do save é devolvido para quem chamou o execute. Assim, o Service atua como um meio de campo: recebe os dados, aplica as validações, delega o trabalho de salvar para o Repository, e repassa o resultado adiante.\n\nEsse encadeamento de responsabilidades é o coração da arquitetura em camadas: cada camada faz sua parte e confia na camada seguinte para fazer o resto."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como exportar a classe CreateUserService no final do arquivo, usando chaves, para que ela possa ser importada em outros arquivos?",
+              "comment": "Exportar a classe CreateUserService",
+              "answer": "export { CreateUserService };",
+              "workspace": {
+                "activeFilePath": "src/modules/user/create.user.service.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "user", "children": [ { "type": "file", "name": "user.repository.js" }, { "type": "file", "name": "create.user.service.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Camada 3: o que é o Controller?",
+              "content": "O Controller é a porta de entrada da aplicação. É ele quem recebe a requisição HTTP, feita pelo navegador ou por outro programa, extrai as informações necessárias dela, chama a camada de Service para executar a regra de negócio, e devolve uma resposta HTTP adequada, seja de sucesso ou de erro.\n\nO Controller não deveria conter regras de negócio, apenas orquestrar a comunicação entre a requisição, o Service e a resposta."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo user.controller.js, dentro da mesma pasta, como importar o CreateUserService e criar a classe UserController com um método handle, que recebe request e response, extraindo o body da requisição?",
+              "comment": "Criar a classe UserController",
+              "answer": "import { CreateUserService } from \"./create.user.service.js\";\n\nclass UserController {\n  handle(request, response) {\n    const { body } = request;\n  }\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/user/user.controller.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "user", "children": [ { "type": "file", "name": "user.repository.js" }, { "type": "file", "name": "create.user.service.js" }, { "type": "file", "name": "user.controller.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do handle, como criar um bloco try que instancia o CreateUserService, executa o método execute passando o body, e retorna o resultado como JSON usando response.json?",
+              "comment": "Chamar a camada de serviço dentro do método handle",
+              "commentAnchor": {
+                "find": "handle(request, response) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "try {\n  const createUserService = new CreateUserService();\n  const result = createUserService.execute(body);\n  return response.json(result);\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/user/user.controller.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "user", "children": [ { "type": "file", "name": "user.repository.js" }, { "type": "file", "name": "create.user.service.js" }, { "type": "file", "name": "user.controller.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo após o try, como criar um bloco catch que captura o erro, e retorna uma resposta com status 400 e um JSON contendo a mensagem err com o err.message?",
+              "comment": "Tratar o erro lançado pelo Service",
+              "commentAnchor": {
+                "find": "try {",
+                "position": "afterBlock",
+                "fallback": "end"
+              },
+              "answer": "catch (err) {\n  return response.status(400).json({\n    err: err.message,\n  });\n}",
+              "workspace": {
+                "activeFilePath": "src/modules/user/user.controller.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "user", "children": [ { "type": "file", "name": "user.repository.js" }, { "type": "file", "name": "create.user.service.js" }, { "type": "file", "name": "user.controller.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo o status 400 e o try/catch completo",
+              "content": "O status 400 significa Bad Request, ou requisição inválida, e é o código correto para avisar quem fez a requisição que o problema está nos dados enviados, como um username que já existe ou que não foi informado.\n\nCom o try/catch, se o Service lançar um erro com throw, o catch captura esse erro na variável err, e conseguimos ler a mensagem através de err.message, devolvendo ela de forma organizada na resposta, ao invés de deixar a aplicação quebrar."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como exportar a classe UserController no final do arquivo, usando chaves, para que ela possa ser importada em outros arquivos?",
+              "comment": "Exportar a classe UserController",
+              "answer": "export { UserController };",
+              "workspace": {
+                "activeFilePath": "src/modules/user/user.controller.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "user", "children": [ { "type": "file", "name": "user.repository.js" }, { "type": "file", "name": "create.user.service.js" }, { "type": "file", "name": "user.controller.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Camada 4: o que é o Router?",
+              "content": "Até agora, o Controller sabe atender uma requisição, mas ninguém ainda disse ao Express qual rota HTTP deve chamar esse Controller. É para isso que existe o Router do Express: ele permite declarar as rotas de um dominio (no nosso caso, user) num arquivo separado, ao inves de declarar tudo dentro do server.js.\n\nCom o Router, o server.js so' precisa saber que existe um conjunto de rotas de user, e sob qual prefixo elas devem responder — quem sabe o caminho exato de cada rota e' o proprio arquivo de rotas do modulo."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo user.routes.js, dentro da mesma pasta do modulo user, como importar o Router do express, criar a rota get e o UserController, criando as constantes router e userController já instanciados?",
+              "comment": "Importar o Router e o Controller, e instanciar ambos",
+              "answer": "import { Router } from \"express\";\nimport { UserController } from \"./user.controller.js\";\n\nconst router = Router();\n\nrouter.get(\"/\", (req, res) => { return res.send(\"rota user ok\"); });\n\n\nconst userController = new UserController();",
+              "workspace": {
+                "activeFilePath": "src/modules/user/user.routes.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "user", "children": [ { "type": "file", "name": "user.repository.js" }, { "type": "file", "name": "create.user.service.js" }, { "type": "file", "name": "user.controller.js" }, { "type": "file", "name": "user.routes.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como registrar no router uma rota POST na raiz (/), chamando o handle do userController sempre que essa rota for acessada?",
+              "comment": "Registrar a rota POST na raiz do módulo",
+              "commentAnchor": {
+                "find": "const userController = new UserController();",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "router.post(\"/\", userController.handle);",
+              "workspace": {
+                "activeFilePath": "src/modules/user/user.routes.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "user", "children": [ { "type": "file", "name": "user.repository.js" }, { "type": "file", "name": "create.user.service.js" }, { "type": "file", "name": "user.controller.js" }, { "type": "file", "name": "user.routes.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que a rota é so' / e não /users?",
+              "content": "Dentro do arquivo de rotas do modulo, a rota e' declarada apenas como /, a raiz. O prefixo /users nao e' definido aqui — ele vai ser definido la' no server.js, no momento em que esse router for conectado a' aplicacao principal.\n\nIsso deixa o modulo reutilizavel: se um dia voce quiser montar essas mesmas rotas sob outro prefixo, so' precisa mudar o server.js, sem tocar no arquivo de rotas."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Ao final do arquivo, como exportar o router por padrão, para que ele possa ser importado no server.js?",
+              "comment": "Exportar o router por padrão",
+              "answer": "export default router;",
+              "workspace": {
+                "activeFilePath": "src/modules/user/user.routes.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "user", "children": [ { "type": "file", "name": "user.repository.js" }, { "type": "file", "name": "create.user.service.js" }, { "type": "file", "name": "user.controller.js" }, { "type": "file", "name": "user.routes.js" } ] } ] } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Última etapa: unindo tudo no server.js",
+              "content": "Agora que o modulo user esta' completo, com Repository, Service, Controller e Router, falta apenas criar o servidor Express e conectar as rotas desse modulo. Repare que o server.js nao vai mais importar o Controller diretamente — ele so' importa o Router pronto, que ja' sabe como falar com o Controller."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo server.js, como importar o express e o userRoutes do módulo user, e criar a aplicação com express(), guardando na variável app?",
+              "comment": "Importar dependências e criar a aplicação",
+              "answer": "import express from \"express\";\nimport userRoutes from \"./modules/user/user.routes.js\";\n\nconst app = express();",
+              "workspace": {
+                "activeFilePath": "src/server.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "user", "children": [ { "type": "file", "name": "user.repository.js" }, { "type": "file", "name": "create.user.service.js" }, { "type": "file", "name": "user.controller.js" }, { "type": "file", "name": "user.routes.js" } ] } ] }, { "type": "file", "name": "server.js" } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como configurar a aplicação para conseguir interpretar corretamente o corpo das requisições enviadas em formato JSON?",
+              "comment": "Habilitar o parser de JSON",
+              "answer": "app.use(express.json());",
+              "workspace": {
+                "activeFilePath": "src/server.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "user", "children": [ { "type": "file", "name": "user.repository.js" }, { "type": "file", "name": "create.user.service.js" }, { "type": "file", "name": "user.controller.js" }, { "type": "file", "name": "user.routes.js" } ] } ] }, { "type": "file", "name": "server.js" } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que precisamos do express.json()?",
+              "content": "Por padrão, o Express não sabe interpretar o corpo de uma requisição enviado em JSON — ele chegaria como um texto puro, difícil de usar. O middleware express.json() lê esse texto e transforma automaticamente em um objeto JavaScript, disponibilizando ele em request.body.\n\nSem essa linha, o body que usamos lá no Controller, dentro do handle, chegaria undefined, e a aplicação não funcionaria corretamente."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar o app.use para montar o userRoutes na aplicação, sob o prefixo /users?",
+              "comment": "Montar as rotas do módulo user sob o prefixo /users",
+              "answer": "app.use(\"/users\", userRoutes);",
+              "workspace": {
+                "activeFilePath": "src/server.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "user", "children": [ { "type": "file", "name": "user.repository.js" }, { "type": "file", "name": "create.user.service.js" }, { "type": "file", "name": "user.controller.js" }, { "type": "file", "name": "user.routes.js" } ] } ] }, { "type": "file", "name": "server.js" } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como o prefixo se junta a' rota do modulo",
+              "content": "Quando o Express recebe uma requisicao POST em /users, ele entra no userRoutes que montamos sob esse prefixo, e la' dentro procura por uma rota que bata com o restante do caminho. Como registramos a rota como / (raiz) dentro do user.routes.js, o caminho final que funciona e' exatamente /users — a soma do prefixo /users com a rota / do modulo."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Por fim, como fazer a aplicação escutar a porta 3002, exibindo no terminal a mensagem Server is running on PORT 3002 assim que o servidor iniciar?",
+              "comment": "Colocar o servidor no ar",
+              "answer": "app.listen(3002, () => console.log(\"Server is running on PORT 3002\"));",
+              "workspace": {
+                "activeFilePath": "src/server.js",
+                "tree": [
+                  { "type": "folder", "name": "src", "children": [ { "type": "folder", "name": "modules", "children": [ { "type": "folder", "name": "user", "children": [ { "type": "file", "name": "user.repository.js" }, { "type": "file", "name": "create.user.service.js" }, { "type": "file", "name": "user.controller.js" }, { "type": "file", "name": "user.routes.js" } ] } ] }, { "type": "file", "name": "server.js" } ] }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como rodar a aplicação para testar se a API está funcionando?",
+              "content": "- Salve os arquivos e no terminal, execute o comando 'node src/server.js'.\n\n- Se tudo estiver certo, a mensagem Server is running on PORT 3002 aparece no terminal, indicando que o servidor está no ar e escutando a porta 3002.\n\n- A partir daí, a aplicação já está pronta para receber requisições em http://localhost:3002."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Visualizando a aplicação no navegador?",
+              "content": "Acesse o navegador e digite:\n\n http://localhost:3002/users \n\n A rota GET /users foi criada apenas para teste, e deve retornar a mensagem rota user ok. Isso indica que o servidor está funcionando, e que o Express conseguiu encontrar a rota correta dentro do módulo user."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como realizar uma requisição para criar um usuário na rota POST /users?",
+              "content": "Como a rota /users espera um POST com um corpo em JSON, não dá para simplesmente abrir o endereço no navegador (o navegador só faz GET por padrão). Uma forma simples de testar é usar o comando curl no terminal:\n\ncurl -X POST http://localhost:3002/users -H \"Content-Type: application/json\" -d '{\"username\": \"john_doe\", \"email\": \"john.doe@example.com\"}'\n\n-X POST define o método da requisição, -H define o cabeçalho avisando que o corpo é JSON, e -d envia o corpo em si. Se tudo funcionar, a resposta deve trazer o mesmo usuário enviado de volta."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: entendendo o caminho de uma requisição",
+              "content": "Nesta lição você construiu uma aplicação organizada em camadas e modularizada por dominio, e agora consegue seguir o caminho completo de uma requisição:\n\n1. O cliente faz um POST em /users, enviando um JSON com os dados do usuário.\n2. O server.js recebe a requisição e, como o userRoutes foi montado sob o prefixo /users, o Express encaminha ela para a rota / dentro do user.routes.js.\n3. O user.routes.js repassa a requisição para o método handle do UserController.\n4. O Controller extrai o body da requisição e chama o CreateUserService, dentro de um try/catch.\n5. O Service valida os dados, usando o UserRepository para verificar se o username já existe.\n6. Se tudo estiver certo, o Repository salva o usuário na lista em memória, usando save, e devolve ele de volta.\n7. Esse resultado sobe de volta pelo Service até o Controller, que devolve a resposta como JSON.\n8. Se algo der errado em qualquer ponto, o erro lançado com throw é capturado no catch do Controller, que responde com status 400 e a mensagem do erro.\n\nAlém do save, o Repository também ganhou o método list, que devolve a lista inteira de usuários — ele ainda não está conectado a nenhuma rota, mas já está pronto para quando quisermos criar, por exemplo, uma rota GET /users que devolva todos os usuários cadastrados.\n\nRepare que agora tudo que diz respeito a usuario — Repository, Service, Controller e Router — mora junto dentro de src/modules/user. Essa organizacao por modulo, somada a' separacao em camadas, e' a base de como aplicacoes profissionais de backend costumam crescer sem virar uma bagunca."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

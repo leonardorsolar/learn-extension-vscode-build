@@ -1,0 +1,164 @@
+{
+  "levels": [
+    {
+      "id": "iniciante",
+      "name": "Iniciante",
+      "themes": [
+        {
+          "id": "classes-python",
+          "name": "Introducao a Classes (Python)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que e uma classe?",
+              "content": "Uma classe e como um molde para criar objetos parecidos. Por exemplo, se voce tem varios usuarios em um sistema, todos eles tem nome e email - a classe descreve esse formato uma unica vez, e cada usuario criado a partir dela e uma instancia desse molde.\n\nNesta licao voce vai criar uma classe bem simples, chamada User, com alguns atributos e um metodo, para entender essa ideia na pratica usando Python."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar a classe User com dois atributos, name e email, ambos iniciados como uma string vazia?",
+              "comment": "Criar a classe User",
+              "answer": "class User:\n    name = ''\n    email = ''",
+              "workspace": {
+                "activeFilePath": "user.py",
+                "tree": [
+                  { "type": "file", "name": "user.py" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo os atributos de classe",
+              "content": "name e email sao atributos definidos direto no corpo da classe User. Isso funciona para comecar, mas e importante saber que, em Python, atributos declarados dessa forma sao atributos de classe: eles ficam compartilhados por todas as instancias ate que uma instancia especifica receba seu proprio valor.\n\nMais para frente nesta licao voce vai aprender a forma idiomatica e mais correta de fazer isso em Python, usando o metodo especial __init__."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar dentro da classe User um metodo chamado say_hello, que retorna a frase Ola, meu nome e seguida do valor de self.name?",
+              "comment": "Criar o metodo say_hello dentro da classe User - alinhe o codigo com 4 espacos para dentro da classe",
+              "commentAnchor": {
+                "find": "class User:",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "\n\n    def say_hello(self):\n        return 'Ola, meu nome e ' + self.name",
+              "workspace": {
+                "activeFilePath": "user.py",
+                "tree": [
+                  { "type": "file", "name": "user.py" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo metodos e o self",
+              "content": "say_hello e um metodo: uma funcao que vive dentro da classe e pode ser chamada por qualquer instancia de User. O primeiro parametro de todo metodo em Python e sempre self, que se refere a propria instancia que chamou o metodo. E atraves dele que say_hello consegue acessar o name de cada usuario especifico, sem precisar receber esse valor como parametro na chamada."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como instanciar a classe User, guardando essa instancia em uma variavel chamada user?",
+              "comment": "Instanciando a classe User",
+              "answer": "user = User()",
+              "workspace": {
+                "activeFilePath": "user.py",
+                "tree": [
+                  { "type": "file", "name": "user.py" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Acesse diretamente os atributos da classe User. Em user.name e user.email preencha o nome como Maria e o email como maria@email.com?",
+              "comment": "Preenchendo os atributos do usuario",
+              "answer": "user.name = 'Maria'\nuser.email = 'maria@email.com'",
+              "workspace": {
+                "activeFilePath": "user.py",
+                "tree": [
+                  { "type": "file", "name": "user.py" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar print para exibir o resultado de user.say_hello()?",
+              "comment": "Chamando o metodo say_hello",
+              "answer": "print(user.say_hello())",
+              "workspace": {
+                "activeFilePath": "user.py",
+                "tree": [
+                  { "type": "file", "name": "user.py" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como executar no terminal a classe User e ver o resultado do print",
+              "content": "Abra o terminal do VSCode e execute o comando:\n\npython user.py\n\nou\n\npython3 user.py\n\nCaso o comando python nao funcione no seu sistema, tente python3 user.py.\n\nIsso vai rodar o arquivo e mostrar no terminal a saida do print, com a frase montada pelo say_hello usando o name que voce preencheu."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Representacao da saida do print",
+              "content": "A saida no terminal deve ser parecida com esta:\n\nOla, meu nome e Maria\n\nRepare que o email nao aparece aqui porque o say_hello so usa self.name - o email ficou guardado na instancia, disponivel caso voce precise dele em outro momento, como em user.email."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Construtor",
+              "content": "Agora voce vai aprender a usar o construtor de uma classe em Python, que e um metodo especial chamado __init__. Ele e executado automaticamente sempre que voce cria uma instancia da classe, e e o lugar certo para inicializar os atributos com valores passados como parametros. Essa e a forma idiomatica de definir atributos em Python, diferente da forma direta no corpo da classe que voce usou no comeco desta licao."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar o construtor __init__ para inicializar os atributos name e email da classe User, recebendo esses valores como parametros?",
+              "comment": "Criar o construtor da classe User para inicializar name e email",
+              "commentAnchor": {
+                "find": "class User:",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "\n    # Apague as linhas name = '' e email = ''\n\n    def __init__(self, name, email):\n        self.name = name\n        self.email = email\n",
+              "workspace": {
+                "activeFilePath": "user.py",
+                "tree": [
+                  { "type": "file", "name": "user.py" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Instanciando a classe User com o construtor",
+              "content": "Agora que voce tem um construtor, pode criar uma instancia de User passando o nome e o email diretamente, sem precisar atribuir depois. Por exemplo:\n\nuser = User('Maria', 'maria@example.com')\n\nIsso vai criar um usuario com name igual a Maria e email igual a maria@example.com. Apague as linhas user.name = 'Maria' e user.email = 'maria@email.com', pois nao sao mais necessarias.\n\nSalve o arquivo."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como executar no terminal a classe User e ver o resultado do print",
+              "content": "Abra o terminal do VSCode e execute o comando:\n\npython user.py\n\n\n\npython3 user.py\n\nCaso o comando python nao funcione no seu sistema, tente python3 user.py.\n\nIsso vai rodar o arquivo e mostrar no terminal a saida do print, com a frase montada pelo say_hello usando o name que voce passou no construtor."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Representacao da saida do print",
+              "content": "A saida no terminal deve ser parecida com esta:\n\nOla, meu nome e Maria\n\nRepare que o email nao aparece aqui porque o say_hello so usa self.name - o email ficou guardado na instancia, disponivel caso voce precise dele em outro momento, como em user.email."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: o que voce aprendeu sobre classes em Python",
+              "content": "Nesta licao voce deu os primeiros passos com classes em Python:\n\n1. Uma classe e um molde para criar objetos parecidos, com os mesmos atributos e metodos.\n2. Atributos definidos direto no corpo da classe sao atributos de classe, compartilhados entre instancias, e por isso a forma idiomatica em Python e inicializar atributos por instancia dentro do __init__.\n3. Metodos, como say_hello, sao funcoes que pertencem a classe e usam self para acessar os dados da instancia que os chamou.\n4. Para usar uma classe, primeiro voce instancia ela chamando User(...), e depois acessa seus atributos e metodos com a notacao de ponto.\n\nEsse e o alicerce que voce vai usar em praticamente todo codigo orientado a objetos em Python daqui para frente, incluindo classes de camadas como Repository, Service e Controller que podem aparecer nas proximas licoes."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,445 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Junior",
+      "themes": [
+        {
+          "id": "arquitetura-camadas-java",
+          "name": "Arquitetura em Camadas (Java)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que vamos construir nesta licao?",
+              "content": "Vamos exercitar a criacao das 3 classes mais usadas na arquitetura em camadas:\n\n- Repository: cuida do acesso aos dados.\n- Service: contem a regra de negocio (as validacoes e decisoes do sistema).\n- Controller: recebe a requisicao e devolve a resposta.\n\nVamos construir de baixo para cima: primeiro o Repository, depois o Service, e por ultimo o Controller. Em Java, cada uma dessas classes vai ficar em seu proprio arquivo, e cada arquivo tera seu proprio metodo main funcionando como um teste standalone (sem imports entre os arquivos ainda)."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o projeto",
+              "content": "No VSCode, certifique-se que voce esta dentro de uma pasta vazia, sem nenhum arquivo dentro. Diferente da versao em Python, vamos manter os arquivos Java soltos na raiz do projeto (sem subpastas), para nao precisarmos lidar com pacotes e classpath por enquanto. Isso e comum em exemplos simples de Java sem Maven ou Gradle."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Camada 1: o que e o Repository?",
+              "content": "O Repository e a camada mais proxima dos dados. E ele quem sabe como buscar, salvar, atualizar ou apagar informacoes, seja em um banco de dados de verdade ou, como no nosso caso, em uma lista guardada na memoria do programa.\n\nNenhuma outra camada deveria acessar os dados diretamente, sempre passando pelo Repository. Assim, se um dia voce trocar a lista em memoria por um banco de dados real, so precisa alterar essa camada, sem mexer no restante da aplicacao."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar a classe UserRepository, com um atributo chamado users, do tipo List<Map<String, String>>, iniciado como uma lista vazia (ArrayList), que vai funcionar como nosso banco de dados em memoria? Sera necessario importar List e ArrayList de java.util, alem de Map.",
+              "comment": "Criar a classe UserRepository",
+              "answer": "import java.util.ArrayList;\nimport java.util.LinkedHashMap;\nimport java.util.List;\nimport java.util.Map;\n\npublic class UserRepository {\n    List<Map<String, String>> users = new ArrayList<>();\n}",
+              "workspace": {
+                "activeFilePath": "UserRepository.java",
+                "tree": [
+                  { "type": "file", "name": "UserRepository.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo List e Map em Java",
+              "content": "List e uma interface do Java que representa uma lista que pode crescer, parecida com um array do JavaScript ou uma lista do Python. ArrayList e a implementacao mais comum dela.\n\nMap representa uma colecao de pares chave-valor, parecida com um objeto do JavaScript ou um dicionario do Python. Aqui usamos Map<String, String>, o que significa um mapa onde tanto as chaves quanto os valores sao textos (String).\n\nJa importamos tambem o LinkedHashMap, que vamos usar mais adiante: e uma implementacao de Map que preserva a ordem em que os itens foram inseridos, o que deixa a saida no console mais previsivel."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar o metodo save, que recebe um Map<String, String> chamado user, adiciona esse usuario na lista users e retorna o proprio usuario salvo?",
+              "comment": "Criar metodo save dentro do Repository",
+              "commentAnchor": {
+                "find": "public class UserRepository {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "\n    public Map<String, String> save(Map<String, String> user) {\n        users.add(user);\n        return user;\n    }",
+              "workspace": {
+                "activeFilePath": "UserRepository.java",
+                "tree": [
+                  { "type": "file", "name": "UserRepository.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que precisamos de um metodo main em Java?",
+              "content": "Diferente de JavaScript e Python, em Java nao e possivel escrever comandos soltos no arquivo, fora de uma classe ou de um metodo. Todo codigo executavel precisa morar dentro de um metodo.\n\nPor isso, para testar o UserRepository sozinho, vamos criar dentro dele um metodo main, com a assinatura exata public static void main(String[] args). E dentro dele que vamos instanciar o repositorio e testar o metodo save."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar dentro da classe UserRepository um metodo main vazio, com a assinatura public static void main(String[] args)?",
+              "comment": "Criar o metodo main",
+              "commentAnchor": {
+                "find": "public class UserRepository {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "\n    public static void main(String[] args) {\n    }",
+              "workspace": {
+                "activeFilePath": "UserRepository.java",
+                "tree": [
+                  { "type": "file", "name": "UserRepository.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do main, como instanciar a classe UserRepository, guardando o resultado na variavel userRepository?",
+              "comment": "Instanciando UserRepository dentro do main",
+              "commentAnchor": {
+                "find": "public static void main(String[] args) {",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "UserRepository userRepository = new UserRepository();",
+              "workspace": {
+                "activeFilePath": "UserRepository.java",
+                "tree": [
+                  { "type": "file", "name": "UserRepository.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo apos instanciar o userRepository, como criar um Map<String, String> chamado user1 (um LinkedHashMap), colocar username user1 e password 123456 com put, e salva-lo chamando userRepository.save?",
+              "comment": "Criando e salvando o primeiro usuario de teste",
+              "commentAnchor": {
+                "find": "UserRepository userRepository = new UserRepository();",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "\n        Map<String, String> user1 = new LinkedHashMap<>();\n        user1.put(\"username\", \"user1\");\n        user1.put(\"password\", \"123456\");\n        userRepository.save(user1);",
+              "workspace": {
+                "activeFilePath": "UserRepository.java",
+                "tree": [
+                  { "type": "file", "name": "UserRepository.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo apos salvar o primeiro usuario, como repetir o mesmo processo para um segundo usuario, chamado user2, com username user2 e password abcdef?",
+              "comment": "Criando e salvando o segundo usuario de teste",
+              "commentAnchor": {
+                "find": "userRepository.save(user1);",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "\n        Map<String, String> user2 = new LinkedHashMap<>();\n        user2.put(\"username\", \"user2\");\n        user2.put(\"password\", \"abcdef\");\n        userRepository.save(user2);",
+              "workspace": {
+                "activeFilePath": "UserRepository.java",
+                "tree": [
+                  { "type": "file", "name": "UserRepository.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo apos salvar os dois usuarios, como usar System.out.println para visualizar a lista userRepository.users?",
+              "comment": "Exibindo a lista de usuarios do repositorio",
+              "commentAnchor": {
+                "find": "userRepository.save(user2);",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "System.out.println(userRepository.users);",
+              "workspace": {
+                "activeFilePath": "UserRepository.java",
+                "tree": [
+                  { "type": "file", "name": "UserRepository.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como executar no terminal a classe UserRepository e ver o resultado do println",
+              "content": "Salve o arquivo e abra o terminal do VSCode. Para compilar e executar:\n\nPara compilar:\n\njavac UserRepository.java\n\nPara executar:\n\njava UserRepository\n\nO comando javac compila o arquivo e gera UserRepository.class com o bytecode. Em seguida, java UserRepository executa esse bytecode, rodando o metodo main da classe."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "representacao da saida",
+              "content": "A saida no terminal deve ser parecida com esta:\n\n[{username=user1, password=123456}, {username=user2, password=abcdef}]\n\nRepare que o Map de Java imprime no formato chave=valor, sem aspas, diferente do dicionario Python que usa aspas simples ao redor de chaves e valores. O LinkedHashMap garante que a ordem de impressao seja a mesma ordem em que os usuarios foram inseridos."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Camada 2: o que e o Service?",
+              "content": "O Service e onde mora a regra de negocio da aplicacao: validacoes e transformacoes nos dados antes deles seguirem adiante.\n\nNesta licao, o CreateUserService recebe os dados de um cadastro, valida se o username foi informado, e monta o objeto final do usuario - sem se preocupar ainda com onde esses dados serao guardados."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo CreateUserService.java, como criar a classe CreateUserService com um metodo execute, que recebe um Map<String, String> chamado data e retorna Map<String, String>, lancando um RuntimeException com a mensagem Username e obrigatorio caso data.get(username) seja null?",
+              "comment": "Criar a classe CreateUserService e validar o username",
+              "answer": "import java.util.LinkedHashMap;\nimport java.util.Map;\n\npublic class CreateUserService {\n    public Map<String, String> execute(Map<String, String> data) {\n        if (data.get(\"username\") == null) {\n            throw new RuntimeException(\"Username e obrigatorio\");\n        }\n    }\n}",
+              "workspace": {
+                "activeFilePath": "CreateUserService.java",
+                "tree": [
+                  { "type": "file", "name": "CreateUserService.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que e o throw new RuntimeException?",
+              "content": "O throw new RuntimeException() e a forma de lancar um erro em Java, equivalente ao raise Exception do Python e ao throw new Error do JavaScript. Quando o metodo execute nao encontra um username valido, ele lanca esse erro e interrompe a execucao imediatamente, permitindo que ele seja tratado depois com um try/catch.\n\nRepare que a classe ainda nao compila neste ponto: o metodo execute promete retornar um Map<String, String>, mas so cobrimos o caminho de erro. O proximo exercicio completa o caminho de sucesso."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do execute, apos o bloco de validacao, como pegar data.get(username) e data.get(password) em variaveis, montar um Map<String, String> chamado objectUser com as chaves user e password, e retornar esse objectUser?",
+              "comment": "Montar o objectUser e retornar o mapa do usuario",
+              "commentAnchor": {
+                "find": "public Map<String, String> execute(Map<String, String> data) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "\n        String user = data.get(\"username\");\n        String password = data.get(\"password\");\n        Map<String, String> objectUser = new LinkedHashMap<>();\n        objectUser.put(\"user\", user);\n        objectUser.put(\"password\", password);\n\n        return objectUser;",
+              "workspace": {
+                "activeFilePath": "CreateUserService.java",
+                "tree": [
+                  { "type": "file", "name": "CreateUserService.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar dentro da classe CreateUserService um metodo main vazio, com a assinatura public static void main(String[] args)?",
+              "comment": "Criar o metodo main",
+              "commentAnchor": {
+                "find": "public class CreateUserService {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "\n    public static void main(String[] args) {\n    }",
+              "workspace": {
+                "activeFilePath": "CreateUserService.java",
+                "tree": [
+                  { "type": "file", "name": "CreateUserService.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do main, como criar um Map<String, String> chamado request (um LinkedHashMap), simulando os dados que chegariam para o cadastro, com username user1 e password 123456?",
+              "comment": "Criar o Map request de teste que viria do Controller",
+              "commentAnchor": {
+                "find": "public static void main(String[] args) {",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "Map<String, String> request = new LinkedHashMap<>();\nrequest.put(\"username\", \"user1\");\nrequest.put(\"password\", \"123456\");",
+              "workspace": {
+                "activeFilePath": "CreateUserService.java",
+                "tree": [
+                  { "type": "file", "name": "CreateUserService.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo apos criar o request, como instanciar CreateUserService, guardando na variavel createUserService, chamar createUserService.execute passando o request e guardar o resultado na variavel output?",
+              "comment": "Instanciando e executando o Service com o request de teste",
+              "commentAnchor": {
+                "find": "request.put(\"password\", \"123456\");",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "\n        CreateUserService createUserService = new CreateUserService();\n        Map<String, String> output = createUserService.execute(request);",
+              "workspace": {
+                "activeFilePath": "CreateUserService.java",
+                "tree": [
+                  { "type": "file", "name": "CreateUserService.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar System.out.println para exibir o output retornado pelo Service?",
+              "comment": "Exibindo o resultado do Service",
+              "commentAnchor": {
+                "find": "Map<String, String> output = createUserService.execute(request);",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "System.out.println(output);",
+              "workspace": {
+                "activeFilePath": "CreateUserService.java",
+                "tree": [
+                  { "type": "file", "name": "CreateUserService.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como executar no terminal a classe CreateUserService e ver o resultado do println",
+              "content": "Abra o terminal do VSCode e execute:\n\njavac CreateUserService.java \n\n java CreateUserService\n\nComo o request tem um username preenchido, o execute nao lanca erro, monta o objectUser e retorna ele para a variavel output."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "representacao da saida do Service",
+              "content": "A saida no terminal deve ser parecida com esta:\n\n{user=user1, password=123456}\n\nRepare que o mapa retornado usa as chaves user e password, e nao username e password como veio no request - foi exatamente isso que fizemos ao montar objectUser dentro do execute. Esse mapa e o que o CreateUserService devolve para o Controller."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Camada 3: o que e o Controller?",
+              "content": "O Controller e a porta de entrada da aplicacao: e ele quem recebe a requisicao e devolve a resposta. Numa API de verdade, o handle chamaria o Service dentro de um try, deixando o catch pronto para capturar qualquer erro que o Service lancasse.\n\nNesta licao, para focar no conceito de request/response, o handle monta a resposta diretamente, mas ja usando essa mesma estrutura de try/catch, retornando um Map<String, Object> com status e body em cada caso. Usamos Object no tipo do valor porque o body pode ser um mapa, enquanto o status e um numero."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo UserController.java, como criar a classe UserController com um metodo handle, que recebe um Map<String, Map<String, String>> chamado request, pega o Map body de request.get(body), extrai username e password dele, e monta um Map<String, String> chamado result com as chaves user e password?",
+              "comment": "Criar a classe UserController e montar o result",
+              "answer": "import java.util.LinkedHashMap;\nimport java.util.Map;\n\npublic class UserController {\n    public Map<String, Object> handle(Map<String, Map<String, String>> request) {\n        Map<String, String> body = request.get(\"body\");\n        String user = body.get(\"username\");\n        String password = body.get(\"password\");\n        Map<String, String> result = new LinkedHashMap<>();\n        result.put(\"user\", user);\n        result.put(\"password\", password);\n    }\n}",
+              "workspace": {
+                "activeFilePath": "UserController.java",
+                "tree": [
+                  { "type": "file", "name": "UserController.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo apos montar o result, como criar um bloco try que monta um Map<String, Object> chamado response com status 200 e o result em body, retornando esse response? Logo em seguida, como criar um catch que captura Exception como err e retorna um response equivalente, mas com status 400 e um body contendo apenas a chave err com err.getMessage()?",
+              "comment": "Criar o try retornando a resposta de sucesso e o catch retornando a resposta de erro",
+              "commentAnchor": {
+                "find": "public Map<String, Object> handle(Map<String, Map<String, String>> request) {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "\n\n        try {\n            Map<String, Object> response = new LinkedHashMap<>();\n            response.put(\"status\", 200);\n            response.put(\"body\", result);\n            return response;\n        } catch (Exception err) {\n            Map<String, Object> response = new LinkedHashMap<>();\n            response.put(\"status\", 400);\n            Map<String, String> errorBody = new LinkedHashMap<>();\n            errorBody.put(\"err\", err.getMessage());\n            response.put(\"body\", errorBody);\n            return response;\n        }",
+              "workspace": {
+                "activeFilePath": "UserController.java",
+                "tree": [
+                  { "type": "file", "name": "UserController.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "o que e o try e catch?",
+              "content": "O try/catch e uma estrutura de controle de fluxo usada para lidar com excecoes (erros) em Java. O bloco try contem o codigo que pode gerar um erro, e se algum erro ocorrer dentro dele, a execucao e interrompida e o controle passa para o bloco catch. O catch recebe o erro (aqui chamado de err), permitindo trata-lo de forma adequada, como registrar uma mensagem ou retornar uma resposta de erro. Isso ajuda a evitar que erros nao tratados quebrem a aplicacao."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como criar dentro da classe UserController um metodo main vazio, com a assinatura public static void main(String[] args)?",
+              "comment": "Criar o metodo main",
+              "commentAnchor": {
+                "find": "public class UserController {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "\n    public static void main(String[] args) {\n    }",
+              "workspace": {
+                "activeFilePath": "UserController.java",
+                "tree": [
+                  { "type": "file", "name": "UserController.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do main, como criar um Map<String, Map<String, String>> chamado request, com um Map<String, String> chamado body contendo username user1 e password 123456, colocando esse body dentro de request na chave body?",
+              "comment": "Criar o request de teste, simulando uma requisicao",
+              "commentAnchor": {
+                "find": "public static void main(String[] args) {",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "Map<String, Map<String, String>> request = new LinkedHashMap<>();\nMap<String, String> body = new LinkedHashMap<>();\nbody.put(\"username\", \"user1\");\nbody.put(\"password\", \"123456\");\nrequest.put(\"body\", body);",
+              "workspace": {
+                "activeFilePath": "UserController.java",
+                "tree": [
+                  { "type": "file", "name": "UserController.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que usar o body?",
+              "content": "Em uma API de verdade, o body da requisicao e onde ficam os dados enviados pelo cliente, como informacoes de cadastro ou login. No nosso exemplo, estamos simulando esse comportamento criando um mapa request com a chave body, que contem username e password. Isso permite testar o Controller de forma semelhante a como ele seria usado em um cenario real."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo apos criar o request, como instanciar UserController, guardando na variavel userController, chamar userController.handle passando o request, e guardar o resultado na variavel output?",
+              "comment": "Instanciando e executando o Controller com o request de teste",
+              "commentAnchor": {
+                "find": "request.put(\"body\", body);",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "\n\n        UserController userController = new UserController();\n        Map<String, Object> output = userController.handle(request);",
+              "workspace": {
+                "activeFilePath": "UserController.java",
+                "tree": [
+                  { "type": "file", "name": "UserController.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como usar System.out.println para exibir o output retornado pelo Controller?",
+              "comment": "Exibindo o resultado do Controller",
+              "commentAnchor": {
+                "find": "Map<String, Object> output = userController.handle(request);",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "System.out.println(output);",
+              "workspace": {
+                "activeFilePath": "UserController.java",
+                "tree": [
+                  { "type": "file", "name": "UserController.java" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como executar no terminal a classe UserController e ver o resultado do println",
+              "content": "Abra o terminal do VSCode e execute:\n\njavac UserController.java\njava UserController\n\nO handle recebe o request, monta o result a partir do body, e o try retorna a resposta de sucesso com status 200."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "representacao da saida do Controller",
+              "content": "A saida no terminal deve ser parecida com esta:\n\n{status=200, body={user=user1, password=123456}}\n\nRepare na estrutura: status guarda o codigo da resposta, e body guarda os dados - a mesma ideia usada por frameworks Java como o Spring Boot quando voce monta uma resposta HTTP com ResponseEntity."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: entendendo o caminho de uma requisicao",
+              "content": "Nesta licao voce praticou a criacao de tres classes em Java, cada uma com uma responsabilidade clara:\n\n1. O UserRepository guarda dados em memoria em uma List<Map<String, String>>, com o metodo save.\n2. O CreateUserService valida os dados recebidos e monta o Map final do usuario no metodo execute, lancando um RuntimeException quando algo esta invalido.\n3. O UserController recebe uma requisicao simulada no handle, monta a resposta dentro de um try, com um catch pronto para capturar erros, e devolve um Map<String, Object> com status e body.\n\nRepare que, nesta licao, cada classe foi praticada de forma isolada, no seu proprio arquivo, cada uma com seu proprio metodo main - e assim que fica mais facil entender o que cada camada faz sozinha, antes de conectar tudo de verdade (Controller chamando Service, Service chamando Repository) usando import entre os arquivos do projeto, dentro de um mesmo pacote."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

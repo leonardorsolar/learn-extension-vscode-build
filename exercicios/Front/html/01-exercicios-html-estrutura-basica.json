@@ -1,0 +1,71 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "estrutura-basica-html",
+          "name": "Estrutura Básica do HTML e Tag Title",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o ambiente",
+              "content": "Antes de escrever qualquer código, vamos preparar o ambiente:\n\n1. Dentro da pasta, no seu projeto, crie um arquivo chamado index.html. Esse será o arquivo que o navegador vai abrir para mostrar sua página.\n\n2. Clique em próximo para iniciar os exercícios."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "O VSCode possui uma ferramenta chamada Emmet que gera automaticamente a estrutura básica de um arquivo HTML. Dentro do arquivo index.html vazio, como acionar essa estrutura digitando apenas o sinal de exclamação e pressionando Tab?",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo a estrutura gerada",
+              "content": "Ao digitar ! e pressionar Tab, o Emmet gerou a estrutura mínima que todo arquivo HTML precisa ter, incluindo a tag head, onde ficam informações de bastidores da página, e a tag body, onde fica todo o conteúdo visível.\n\nDentro da tag head, existe uma tag chamada title, que por padrão vem com o texto Document. É essa tag que define o texto exibido na aba do navegador. Vamos alterar esse texto no próximo exercício."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag head, como trocar o conteúdo da tag title, que está com o texto padrão Document, para o texto Minha Primeira Página?",
+              "comment": "Alterar o conteúdo da tag title dentro da tag head",
+              "commentAnchor": {
+                "find": "<title>Document</title>",
+                "position": "before",
+                "fallback": "end"
+              },
+              "answer": "<title>Minha Primeira Página</title>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Como visualizar o resultado no navegador",
+              "content": "Para ver o resultado, abra o arquivo index.html diretamente no navegador, dando duplo clique nele pelo explorador de arquivos, ou clique com o botão direito sobre o arquivo no VSCode e escolha a opção de abrir com o navegador, caso tenha a extensão Live Server instalada.\n\nRepare que a página em si continua em branco, mas o texto na aba do navegador agora mostra Minha Primeira Página, em vez de Document. Isso acontece porque a tag title fica dentro da head, e tudo que está na head não aparece no conteúdo visível da página, apenas em informações de bastidores como a aba do navegador."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: estrutura básica e tag title",
+              "content": "Nesta lição você aprendeu:\n\n1. Como usar o Emmet, digitando ! e pressionando Tab, para gerar a estrutura básica de um arquivo HTML.\n2. Que a tag title fica dentro da tag head e define o texto exibido na aba do navegador.\n3. Como alterar o conteúdo da tag title para personalizar esse texto.\n4. Que é preciso abrir o arquivo no navegador para visualizar o resultado, e que mudanças dentro da head não aparecem no conteúdo visível da página.\n\nEsse é o primeiro passo prático de qualquer projeto web: gerar a estrutura, entender o que cada parte representa, e conferir o resultado no navegador."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

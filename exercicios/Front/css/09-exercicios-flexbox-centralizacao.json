@@ -1,0 +1,131 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "flexbox-centralizacao",
+          "name": "Flexbox para Centralizar Conteúdo",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o ambiente",
+              "content": "Antes de escrever qualquer código, vamos preparar o ambiente:\n\n1. Dentro da pasta, crie um arquivo chamado index.html.\n\n2. Clique em próximo para iniciar os exercícios."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Digite ! e pressione Tab para gerar a estrutura básica do HTML com o Emmet dentro do arquivo index.html vazio.",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag body, crie uma div com class igual a quadrado-azul e o texto Box A dentro dela.",
+              "comment": "Adicionar div do quadrado azul",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<div class=\"quadrado-azul\">Box A</div>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Montando o quadrado azul",
+              "content": "Vamos começar dando forma ao quadrado, usando propriedades que você já conhece: width e height para o tamanho, background-color para a cor de fundo, e margin para afastar o quadrado das bordas da tela."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag head, crie uma tag style contendo um seletor .quadrado-azul com as propriedades width igual a 200px, height igual a 200px, background-color igual a blue e margin igual a 50px.",
+              "comment": "Criar o estilo base do quadrado azul",
+              "commentAnchor": {
+                "find": "<head>",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "<style>\n    .quadrado-azul {\n      width: 200px;\n      height: 200px;\n      background-color: blue;\n      margin: 50px;\n    }\n  </style>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que o texto Box A não fica centralizado sozinho?",
+              "content": "Se você reparar no quadrado agora, o texto Box A aparece no canto superior esquerdo, colado na borda. Isso acontece porque, por padrão, o conteúdo de uma div simplesmente flui a partir do canto superior esquerdo, sem nenhum alinhamento automático, nem na horizontal nem na vertical.\n\nCentralizar um elemento verticalmente sempre foi um dos maiores desafios do CSS antes do Flexbox existir, exigindo truques complicados. Com Flexbox, resolver isso fica simples: basta transformar o próprio quadrado em um container flex, e usar justify-content e align-items ao mesmo tempo, já que agora só temos um único item dentro do container, o próprio texto."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do seletor .quadrado-azul já criado, adicione as propriedades display igual a flex, justify-content igual a center e align-items igual a center, centralizando o texto Box A tanto na horizontal quanto na vertical dentro do quadrado.",
+              "comment": "Centralizar o texto com Flexbox",
+              "commentAnchor": {
+                "find": ".quadrado-azul {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "display: flex;\n      justify-content: center;\n      align-items: center;",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Ajustando o contraste do texto",
+              "content": "Agora que o texto está centralizado, falta só um detalhe: por padrão, o texto aparece em preto, o que dificulta a leitura em cima de um fundo azul escuro. Vamos trocar a cor do texto para branco, melhorando bastante o contraste."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do seletor .quadrado-azul, adicione a propriedade color igual a white, deixando o texto Box A branco para contrastar com o fundo azul.",
+              "comment": "Deixar o texto branco para melhorar o contraste",
+              "commentAnchor": {
+                "find": ".quadrado-azul {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "color: white;",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: Flexbox para centralizar um único item",
+              "content": "Nesta lição você usou o Flexbox para resolver um dos problemas mais comuns do CSS: centralizar conteúdo dentro de uma caixa, tanto na horizontal quanto na vertical.\n\n1. display: flex transforma o quadrado em um container flexível.\n2. justify-content: center centraliza o conteúdo no eixo horizontal.\n3. align-items: center centraliza o conteúdo no eixo vertical.\n4. color: white ajustou o contraste do texto sobre o fundo azul.\n\nEsse padrão de display flex, justify-content center e align-items center juntos é tão comum na prática que muitos desenvolvedores decoram essa combinação de cor, já que ela resolve a maioria dos casos de centralização de um único elemento."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
