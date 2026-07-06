@@ -24,8 +24,9 @@ code --install-extension learn-extension-0.0.1.vsix
 Depois de instalar, recarregue o VS Code (`Ctrl+Shift+P` → `Developer: Reload Window`) se o ícone da extensão não aparecer de primeira.
 
 Para visualizar a extensão no vscode:
-
+### Ícone na barra lateral
 **O ícone da extensão aparecerá na barra lateral esquerda com o nome Learn Extension. Dê um duplo clique nele para fixá-lo na interface do VS Code.**
+### Extensão na barra lateral a direita
 **A extensão será exibida na barra lateral esquerda. Recomenda-se mantê-la fixada no lado esquerdo do VS Code para facilitar o acesso.**
 ---
 
