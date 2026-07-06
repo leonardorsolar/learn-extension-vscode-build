@@ -1,4 +1,4 @@
-# Learn Extension — Guia de Instalação e Uso
+# Learn Extension v1.0 — Guia de Instalação e Uso
 
 Extensão do VS Code para estudar de forma interativa: você importa um arquivo de lição (`.json`) e a extensão guia você aula por aula, direto no editor.
 
@@ -10,19 +10,23 @@ Extensão do VS Code para estudar de forma interativa: você importa um arquivo 
 2. Abra o VS Code.
 3. Instale de um dos dois jeitos:
 
-**Pela interface:**
+**Instalação: Pela interface:**
 - Abra a aba de Extensões (`Ctrl+Shift+X`)
 - Clique nos três pontinhos (`...`) no topo do painel
 - Escolha **Install from VSIX...**
 - Selecione o arquivo `learn-extension-0.0.1.vsix`
 
-**Pelo terminal:**
+**Instalação: Pelo terminal:**
 ```bash
 code --install-extension learn-extension-0.0.1.vsix
 ```
 
 Depois de instalar, recarregue o VS Code (`Ctrl+Shift+P` → `Developer: Reload Window`) se o ícone da extensão não aparecer de primeira.
 
+Para visualizar a extensão no vscode:
+
+**O ícone da extensão aparecerá na barra lateral esquerda com o nome Learn Extension. Dê um duplo clique nele para fixá-lo na interface do VS Code.**
+**A extensão será exibida na barra lateral esquerda. Recomenda-se mantê-la fixada no lado esquerdo do VS Code para facilitar o acesso.**
 ---
 
 ## 2. Baixar as lições
