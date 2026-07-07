@@ -1,0 +1,194 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "docker-compose-express-hot-reload",
+          "name": "Node + Express com Docker Compose: hot reload e a vantagem sobre o docker run",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Objetivo desta lição",
+              "content": "Nesta lição você vai criar, do zero, um projeto Node.js com Express, rodando dentro de um container com hot reload (nodemon + volume). Depois, você vai substituir o comando docker run - longo e fácil de esquecer - por um arquivo docker-compose.yml, entendendo o que é o Docker Compose e por que ele é a forma recomendada de rodar projetos em desenvolvimento.\n\nA estrutura final do projeto será:\n\n```text\nprojeto/\n├── Dockerfile\n├── docker-compose.yml\n├── package.json\n└── server.js\n```\n\n```mermaid\nflowchart TD\n  A[Criar projeto Express] --> B[Construir a imagem]\n  B --> C[Rodar com docker run e varias flags -v]\n  C --> D[Repetir o comando toda vez que precisar rodar]\n  D --> E[Criar o docker-compose.yml]\n  E --> F[Rodar com um unico comando: docker compose up]\n```\n\nVamos começar criando os arquivos do projeto."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Crie o package.json do projeto node-express-app, na versão 1.0.0, com server.js como arquivo principal, um script start (node server.js), um script dev (nodemon server.js), o express como dependência e o nodemon como dependência de desenvolvimento.",
+               "comment": "Copie a resposta em Mostrar resposta, cole aqui e depois delete o comentário desta linha",
+              "answer": "{\n  \"name\": \"node-express-app\",\n  \"version\": \"1.0.0\",\n  \"main\": \"server.js\",\n  \"scripts\": {\n    \"start\": \"node server.js\",\n    \"dev\": \"nodemon server.js\"\n  },\n  \"dependencies\": {\n    \"express\": \"^4.18.2\"\n  },\n  \"devDependencies\": {\n    \"nodemon\": \"^3.0.1\"\n  }\n}",
+              "workspace": {
+                "activeFilePath": "package.json",
+                "tree": [
+                  { "type": "file", "name": "package.json" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Crie o server.js usando Express: instancie o app, crie uma rota GET na raiz que responde com o texto API rodando com Express dentro do container!, e coloque o servidor para escutar na porta 3000, exibindo uma mensagem no console.",
+              "comment": "Criar o servidor com Express",
+              "answer": "const express = require('express');\n\nconst app = express();\n\napp.get('/', (req, res) => {\n  res.send('API rodando com Express dentro do container!');\n});\n\napp.listen(3000, () => {\n  console.log('Servidor rodando na porta 3000');\n});",
+              "workspace": {
+                "activeFilePath": "server.js",
+                "tree": [
+                  { "type": "file", "name": "server.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Crie o Dockerfile: use a imagem node:18-alpine, defina /app como pasta de trabalho, copie os arquivos package*.json, instale as dependências, copie o restante do código, exponha a porta 3000 e já defina o comando de inicialização usando o script dev, já que este projeto nasce pensado para hot reload.",
+              "comment": "Copie a resposta em Mostrar resposta, cole aqui e depois delete o comentário desta linha",
+              "answer": "FROM node:18-alpine\nWORKDIR /app\nCOPY package*.json ./\nRUN npm install\nCOPY . .\nEXPOSE 3000\nCMD [\"npm\", \"run\", \"dev\"]",
+              "workspace": {
+                "activeFilePath": "Dockerfile",
+                "tree": [
+                  { "type": "file", "name": "Dockerfile" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No terminal, construa a imagem a partir do Dockerfile na pasta atual, com o nome node-express-app.",
+              "comment": "Construir a imagem executando docker build no terminal",
+              "answer": "docker build -t node-express-app .",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Rode o container do jeito que você já aprendeu: mapeando a porta 3000, montando a pasta atual em /app entre aspas duplas, e protegendo o node_modules do container com um volume anônimo. Sem -d, para acompanhar os logs.",
+              "comment": "Rodar com docker run (jeito antigo)",
+              "answer": "docker run -p 3000:3000 -v \"$(pwd):/app\" -v /app/node_modules node-express-app",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O incômodo de repetir esse comando toda vez",
+              "content": "Pare o container agora com Ctrl+C no terminal.\n\nRepare no comando que você acabou de digitar: é longo, tem várias flags -v, precisa das aspas em $(pwd), e você teria que digitar exatamente isso, sem erro, toda vez que quisesse subir o projeto. Se outra pessoa do time for rodar esse mesmo projeto, ela precisaria saber de cor todas essas opções - ou copiar de algum lugar.\n\nÉ exatamente esse problema que o **Docker Compose** resolve: em vez de digitar um comando gigante toda vez, você escreve a configuração uma única vez em um arquivo, e roda tudo com um único comando simples.\n\n```mermaid\nflowchart LR\n  subgraph DockerRun[Com docker run]\n    A1[Digitar um comando longo] --> A2[Lembrar de cada flag]\n    A2 --> A3[Repetir tudo de novo na proxima vez]\n  end\n  subgraph DockerCompose[Com docker compose]\n    B1[Configuracao escrita uma vez no arquivo] --> B2[docker compose up]\n  end\n```\n\nAlém disso, o Compose já nasce pensando em vários containers ao mesmo tempo: se amanhã este projeto precisar de um banco de dados PostgreSQL junto da API, basta adicionar mais um serviço no mesmo arquivo - sem precisar decorar mais nenhum comando docker run.\n\nVamos criar esse arquivo agora."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Crie o arquivo docker-compose.yml: defina um serviço chamado app, que constrói a imagem a partir da pasta atual, com o nome de container express-app, mapeando a porta 3000, montando a pasta atual em /app e protegendo o node_modules com um volume anônimo.",
+              "comment": "Copie a resposta em Mostrar resposta, cole aqui e depois delete o comentário desta linha",
+              "answer": "version: '3.8'\nservices:\n  app:\n    build: .\n    container_name: express-app\n    ports:\n      - '3000:3000'\n    volumes:\n      - .:/app\n      - /app/node_modules",
+              "workspace": {
+                "activeFilePath": "docker-compose.yml",
+                "tree": [
+                  { "type": "file", "name": "docker-compose.yml" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Desconete o Servidor rodando na porta 3000",
+                "content": "Antes de subir o projeto com o Compose, pare o container que você rodou com docker run, usando Ctrl+C no terminal. Se você fechou o terminal, rode docker ps para ver se ele ainda está rodando e use docker stop <id_do_container> para parar."
+            },
+             {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo o docker-compose.yml",
+                "content": "Cada linha do docker-compose.yml substitui uma parte do comando docker run que você digitava antes:\n\n• services: app\nDefine o serviço (container) que estamos criando.\n\n• build: .\nConstrói a imagem utilizando o Dockerfile localizado na pasta atual. Na prática, substitui o comando docker build.\n\n• container_name: express-app\nEquivale à opção --name express-app do docker run.\n\n• ports:\n  - 3000:3000\nEquivale à opção -p 3000:3000, mapeando a porta 3000 da máquina para a porta 3000 do container.\n\n• volumes:\n  - .:/app\nEquivale à opção -v $(pwd):/app, montando a pasta atual dentro do container.\n\n• volumes:\n  - /app/node_modules\nCria um volume para a pasta node_modules dentro do container, evitando conflitos entre as dependências da máquina e as do container.\n\nRepare que o build: . já cuida de construir a imagem automaticamente. Assim, você não precisa mais executar docker build manualmente antes: o Docker Compose faz isso sempre que necessário."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Suba o projeto usando o Docker Compose, forçando a construção da imagem, já que ainda não existe uma imagem construída a partir do docker-compose.yml.",
+              "comment": "Subir o projeto com docker compose",
+              "answer": "docker compose up --build",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Teste se o servidor está respondendo corretamente, fazendo uma requisição para http://localhost:3000.",
+              "comment": "Testar o servidor",
+              "answer": "curl http://localhost:3000",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Com o container ainda rodando via Compose, altere a mensagem da rota de API rodando com Express dentro do container! para Hot reload funcionando com o Compose!, salve o arquivo e observe o nodemon reiniciando o servidor sozinho no terminal.",
+              "comment": "Testar o hot reload com o Compose",
+              "commentAnchor": {
+                "find": "res.send('API rodando com Express dentro do container!');",
+                "position": "replace",
+                "fallback": "end"
+              },
+              "answer": "res.send('Hot reload funcionando com o Compose!');",
+              "workspace": {
+                "activeFilePath": "server.js",
+                "tree": [
+                  { "type": "file", "name": "server.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Teste se o servidor está respondendo corretamente, fazendo uma requisição para http://localhost:3000.",
+              "comment": "Testar o servidor",
+              "answer": "no navegador acesse http://localhost:3000",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Encerre e remova o container criado pelo Compose com um único comando, já que ele sabe exatamente o que foi criado a partir do docker-compose.yml.",
+              "comment": "Derrubar o projeto com docker compose down",
+              "answer": "docker compose down",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: docker run vs docker compose",
+               "content": "Compare as duas formas de executar o mesmo projeto:\n\n**docker run**\n• O comando precisa ser digitado sempre que o container for criado.\n• É fácil esquecer uma opção (-p, -v, -e, etc.) ou cometer um erro de digitação.\n• Cada container precisa ser parado e removido individualmente usando docker stop e docker rm.\n• Conforme o projeto cresce, fica difícil gerenciar vários containers.\n\n**docker compose**\n• Toda a configuração fica escrita uma única vez no arquivo docker-compose.yml.\n• O arquivo pode ser versionado junto com o código do projeto.\n• Um único comando (docker compose down) para todos os serviços definidos.\n• Basta adicionar novos serviços ao arquivo, como banco de dados, Redis ou Nginx.\n\n```mermaid\nflowchart TD\n  A[docker-compose.yml] --> B[Servico app: API Express]\n  A --> C[Servico futuro: banco de dados]\n  B --> D[docker compose up sobe tudo de uma vez]\n  C --> D\n```\n\nO nome docker-compose.yml não é por acaso: ele reúne vários serviços (containers) que trabalham juntos, como uma API e um banco de dados, em um único arquivo. Assim, quando o projeto evolui — por exemplo, adicionando o PostgreSQL que você estudou na lição anterior — não é necessário criar outro docker run. Basta adicionar um novo serviço ao mesmo docker-compose.yml."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

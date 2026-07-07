@@ -1,0 +1,227 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "git-fluxo-feature-branch",
+          "name": "Git no dia a dia: feature branch, Pull Request e code review",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O fluxo que você vai praticar",
+              "content": "Este é o fluxo de trabalho com Git mais usado no mercado para times que trabalham com branches e Pull Requests: partir da main atualizada, criar uma branch de feature, desenvolver com commits pequenos, subir a branch, abrir um Pull Request, passar por code review, dar merge e limpar a branch.\n\n```mermaid\nflowchart LR\n  A[main atualizada] --> B[Criar feature]\n  B --> C[Desenvolver e commitar]\n  C --> D[Push da branch]\n  D --> E[Abrir Pull Request]\n  E --> F[Code Review]\n  F --> G[Merge na main]\n  G --> H[Limpar a branch]\n```\n\nVamos praticar cada etapa, como se você estivesse desenvolvendo a funcionalidade product-crud."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Iniciando um repositório com git init",
+              "content": "Antes de usar o Git em uma pasta, é preciso transformá-la em um repositório. Isso é feito com o comando:\n\n1.**Use o terminal para executar o comando: \n\n git init \n\n O comando git init cria uma pasta oculta chamada .git dentro do projeto. É nela que o Git guarda todo o histórico de alterações. A partir daqui, o Git passa a observar tudo o que acontece nos arquivos dessa pasta."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Verificando o status com git status",
+              "content": "O comando git status mostra o estado atual do repositório, incluindo:\n\n- Em qual branch você está.\n- Quais arquivos foram modificados.\n- Quais arquivos estão na área de stage (prontos para commit).\n- Quais arquivos não estão sendo rastreados pelo Git.\n\n1.**Use o terminal para executar o comando: \n\n git status \n\n O Git vai mostrar que você está na branch master e que não há commits ainda."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Criar a branch main",
+              "content": "O Git cria a branch master por padrão, mas o mercado está mudando para main. Para criar a branch main e mudar para ela, use:\n\n1.**Use o terminal para executar o comando: \n\n git checkout -b main \n\n O comando git checkout -b main cria a branch main e já muda para ela. A partir daqui, você vai trabalhar na branch main."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Antes de criar qualquer coisa, garanta que você está na branch main.",
+              "comment": "Verificar se está na main",
+              "answer": "git status",
+              "workspace": {
+                "activeFilePath": "comandos-git.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-git.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Crie e já mude para uma nova branch chamada feature/product-crud, seguindo o padrão de nomes usado no mercado: tipo/descricao-curta.",
+              "comment": "Criar a branch da feature",
+              "answer": "git switch -c feature/product-crud",
+              "workspace": {
+                "activeFilePath": "comandos-git.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-git.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Padrão de nomes de branch",
+                "content": "O prefixo da branch comunica a intenção da mudança antes mesmo de alguém analisar o código.\n\n• feature/\nUtilizado para desenvolver uma nova funcionalidade.\nExemplo: feature/product-crud\n\n• fix/\nUtilizado para corrigir um bug.\nExemplo: fix/login-error\n\n• refactor/\nUtilizado para reorganizar ou melhorar o código sem alterar seu comportamento.\nExemplo: refactor/api-structure\n\nAdotar um padrão de nomenclatura facilita a organização do projeto e permite que qualquer membro da equipe entenda rapidamente o objetivo da branch.\n\nAgora que a branch foi criada, é hora de desenvolver a funcionalidade."
+
+            },
+             {
+              "id": "",
+              "type": "explanation",
+              "title": "Crie um arquivo README.md",
+                "content": "Crie um arquivo README.md na raiz do projeto, com o título:\n\n # Product CRUD \n\n slave todos os arquivos."
+
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Depois de criar os arquivos do CRUD de produtos, adicione todas as alterações para a área de stage.",
+              "comment": "Adicionar as alterações",
+              "answer": "git add .",
+              "workspace": {
+                "activeFilePath": "comandos-git.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-git.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Faça o commit dessas alterações, usando uma mensagem no padrão feat, já que você está adicionando uma funcionalidade nova.",
+              "comment": "Commitar seguindo o padrão feat",
+              "answer": "git commit -m \"feat: create product CRUD\"",
+              "workspace": {
+                "activeFilePath": "comandos-git.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-git.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Padrão de mensagens de commit",
+              "content": "Um prefixo no início da mensagem de commit já informa o tipo de alteração realizada.\n\n• feat:\nIndica a adição de uma nova funcionalidade.\nExemplo: feat: add product creation\n\n• fix:\nIndica a correção de um bug.\nExemplo: fix: correct price validation\n\n• refactor:\nIndica uma melhoria interna no código, sem alterar seu comportamento.\nExemplo: refactor: simplify product service\n\n• docs:\nIndica alterações na documentação.\nExemplo: docs: update installation guide\n\nEvite mensagens genéricas, como \"final version\", \"ajustes\" ou \"teste\". Prefira mensagens objetivas que descrevam claramente a alteração realizada.\n\nTambém é uma boa prática fazer commits pequenos e frequentes. Eles facilitam o code review, tornam o histórico do projeto mais organizado e ajudam a identificar problemas com mais rapidez."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Suba a branch feature/product-crud para o repositório remoto, para que outras pessoas do time possam vê-la.",
+              "comment": "Embora vejamos um erro pois não estamos conectados com o github, execute o comando para subir a branch para o remoto",
+              "answer": "git push origin feature/product-crud",
+              "workspace": {
+                "activeFilePath": "comandos-git.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-git.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Abrindo o Pull Request",
+              "content": "Um Pull Request (PR) é um pedido para que as alterações da sua branch sejam incorporadas à main. Ele é aberto direto no GitHub ou GitLab, comparando as duas branches:\n\n- Base: main\n- Compare: feature/product-crud\n\nNo PR, é esperado que você:\n\n- Descreva o que foi feito e por quê.\n- Adicione prints, se a mudança envolver interface visual.\n- Peça a revisão de outra pessoa do time.\n\n```mermaid\nflowchart LR\n  A[feature/product-crud no remoto] --> B[Abrir Pull Request]\n  B --> C[Base: main]\n  B --> D[Compare: feature/product-crud]\n```\n\nCom o PR aberto, começa o code review."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que acontece no code review",
+              "content": "Outra pessoa do time - ou você mesmo, em um segundo olhar - revisa o PR, verificando:\n\n- O código funciona e resolve o que se propõe?\n- Está legível e fácil de entender?\n- Segue os padrões de código da equipe?\n- Tem bugs ou problemas de segurança?\n- Os testes foram feitos?\n\nSe o revisor pedir ajustes, você continua trabalhando na mesma branch."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Você ajustou a validação que o revisor apontou. Adicione essa alteração à área de stage.",
+              "comment": "Adicionar o ajuste pedido no review",
+              "answer": "git add .",
+              "workspace": {
+                "activeFilePath": "comandos-git.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-git.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Faça o commit do ajuste, usando o prefixo fix, já que é uma correção sobre o que já existia.",
+              "comment": "Commitar o ajuste",
+              "answer": "git commit -m \"fix: adjust validation\"",
+              "workspace": {
+                "activeFilePath": "comandos-git.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-git.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Suba esse novo commit. Como o Git já sabe para qual branch remota essa branch aponta, não é necessário repetir origin e o nome da branch.",
+              "comment": "Subir o ajuste. Embora vejamos um erro pois não estamos conectados com o github, execute o comando para subir a branch para o remoto",
+              "answer": "git push",
+              "workspace": {
+                "activeFilePath": "comandos-git.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-git.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Merge e limpeza",
+              "content": "Esse push atualiza automaticamente o Pull Request já aberto, sem precisar criar um novo.\n\nDepois que o revisor aprovar, o merge é feito direto na interface do GitHub ou GitLab, unindo a feature/product-crud na main. É comum usar squash merge, que junta todos os commits da branch em um único commit na main, deixando o histórico mais limpo.\n\nCom a feature já na main, a branch cumpriu seu papel e pode ser removida - tanto localmente quanto no remoto."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Retorne para branch main, já que a feature/product-crud foi incorporada.",
+              "comment": "Retornar para a branch main",
+              "answer": "git switch main",
+              "workspace": {
+                "activeFilePath": "comandos-git.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-git.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Apague a branch feature/product-crud da sua máquina local, já que ela já foi incorporada à main.",
+              "comment": "Apagar a branch local",
+              "answer": "git branch -d feature/product-crud",
+              "workspace": {
+                "activeFilePath": "comandos-git.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-git.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Apague também a branch feature/product-crud do repositório remoto.",
+              "comment": "Embora vejamos erro, use o comando para apagar a branch remota",
+              "answer": "git push origin --delete feature/product-crud",
+              "workspace": {
+                "activeFilePath": "comandos-git.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-git.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: o fluxo completo",
+              "content": "main → cria feature → desenvolve → push → PR → review → merge → limpa\n\n```mermaid\ngitGraph\n  commit id: \"estado atual da main\"\n  branch feature\n  checkout feature\n  commit id: \"feat create product CRUD\"\n  commit id: \"fix adjust validation\"\n  checkout main\n  merge feature\n```\n\nAlgumas dicas de mercado que valem para qualquer equipe:\n\n- Nomeie branches por tipo: feature/, fix/, refactor/, seguidos de uma descrição curta.\n- Prefira commits pequenos e específicos, em vez de mensagens genéricas como final version.\n- Prefira Pull Requests pequenos - até cerca de 300 linhas alteradas é considerado ideal, pois facilita muito o code review.\n\nEsse fluxo - branch, commit, push, PR, review, merge, limpeza - se repete várias vezes por semana no dia a dia de um time de desenvolvimento."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

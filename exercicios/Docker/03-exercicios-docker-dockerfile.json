@@ -1,0 +1,261 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "docker-node-hot-reload",
+          "name": "Docker + Node.js: criando uma imagem e ativando hot reload com nodemon e volumes",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Objetivo desta lição",
+              "content": "Nesta lição você vai criar um projeto Node.js simples, transformá-lo em uma imagem Docker e rodá-lo em um container. Depois, você vai configurar **hot reload**: fazer o servidor reiniciar sozinho sempre que o código mudar, sem precisar reconstruir a imagem a cada alteração.\n\nA estrutura final do projeto será:\n\n```text\nprojeto/\n├── Dockerfile\n├── package.json\n└── server.js\n```\n\nO caminho até chegar no hot reload passa por: criar os arquivos, construir a imagem, rodar o container, perceber que editar o código não reflete automaticamente, e então resolver isso com o nodemon e com volumes.\n\n```mermaid\nflowchart TD\n  A[Criar server.js, package.json e Dockerfile] --> B[Construir a imagem]\n  B --> C[Rodar o container]\n  C --> D[Editar o codigo]\n  D --> E[Precisa reconstruir a imagem para ver a mudanca]\n  E --> F[Instalar nodemon e configurar scripts]\n  F --> G[Rodar o container com volumes]\n  G --> H[Editar o codigo novamente]\n  H --> I[Mudanca aparece na hora, sem rebuild]\n```\n\nVamos começar criando os arquivos do projeto."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Crie o arquivo server.js com um servidor HTTP simples, usando o módulo nativo http, que responde com o texto API rodando dentro do container! e escuta na porta 3000, exibindo uma mensagem no console quando iniciar.",
+              "comment": "Criar o servidor HTTP",
+              "answer": "const http = require('http');\n\nconst server = http.createServer((req, res) => {\n  res.writeHead(200, { 'Content-Type': 'text/plain' });\n  res.end('API rodando dentro do container!');\n});\n\nserver.listen(3000, () => {\n  console.log('Servidor rodando na porta 3000');\n});",
+              "workspace": {
+                "activeFilePath": "server.js",
+                "tree": [
+                  { "type": "file", "name": "server.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Crie o arquivo package.json com o nome node-app, versão 1.0.0, apontando server.js como arquivo principal, e um script start que executa node server.js.",
+              "comment": "Copie a resposta em Mostrar resposta, cole aqui e depois delete o comentário desta linha",
+              "answer": "{\n  \"name\": \"node-app\",\n  \"version\": \"1.0.0\",\n  \"main\": \"server.js\",\n  \"scripts\": {\n    \"start\": \"node server.js\"\n  }\n}",
+              "workspace": {
+                "activeFilePath": "package.json",
+                "tree": [
+                  { "type": "file", "name": "package.json" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Crie o Dockerfile do projeto: use a imagem node:18-alpine, defina /app como pasta de trabalho, copie os arquivos package*.json, instale as dependências, copie o restante do código, exponha a porta 3000 e defina o comando de inicialização como npm start.",
+              "comment": "Copie a resposta em Mostrar resposta, cole aqui e depois delete o comentário desta linha",
+              "answer": "FROM node:18-alpine\nWORKDIR /app\nCOPY package*.json ./\nRUN npm install\nCOPY . .\nEXPOSE 3000\nCMD [\"npm\", \"start\"]",
+              "workspace": {
+                "activeFilePath": "Dockerfile",
+                "tree": [
+                  { "type": "file", "name": "Dockerfile" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo o Dockerfile linha por linha",
+              "content": "Cada linha do Dockerfile representa uma etapa da construção da imagem. Essas etapas são executadas na ordem em que aparecem:\n\n• FROM node:18-alpine\nUtiliza uma imagem base que já possui o Node.js 18 instalado em uma versão leve (Alpine Linux).\n\n• WORKDIR /app\nDefine a pasta /app como diretório de trabalho do container. Todos os próximos comandos serão executados dentro dela.\n\n• COPY package*.json ./\nCopia primeiro os arquivos de dependências (package.json e package-lock.json, quando existir).\n\n• RUN npm install\nInstala todas as dependências da aplicação dentro da imagem.\n\n• COPY . .\nCopia o restante dos arquivos do projeto para o container.\n\n• EXPOSE 3000\nDocumenta que a aplicação utiliza a porta 3000.\n\n• CMD [\"npm\", \"start\"]\nDefine o comando executado automaticamente quando o container for iniciado.\n\nObserve que o package.json é copiado e instalado antes do restante do código. Isso permite que o Docker reutilize o cache das camadas. Assim, se você alterar apenas um arquivo como server.js, as dependências não precisarão ser instaladas novamente, tornando o processo de build muito mais rápido.\n\n```mermaid\nflowchart TD\n  A[Imagem base com Node 18] --> B[Define a pasta de trabalho /app]\n  B --> C[Copia o package.json]\n  C --> D[Instala as dependencias]\n  D --> E[Copia o restante do codigo]\n  E --> F[Documenta a porta 3000]\n  F --> G[Define o comando de inicializacao]\n```\n\nCom o Dockerfile pronto, vamos construir nossa primeira imagem Docker."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Salvando o Dockerfile e o package.json",
+              "content": "Lembre-se de salvar o Dockerfile e o package.json antes de construir a imagem. Se você não salvar, o Docker não vai conseguir copiar os arquivos para dentro da imagem, e o build vai falhar."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Construa a imagem Docker a partir do Dockerfile na pasta atual, dando a ela o nome node-app.",
+              "comment": "Construir a imagem",
+              "answer": "docker build -t node-app .",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que significa docker build -t node-app .",
+              "content": "- docker → chama o Docker\n- build → cria uma nova imagem\n- -t node-app → dá o nome (tag) node-app para a imagem\n- . → usa a pasta atual, onde está o Dockerfile, como contexto de build\n\nCom a imagem construída, já podemos rodar o container."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Rode um container a partir da imagem node-app, em segundo plano, chamado api-node, mapeando a porta 3000 da máquina para a porta 3000 do container.",
+              "comment": "Rodar o container",
+              "answer": "docker run -d -p 3000:3000 --name api-node node-app",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Teste se o servidor está respondendo corretamente, fazendo uma requisição para http://localhost:3000.",
+              "comment": "Testar o servidor",
+              "answer": "no navegador acesse http://localhost:3000",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O problema: toda alteração exige reconstruir a imagem",
+              "content": "O container está funcionando, mas tente o seguinte pensamento: se você alterar a mensagem no server.js agora, essa mudança não vai aparecer no container em execução. O código foi copiado para dentro da imagem no momento do docker build (linha COPY . .) - depois disso, o container não sabe mais que o arquivo original mudou.\n\nPara ver qualquer alteração, você precisaria parar o container, reconstruir a imagem e rodar tudo de novo. Em um projeto real, editando código o tempo todo, esse ciclo se torna muito lento.\n\n```mermaid\nflowchart TD\n  subgraph SemHotReload[Sem hot reload]\n    A1[Editar o codigo] --> A2[Parar o container]\n    A2 --> A3[Reconstruir a imagem]\n    A3 --> A4[Rodar o container novamente]\n  end\n  subgraph ComHotReload[Com hot reload]\n    B1[Editar o codigo] --> B2[Nodemon detecta a mudanca]\n    B2 --> B3[Servidor reinicia sozinho]\n  end\n```\n\nVamos resolver isso com duas peças: o **nodemon**, que reinicia o servidor sozinho quando um arquivo muda, e um **volume**, que conecta a pasta do projeto na sua máquina diretamente à pasta do container, para que as mudanças cheguem até ele em tempo real.\n\nPrimeiro, vamos parar e remover o container atual."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Pare o container api-node.",
+              "comment": "Parar o container",
+              "answer": "docker stop api-node",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Remova o container api-node, já que vamos recriar tudo em modo de desenvolvimento.",
+              "comment": "Remover o container",
+              "answer": "docker rm api-node",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Instale o nodemon como uma dependência de desenvolvimento do projeto, já que ele é uma ferramenta usada apenas durante o desenvolvimento, e não em produção.",
+              "comment": "Instalar o nodemon",
+              "answer": "npm install --save-dev nodemon",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que o nodemon faz?",
+              "content": "O nodemon é uma ferramenta que fica observando os arquivos do seu projeto. Sempre que um arquivo muda, ele reinicia automaticamente o processo Node.js - nesse caso, o server.js.\n\nO comando que você acabou de rodar já adicionou o nodemon como devDependency no package.json automaticamente. Falta agora um passo manual: criar um script dev que use o nodemon em vez do node diretamente, e ajustar o Dockerfile para usar esse script."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No package.json, mantenha o script start como está e adicione, logo abaixo dele, um novo script chamado dev que executa nodemon server.js.",
+              "comment": "Adicionar o script dev aqui abaixo e depois delete o comentário desta linha",
+              "commentAnchor": {
+                "find": "\"start\": \"node server.js\"",
+                "position": "replace",
+                "fallback": "end"
+              },
+              "answer": "\"start\": \"node server.js\",\n    \"dev\": \"nodemon server.js\"",
+              "workspace": {
+                "activeFilePath": "package.json",
+                "tree": [
+                  { "type": "file", "name": "package.json" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No Dockerfile, altere o comando de inicialização para rodar o script dev em vez do script start, já que agora queremos usar o nodemon dentro do container.",
+              "comment": "Alterar o CMD do Dockerfile para o modo dev e depois delete o comentário desta linha",
+              "commentAnchor": {
+                "find": "CMD [\"npm\", \"start\"]",
+                "position": "replace",
+                "fallback": "end"
+              },
+              "answer": "CMD [\"npm\", \"run\", \"dev\"]",
+              "workspace": {
+                "activeFilePath": "Dockerfile",
+                "tree": [
+                  { "type": "file", "name": "Dockerfile" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Por que ainda precisamos de um volume?",
+              "content": "Mesmo com o nodemon instalado e configurado, ainda falta uma peça. O nodemon, dentro do container, só enxerga os arquivos que estão dentro do container - e esses arquivos foram copiados para a imagem no momento do build (COPY . .). Editar o server.js na sua máquina não muda nada dentro do container, porque são cópias independentes.\n\nÉ aqui que entra o **volume**: ao rodar o container, vamos montar a pasta do projeto da sua máquina diretamente na pasta /app do container. Assim, qualquer edição feita localmente aparece instantaneamente dentro do container, e o nodemon detecta a mudança e reinicia o servidor.\n\nVamos usar duas opções -v no docker run:\n\n- -v $(pwd):/app → conecta a pasta atual do seu projeto à pasta /app do container\n- -v /app/node_modules → cria um volume anônimo só para a pasta node_modules\n\nEsse segundo volume é essencial: sem ele, a pasta node_modules da sua máquina (que pode nem existir, ou ser de outro sistema operacional) sobrescreveria o node_modules já instalado dentro do container, quebrando a aplicação. O volume anônimo protege o node_modules do container, mantendo-o intacto mesmo com a pasta do projeto montada por cima.\n\n```mermaid\nflowchart TB\n  Pasta[Pasta do projeto na maquina host] -- e montada em --> App[Pasta /app no container]\n  Volume[Volume anonimo] -- protege --> NodeModules[Pasta /app/node_modules no container]\n```\n\nComo o Dockerfile mudou, precisamos reconstruir a imagem antes de rodar o container novamente."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Reconstrua a imagem node-app, já que o Dockerfile foi alterado para usar o modo dev.",
+              "comment": "Reconstruir a imagem em modo dev",
+              "answer": "docker build -t node-app .",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Rode o container a partir da imagem node-app, mapeando a porta 3000, montando a pasta atual em /app e protegendo o node_modules do container com um volume anônimo. Não use -d desta vez, para poder acompanhar ao vivo os reinícios do nodemon no terminal.",
+              "comment": "Rodar o container com hot reload",
+              "answer": "docker run -p 3000:3000 -v \"$(pwd):/app\" -v /app/node_modules node-app",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Com o container rodando, altere a mensagem retornada pelo servidor de API rodando dentro do container! para Hot reload funcionando!, salve o arquivo e observe no terminal o nodemon reiniciando o servidor sozinho.",
+              "comment": "Testar o hot reload alterando a mensagem",
+              "commentAnchor": {
+                "find": "res.end('API rodando dentro do container!');",
+                "position": "replace",
+                "fallback": "end"
+              },
+              "answer": "res.end('Hot reload funcionando!');",
+              "workspace": {
+                "activeFilePath": "server.js",
+                "tree": [
+                  { "type": "file", "name": "server.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: do build manual ao hot reload",
+              "content": "Compare os dois fluxos que você praticou nesta lição:\n\n| Sem hot reload | Com nodemon + volume |\n|---|---|\n| Editar código não reflete no container | Edição aparece instantaneamente no container |\n| Precisa parar, reconstruir e rodar de novo | Nodemon reinicia o processo sozinho |\n| Ciclo lento de desenvolvimento | Ciclo rápido, ideal para o dia a dia |\n\nOs ingredientes que tornaram isso possível foram:\n\n1. O **nodemon**, observando os arquivos e reiniciando o processo Node.js a cada mudança.\n2. O script dev no package.json, usando o nodemon em vez do node.\n3. O CMD do Dockerfile, apontando para esse script dev.\n4. O **volume** -v $(pwd):/app, espelhando a pasta do projeto dentro do container.\n5. O **volume anônimo** -v /app/node_modules, protegendo as dependências instaladas dentro do container.\n\n```mermaid\nflowchart LR\n  A[Editar arquivo na maquina] --> B[Volume espelha o arquivo no container]\n  B --> C[Nodemon detecta a mudanca]\n  C --> D[Servidor reinicia sozinho]\n  D --> E[Nova resposta disponivel na porta 3000]\n```\n\nVale reforçar: essa configuração com volumes é ótima para **desenvolvimento**, mas não deve ser usada em produção. Em produção, o ideal é que o código fique de fato dentro da imagem, sem depender de uma pasta local montada por volume."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

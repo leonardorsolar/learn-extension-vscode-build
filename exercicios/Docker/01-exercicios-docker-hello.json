@@ -1,0 +1,130 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "docker-hello-world",
+          "name": "Docker: Primeiro Contato (Hello World)",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que são containers?",
+              "content": "Antes de rodar o primeiro comando, é importante entender o que estamos usando.\n\nOs **containers** são um método de virtualização em nível de sistema operacional. Eles permitem executar uma aplicação e todas as suas dependências em processos com recursos isolados, sem precisar de uma máquina virtual completa para cada uma.\n\nUm container agrupa uma aplicação com tudo que ela precisa para rodar - código, bibliotecas do sistema, dependências e arquivos de configuração - criando um ambiente isolado. Isso garante que a aplicação funcione da mesma forma em qualquer máquina, já que ela carrega o próprio ambiente junto com ela.\n\nRepare que todos os containers compartilham o mesmo sistema operacional da máquina host, mas cada um enxerga apenas suas próprias bibliotecas e arquivos, como se estivesse sozinho na máquina:\n\n```mermaid\nflowchart TB\n  subgraph Host[Maquina Host]\n    SO[Sistema Operacional]\n    subgraph C1[Container 1]\n      App1[Aplicacao A]\n      Lib1[Bibliotecas e dependencias A]\n    end\n    subgraph C2[Container 2]\n      App2[Aplicacao B]\n      Lib2[Bibliotecas e dependencias B]\n    end\n  end\n  SO --> C1\n  SO --> C2\n```\n\nCom esse conceito em mente, vamos verificar se o Docker está instalado corretamente e rodar nosso primeiro container."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Verificando a instalação do Docker",
+              "content": "Antes de qualquer prática, é uma boa ideia confirmar que o Docker está instalado e funcionando corretamente na sua máquina.\n\n1. **Use o terminal para executar o comando** `docker version` - ele mostra a versão do cliente e do daemon (servidor) do Docker.\n\n2. **Use o terminal para executar o comando** `docker info` - ele mostra informações gerais sobre a instalação, como número de containers, imagens e configurações do sistema.\n\nSe os dois comandos retornarem informações sem erro, o Docker está pronto para uso."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No terminal do Vscode,vamos praticar o clássico Hello World do Docker. Escreva o comando que cria e executa um container a partir da imagem hello-world, disponível no Docker Hub.",
+              "comment": "Prática: rodar o container hello-world no terminal do Vscode",
+              "answer": "docker run hello-world",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é docker run e o que aconteceu agora?",
+              "content": "O comando `docker run` cria e executa um container a partir de uma imagem. Quando você rodou `docker run hello-world`, o Docker seguiu estes passos:\n\n1. Verificou se a imagem hello-world já existia na sua máquina.\n2. Como não existia, baixou a imagem do Docker Hub.\n3. Criou um container a partir dessa imagem.\n4. Executou o programa contido na imagem, que apenas imprime uma mensagem na tela.\n5. Como o processo principal do container terminou (o programa só imprime e encerra), o container também terminou.\n\n```mermaid\nsequenceDiagram\n  participant Voce\n  participant Docker as Docker Daemon\n  participant Registry\n  participant Container\n\n  Voce->>Docker: docker run hello-world\n  Docker->>Registry: Verifica se a imagem existe localmente\n  Registry-->>Docker: Envia a imagem hello-world\n  Docker->>Container: Cria o container a partir da imagem\n  Container->>Container: Executa o programa e imprime a mensagem\n  Container-->>Docker: Processo principal termina\n  Docker-->>Voce: Container encerrado\n```\n\nEssa é uma diferença importante em relação a uma máquina virtual: um container só existe enquanto o processo principal dele estiver rodando. Quando esse processo termina, o container termina junto."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Mesmo com o container hello-world já encerrado, ele continua existindo (parado) até ser removido. Escreva o comando para listar apenas os containers que estão em execução no momento.",
+              "comment": "Listar containers em execução",
+              "answer": "docker ps",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como o container hello-world já encerrou, ele não vai aparecer no docker ps. Escreva o comando para listar todos os containers, incluindo os que já pararam.",
+              "comment": "Listar containers parados",
+              "answer": "docker ps -a",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Containers parados continuam ocupando espaço em disco até serem removidos. Escreva o comando para excluir um container específico, substituindo id pelo identificador do container.",
+              "comment": "Excluir um container",
+              "answer": "docker rm <id_do_container>",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Verifique se o container foi removido.",
+              "content": "Após remover o container, você pode verificar se ele realmente foi excluído executando novamente o comando: \n\n `docker ps -a` \n\n O container que você removeu não deve mais aparecer na lista."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Além de containers, o Docker também guarda localmente as imagens já baixadas, como a hello-world. Escreva o comando para listar todas as imagens presentes na sua máquina.",
+              "comment": "Listar imagens",
+              "answer": "docker images",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Assim como containers, imagens que não são mais necessárias também podem ser removidas para liberar espaço. Escreva o comando para excluir uma imagem específica, substituindo id pelo identificador da imagem.",
+              "comment": "Excluir uma imagem",
+              "answer": "docker rmi <id_da_imagem>",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Verifique se a imagem foi removida.",
+              "content": "Após remover a imagem, você pode verificar se ela realmente foi excluída executando novamente o comando: \n\n `docker images` \n\n A imagem que você removeu não deve mais aparecer na lista."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: seu primeiro contato com o Docker",
+              "content": "Nesta lição você deu os primeiros passos com o Docker:\n\n1. Entendeu o que é um **container**: um ambiente isolado que empacota uma aplicação com tudo que ela precisa para rodar (código, bibliotecas e configurações).\n2. Verificou a instalação do Docker com `docker version` e `docker info`.\n3. Rodou seu primeiro container com `docker run hello-world` e entendeu por que ele encerra sozinho: quando o processo principal termina, o container termina junto.\n4. Aprendeu a listar containers em execução (`docker ps`) e todos os containers, incluindo os parados (`docker ps -a`).\n5. Aprendeu a listar imagens (`docker images`) e a remover containers (`docker rm`) e imagens (`docker rmi`) que não são mais necessários.\n\nEsse ciclo de baixar imagem, criar e rodar container, verificar o que está rodando e limpar o que não é mais necessário é a base do dia a dia com Docker:\n\n```mermaid\nflowchart LR\n  A[docker images] --> B[docker run]\n  B --> C[Container criado e em execucao]\n  C --> D[docker ps]\n  C --> E[Container encerra]\n  E --> F[docker ps -a]\n  F --> G[docker rm id]\n  A --> H[docker rmi id]\n```\n\nCom essa base, você já está pronto para explorar imagens mais complexas, como bancos de dados e APIs rodando dentro de containers."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

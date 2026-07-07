@@ -1,0 +1,164 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "express-postgres-compose",
+          "name": "Node + Express conectado ao PostgreSQL com Docker Compose",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Objetivo desta lição",
+              "content": "Vamos criar uma API Express e um banco PostgreSQL como dois serviços dentro do mesmo docker-compose.yml. O Compose vai criar uma rede interna entre eles, permitindo que a API se conecte ao banco usando apenas o nome do serviço - sem precisar saber IP nenhum.\n\n```mermaid\nflowchart LR\n  subgraph Compose[docker-compose.yml]\n    App[Servico app - Express]\n    Db[Servico db - Postgres]\n  end\n  App -- conecta usando o hostname db --> Db\n```\n\nEstrutura final:\n\n```text\nprojeto/\n├── Dockerfile\n├── docker-compose.yml\n├── package.json\n└── server.js\n```"
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Crie o package.json node-express-postgres, versão 1.0.0, main server.js, script start (node server.js), script dev (nodemon server.js), dependendo de express e pg, e tendo nodemon como dependência de desenvolvimento.",
+              "comment": "Criar o package.json",
+              "answer": "{\n  \"name\": \"node-express-postgres\",\n  \"version\": \"1.0.0\",\n  \"main\": \"server.js\",\n  \"scripts\": {\n    \"start\": \"node server.js\",\n    \"dev\": \"nodemon server.js\"\n  },\n  \"dependencies\": {\n    \"express\": \"^4.18.2\",\n    \"pg\": \"^8.11.3\"\n  },\n  \"devDependencies\": {\n    \"nodemon\": \"^3.0.1\"\n  }\n}",
+              "workspace": {
+                "activeFilePath": "package.json",
+                "tree": [
+                  { "type": "file", "name": "package.json" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Crie o server.js: importe express e Pool do pg, crie um pool de conexão lendo host, usuário, senha, banco e porta das variáveis de ambiente DB_HOST, DB_USER, DB_PASSWORD, DB_NAME e DB_PORT, crie uma rota GET /users que consulta SELECT * FROM users e retorna o resultado como JSON, e escute na porta 3000.",
+              "comment": "Criar o servidor Express com conexão ao Postgres",
+              "answer": "const express = require('express');\nconst { Pool } = require('pg');\n\nconst app = express();\n\nconst pool = new Pool({\n  host: process.env.DB_HOST,\n  user: process.env.DB_USER,\n  password: process.env.DB_PASSWORD,\n  database: process.env.DB_NAME,\n  port: process.env.DB_PORT,\n});\n\napp.get('/users', async (req, res) => {\n  const result = await pool.query('SELECT * FROM users');\n  res.json(result.rows);\n});\n\napp.listen(3000, () => {\n  console.log('Servidor rodando na porta 3000');\n});",
+              "workspace": {
+                "activeFilePath": "server.js",
+                "tree": [
+                  { "type": "file", "name": "server.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Crie o Dockerfile: imagem node:18-alpine, pasta de trabalho /app, copie package*.json, instale as dependências, copie o restante do código, exponha a porta 3000 e rode o script dev.",
+              "comment": "Criar o Dockerfile",
+              "answer": "FROM node:18-alpine\nWORKDIR /app\nCOPY package*.json ./\nRUN npm install\nCOPY . .\nEXPOSE 3000\nCMD [\"npm\", \"run\", \"dev\"]",
+              "workspace": {
+                "activeFilePath": "Dockerfile",
+                "tree": [
+                  { "type": "file", "name": "Dockerfile" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Crie o docker-compose.yml com dois serviços: db, usando a imagem postgres:17, com usuário admin, senha 123456 e banco empresa, guardando os dados em um volume nomeado postgres_data, expondo a porta 5432; e app, construído a partir do Dockerfile atual, com as mesmas credenciais nas variáveis DB_HOST (db), DB_USER, DB_PASSWORD, DB_NAME e DB_PORT, expondo a porta 3000, montando a pasta atual em /app, protegendo o node_modules com volume anônimo, e dependendo do serviço db.",
+              "comment": "Criar o docker-compose.yml com app e db",
+              "answer": "services:\n  db:\n    image: postgres:17\n    container_name: postgres-db\n    environment:\n      POSTGRES_USER: admin\n      POSTGRES_PASSWORD: '123456'\n      POSTGRES_DB: empresa\n    volumes:\n      - postgres_data:/var/lib/postgresql/data\n    ports:\n      - '5432:5432'\n\n  app:\n    build: .\n    container_name: express-app\n    environment:\n      DB_HOST: db\n      DB_USER: admin\n      DB_PASSWORD: '123456'\n      DB_NAME: empresa\n      DB_PORT: 5432\n    ports:\n      - '3000:3000'\n    volumes:\n      - .:/app\n      - /app/node_modules\n    depends_on:\n      - db\n\nvolumes:\n  postgres_data:",
+              "workspace": {
+                "activeFilePath": "docker-compose.yml",
+                "tree": [
+                  { "type": "file", "name": "docker-compose.yml" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Os pontos-chave desse arquivo",
+              "content": "- DB_HOST: db → a API não usa IP nem localhost, ela usa o nome do serviço db. O Compose resolve esse nome dentro da rede que ele cria automaticamente para os serviços do arquivo.\n- depends_on: db → garante que o container db seja iniciado antes do app. Ele não garante que o Postgres já esteja pronto para aceitar conexões, só que o container já começou a subir - por isso, se o app falhar na primeira tentativa de conexão, geralmente basta reiniciá-lo.\n- volumes: postgres_data no serviço db + a seção volumes no final do arquivo → mesma ideia de volume nomeado que você já viu na lição de PostgreSQL, garantindo que os dados sobrevivam mesmo se o container do banco for recriado.\n- volumes: .:/app e /app/node_modules no serviço app → o mesmo hot reload que você já configurou antes, agora dentro de um serviço do Compose.\n\nVamos subir os dois serviços."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Suba os dois serviços definidos no docker-compose.yml, em segundo plano, forçando a construção da imagem da API.",
+              "comment": "Subir app e db com docker compose",
+              "answer": "docker compose up -d --build",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "O banco ainda não tem a tabela users. Entre no psql dentro do serviço db, usando o docker compose exec.",
+              "comment": "Entrar no Postgres pelo serviço db",
+              "answer": "docker compose exec db psql -U admin -d empresa",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Crie a tabela users, com id auto-incremento como chave primária, name e email.",
+              "comment": "Criar a tabela users",
+              "answer": "CREATE TABLE users (\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(100),\n  email VARCHAR(100)\n);",
+              "workspace": {
+                "activeFilePath": "queries.sql",
+                "tree": [
+                  { "type": "file", "name": "queries.sql" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Insira dois registros na tabela users: Maria (maria@email.com) e João (joao@email.com).",
+              "comment": "Inserir dados de teste",
+              "answer": "INSERT INTO users (name, email)\nVALUES ('Maria', 'maria@email.com'), ('João', 'joao@email.com');",
+              "workspace": {
+                "activeFilePath": "queries.sql",
+                "tree": [
+                  { "type": "file", "name": "queries.sql" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Saia do psql, já que a API vai fazer as próximas consultas.",
+              "comment": "Sair do Postgres",
+              "answer": "\\q",
+              "workspace": {
+                "activeFilePath": "queries.sql",
+                "tree": [
+                  { "type": "file", "name": "queries.sql" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Teste a rota /users da API, para confirmar que o serviço app conseguiu se conectar ao serviço db e trazer os dados.",
+              "comment": "Testar a rota conectada ao banco",
+              "answer": "curl http://localhost:3000/users",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo",
+              "content": "O retorno da rota /users mostra Maria e João, vindos diretamente do banco rodando em outro container. Isso só funcionou porque:\n\n1. Os dois serviços estão no mesmo docker-compose.yml, na mesma rede.\n2. A API usou db como host, não um IP.\n3. As credenciais de ambos os serviços foram combinadas corretamente nas variáveis de ambiente.\n\n```mermaid\nflowchart TD\n  A[docker compose up] --> B[Cria a rede interna]\n  B --> C[Sobe o servico db]\n  B --> D[Sobe o servico app]\n  D -- consulta via hostname db --> C\n  C --> E[Dados gravados no volume postgres_data]\n```\n\nEsse é o padrão real usado em projetos com múltiplos containers: cada peça do sistema (API, banco, cache, fila) vira um serviço no mesmo docker-compose.yml, todos subindo e se comunicando com um único docker compose up."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

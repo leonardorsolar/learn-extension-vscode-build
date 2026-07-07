@@ -1,0 +1,47 @@
+{
+  "levels": [
+    {
+      "id": "teste",
+      "name": "Teste commentAnchor",
+      "themes": [
+        {
+          "id": "teste-anchor",
+          "name": "Teste de posicionamento do comentário",
+          "lines": [
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do arquivo index.html vazio, digite ! e pressione Tab para gerar a estrutura básica do HTML com o Emmet.",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag <head>, troque o conteúdo da tag <title>, que está com o texto padrão Document, para o texto Minha Primeira Página. (Este exercício testa o novo commentAnchor: o comentário deve aparecer logo ACIMA da tag <title>, dentro do <head>, em vez de no final do arquivo.)",
+              "comment": "Alterar o conteúdo da tag title dentro da tag head",
+              "commentAnchor": {
+                "find": "<title>Document</title>",
+                "position": "before",
+                "fallback": "end"
+              },
+              "answer": "<title>Minha Primeira Página</title>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

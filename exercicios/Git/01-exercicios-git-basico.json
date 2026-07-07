@@ -1,0 +1,143 @@
+{
+  "levels": [
+    {
+      "id": "iniciante",
+      "name": "Iniciante",
+      "themes": [
+        {
+          "id": "git-basico",
+          "name": "Git para Iniciantes",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que vamos construir nesta lição?",
+              "content": "Nesta lição você vai criar um projeto web do zero, com um arquivo index.html e um arquivo .gitignore, e vai aprender a versionar o projeto com Git. Você vai aprender a criar commits, visualizar o histórico de alterações e entender como funciona o fluxo básico do Git."
+            },
+             {
+              "id": "",
+              "type": "explanation",
+              "title": "Preparando o projeto",
+              "content": "No Vscode certifique-se que você está dentro de uma pasta vazia, sem nenhum arquivo dentro.\n\n É importante que nao tenha uma git já incializado dentro da pasta do projeto."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é Git e por que usar?",
+              "content": "Git é um sistema de controle de versão: ele guarda um histórico de todas as alterações feitas nos arquivos de um projeto, permitindo voltar no tempo, comparar versões e trabalhar em equipe sem sobrescrever o trabalho dos outros.\n\nO fluxo básico do Git tem três áreas principais:\n\n```mermaid\nflowchart LR\n  G1[Arquivos no computador] --> G2[Area de staging]\n  G2 --> G3[Repositorio - historico de commits]\n```\n\n1. Você edita arquivos normalmente no seu computador.\n2. Escolhe quais alterações quer guardar, movendo-as para a área de staging.\n3. Registra essas alterações no histórico do projeto através de um commit.\n\nNos próximos passos você vai criar um projeto do zero e aplicar esse fluxo na prática."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Iniciando um repositório com git init",
+              "content": "Antes de usar o Git em uma pasta, é preciso transformá-la em um repositório. Isso é feito com o comando:\n\n1.**Use o terminal para executar o comando: \n\n git init \n\n O comando git init cria uma pasta oculta chamada .git dentro do projeto. É nela que o Git guarda todo o histórico de alterações. A partir daqui, o Git passa a observar tudo o que acontece nos arquivos dessa pasta."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Todo projeto web costuma começar com um arquivo index.html. Dentro do arquivo index.html vazio, digite ! e pressione Tab para gerar a estrutura básica do HTML com o Emmet, um atalho que acelera a escrita de HTML. \n\n Dica:salve sempre seu arquivo para verificar as mudanças no Git.",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Verificando o status com git status",
+              "content": "Depois de criar ou alterar arquivos, é comum querer saber o que o Git já percebeu de diferente no projeto. Para isso existe o comando:\n\n1.**Use o terminal para executar o comando: \n\n git status \n\n2.O comando git status mostra quais arquivos foram criados, modificados ou removidos desde o último commit, e também informa quais deles ainda não estão na área de staging. É um comando que você vai usar o tempo todo, para saber exatamente o que está prestes a ser salvo no histórico."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag body, adicione um título visível na página usando a tag h1 com o texto Meu Primeiro Projeto, para que a sua página já mostre algo quando for aberta no navegador.",
+              "comment": "Adicionar título visível dentro do body",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<h1>Meu Primeiro Projeto</h1>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Adicionando arquivos à área de staging com git add",
+              "content": "O próximo passo é escolher quais deles vão entrar no próximo commit. Isso é feito com:\n\n1.**Use o terminal para executar o comando: \n\n git add . \n\n2.O ponto depois do add significa todos os arquivos alterados na pasta atual. Também é possível adicionar um arquivo específico, como em git add index.html. Depois desse comando, os arquivos escolhidos passam a fazer parte da área de staging, prontos para serem registrados em um commit."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Verificando o status com git status",
+              "content": "Depois de alterar arquivos é comum verificar o status.:\n\n1.**Use o terminal para executar o comando: \n\n git status \n\n O comando git status mostra quais arquivos foram criados, modificados ou removidos. Veja que a cor mudou para verde, indicando que o arquivo index.html está na área de staging, pronto para ser registrado no próximo commit."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Criando o primeiro commit com git commit",
+              "content": "Com os arquivos na área de staging, é hora de registrar essa versão no histórico do projeto:\n\n1.**Use o terminal para executar o comando: \n\n git commit -m'Primeiro commit do projeto' \n\n2.O texto depois do -m é a mensagem do commit, e deve explicar de forma curta o que foi feito naquela alteração. Cada commit vira um ponto no histórico do projeto, ao qual você sempre pode voltar depois."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é o commit?",
+              "content": "O commit é o ponto de salvamento do projeto, que registra o estado atual dos arquivos. Cada commit tem um código único de identificação, chamado hash, e uma mensagem explicando o que foi feito. É possível voltar para qualquer commit anterior, comparar versões e até criar ramificações (branches) a partir de um commit específico."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Verificando o status com git status",
+              "content": "Depois de comitar os arquivos, é comum verificar o status.:\n\n1.**Use o terminal para executar o comando: \n\n git status \n\n 2.O comando git status mostra que não há alterações a serem comitadas, indicando que o projeto está atualizado com o último commit"
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Com o projeto já versionado, é comum evoluir a página aos poucos. Logo abaixo do título h1, adicione um parágrafo usando a tag p com o texto Em breve mais novidades por aqui.",
+              "comment": "Adicionar parágrafo abaixo do título",
+              "commentAnchor": {
+                "find": "<h1>Meu Primeiro Projeto</h1>",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "<p>Em breve mais novidades por aqui.</p>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+             {
+              "id": "",
+              "type": "explanation",
+              "title": "Verificando o status com git status, depois git add . e depois git commit -m'Adicionando parágrafo'",
+              "content": "Depois de alterar o index.html, é comum verificar o status.:\n\n1.**Use o terminal para executar o comando: \n\n git status \n\n 2.O comando git status mostra quais arquivos foram criados, modificados ou removidos. Veja que a cor mudou para vermelho, indicando que o arquivo index.html foi modificado, mas ainda não está na área de staging.\n\n3.**Use o terminal para executar o comando: \n\n git add . \n\n 4.O ponto depois do add significa todos os arquivos alterados na pasta atual. Depois desse comando, os arquivos escolhidos passam a fazer parte da área de staging, prontos para serem registrados em um commit.\n\n5.**Use o terminal para executar o comando: \n\n git commit -m'Adicionando parágrafo' \n\n 6.O texto depois do -m é a mensagem do commit, e deve explicar de forma curta o que foi feito naquela alteração. Cada commit vira um ponto no histórico do projeto, ao qual você sempre pode voltar depois."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Visualizando o histórico com git log",
+              "content": "Depois de alterar o index.html, você teria um novo ciclo de git add e git commit para registrar essa mudança. Para conferir tudo o que já foi registrado no projeto, existe o comando:\n\n1.**Use o terminal para executar o comando\n\n git log --oneline \n\n2.O comando git log mostra a lista de commits já feitos, do mais recente para o mais antigo. A opção --oneline deixa cada commit resumido em uma única linha, com um código curto de identificação e a mensagem que foi escrita na hora do commit."
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: seu primeiro fluxo com Git",
+              "content": "Nesta lição você percorreu o ciclo básico de trabalho com Git:\n\n```mermaid\nflowchart TD\n  A[git init] --> B[Criar ou editar arquivos]\n  B --> C[git status]\n  C --> D[git add]\n  D --> E[git commit]\n  E --> F[git log]\n  F --> B\n```\n\n1. git init transforma uma pasta comum em um repositório Git.\n2. Você cria e edita arquivos normalmente, como o index.html e o .gitignore.\n3. git status mostra o que mudou desde o último commit.\n4. git add move as alterações escolhidas para a área de staging.\n5. git commit registra essas alterações no histórico do projeto, com uma mensagem explicando o que foi feito.\n6. git log permite consultar todo esse histórico a qualquer momento.\n\nEsse ciclo - editar, verificar status, adicionar e commitar - se repete ao longo de todo o desenvolvimento de um projeto, e é a base para aprender comandos mais avançados de Git no futuro, como branches e merges."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

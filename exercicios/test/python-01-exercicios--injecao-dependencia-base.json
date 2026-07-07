@@ -1,0 +1,74 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "python-di-base",
+          "name": "Injeção de Dependência com Python (Base)",
+          "lines": [
+            {
+              "type": "explanation",
+              "title": "Objetivo",
+              "content": "Vamos construir uma API simples em Python para entender como Router, Controller, Service e Repository trabalham juntos."
+            },
+            {
+              "type": "explanation",
+              "title": "Fluxo",
+              "content": "HTTP Request\n↓\nUserRouter\n↓\nUserController\n↓\nCreateUserService\n↓\nUserRepository\n↓\nBanco de Dados"
+            },
+            {
+              "type": "explanation",
+              "title": "Criando o projeto",
+              "content": "Execute:\npoetry new projeto_usuarios\ncd projeto_usuarios\npoetry add fastapi uvicorn"
+            },
+            {
+              "type": "exercise",
+              "question": "Crie a estrutura de pastas abaixo.",
+              "comment": "Organizar o projeto",
+              "answer": "app/\n  routers/\n  controllers/\n  services/\n  repositories/\n  models/\n  main.py",
+              "workspace": {
+                "activeFilePath": "app/main.py",
+                "tree": [
+                  {
+                    "type": "folder",
+                    "name": "app"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "explanation",
+              "title": "Responsabilidade das camadas",
+              "content": "Router recebe a URL.\nController recebe a requisição.\nService contém a regra de negócio.\nRepository acessa os dados."
+            },
+            {
+              "type": "exercise",
+              "question": "Em qual camada fica a regra de negócio?",
+              "comment": "Entender arquitetura",
+              "answer": "CreateUserService"
+            },
+            {
+              "type": "exercise",
+              "question": "Em qual camada ocorre o acesso ao banco de dados?",
+              "comment": "Entender arquitetura",
+              "answer": "UserRepository"
+            },
+            {
+              "type": "exercise",
+              "question": "Complete o fluxo.",
+              "comment": "Fluxo",
+              "answer": "HTTP Request -> UserRouter -> UserController -> CreateUserService -> UserRepository -> Banco de Dados"
+            },
+            {
+              "type": "explanation",
+              "title": "Próximo passo",
+              "content": "Agora que você entende a função de cada camada, pode começar a implementar Router, Controller, Service e Repository."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

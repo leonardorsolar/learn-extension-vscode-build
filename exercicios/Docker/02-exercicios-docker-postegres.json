@@ -1,0 +1,544 @@
+{
+  "levels": [
+    {
+      "id": "junior",
+      "name": "Júnior",
+      "themes": [
+        {
+          "id": "postgres-sem-volume",
+          "name": "PostgreSQL com Docker: por que os dados somem?",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Objetivo desta lição",
+              "content": "Nesta lição você vai subir um banco de dados PostgreSQL usando Docker, inserir dados nele e depois remover o container. O objetivo é você observar, na prática, o que acontece com os dados quando o container é removido - e entender por que isso acontece.\n\nEssa é a base para entender, na próxima lição, por que usamos **volumes** em bancos de dados rodando em containers.\n\n```mermaid\nflowchart TD\n  A[Baixar imagem postgres] --> B[Criar container sem volume]\n  B --> C[Inserir dados no banco]\n  C --> D[Remover o container]\n  D --> E[Dados perdidos]\n  E --> F[Criar volume]\n  F --> G[Criar container com volume]\n  G --> H[Inserir novos dados]\n  H --> I[Remover o container]\n  I --> J[Criar outro container usando o mesmo volume]\n  J --> K[Dados continuam disponiveis]\n```\n\nVamos começar baixando a imagem oficial do PostgreSQL."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Antes de criar o container, é preciso ter a imagem do PostgreSQL disponível localmente. Escreva o comando para baixar a versão 17 da imagem oficial do PostgreSQL.",
+              "comment": "Baixar a imagem do PostgreSQL",
+              "answer": "docker pull postgres:17",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Confirme que a imagem foi baixada corretamente. Escreva o comando que lista todas as imagens presentes na sua máquina.",
+              "comment": "Listar imagens instaladas",
+              "answer": "docker images",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Entendendo as opções do docker run",
+              "content": "Antes de criar o container, vamos entender cada parte do comando:\n\n docker run -d --name postgres-db -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=123456 -e POSTGRES_DB=empresa -p 5432:5432 postgres:17\n\n\n\n• docker run\nCria um novo container a partir de uma imagem.\n\n• -d\nExecuta o container em segundo plano (modo detached).\n\n• --name postgres-db\nDefine o nome do container.\n\n• -e POSTGRES_USER=postgres\nCria o usuário administrador do PostgreSQL.\n\n• -e POSTGRES_PASSWORD=123456\nDefine a senha do usuário administrador.\n\n• -e POSTGRES_DB=curso_docker\nCria automaticamente o banco de dados informado.\n\n• -p 5432:5432\nMapeia a porta 5432 da sua máquina para a porta 5432 do container. Assim, aplicações como DBeaver, PgAdmin ou outra aplicação conseguem acessar o banco de dados.\n\n• postgres:17\nÉ a imagem do PostgreSQL que será utilizada para criar o container.\n\nFluxo da porta:\n\nHost (porta 5432)\n        │\n        ▼\nContainer PostgreSQL (porta 5432)\n\nO primeiro número representa a porta da sua máquina. O segundo representa a porta utilizada pelo PostgreSQL dentro do container.\n\n```mermaid\nflowchart LR\n  Host[Porta 5432 da maquina host] --> Container[Porta 5432 do container postgres]\n```\n\nCom isso em mente, vamos criar o container."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Crie um container chamado postgres-db a partir da imagem postgres:17, rodando em segundo plano, com usuário admin, senha 123456, banco chamado empresa, e mapeando a porta 5432 da sua máquina para a porta 5432 do container.",
+              "comment": "Criar container do PostgreSQL sem volume",
+              "answer": "docker run -d --name postgres-db -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=123456 -e POSTGRES_DB=empresa -p 5432:5432 postgres:17",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Confirme que o container postgres-db está rodando. Escreva o comando que lista os containers em execução.",
+              "comment": "Verificar se o container está rodando",
+              "answer": "docker ps",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Para manipular o banco de dados, você precisa entrar no terminal interativo do PostgreSQL dentro do container. Escreva o comando que executa o psql dentro do container postgres-db, conectando como usuário admin no banco empresa.",
+              "comment": "Entrar no PostgreSQL dentro do container",
+              "answer": "docker exec -it postgres-db psql -U admin -d empresa",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Agora estamos dentro do PostgreSQL",
+              "content": "A partir de agora, os comandos que você vai digitar não são mais comandos do Docker, e sim comandos SQL, executados dentro do prompt do PostgreSQL (empresa=#).\n\nVamos criar uma tabela, inserir alguns dados e consultá-los."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Crie uma tabela chamada users, com um id que se auto-incrementa e é a chave primária, um campo name para o nome e um campo email para o e-mail.",
+              "comment": "Criar a tabela users",
+              "answer": "CREATE TABLE users (\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(100),\n  email VARCHAR(100)\n);",
+              "workspace": {
+                "activeFilePath": "queries.sql",
+                "tree": [
+                  { "type": "file", "name": "queries.sql" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Insira três registros na tabela users: Maria (maria@email.com), João (joao@email.com) e Ana (ana@email.com).",
+              "comment": "Inserir dados na tabela users",
+              "answer": "INSERT INTO users (name, email)\nVALUES ('Maria', 'maria@email.com'), ('João', 'joao@email.com'), ('Ana', 'ana@email.com');",
+              "workspace": {
+                "activeFilePath": "queries.sql",
+                "tree": [
+                  { "type": "file", "name": "queries.sql" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Confirme que os dados foram inseridos corretamente. Escreva a consulta que retorna todos os registros da tabela users.",
+              "comment": "Consultar os dados da tabela users",
+              "answer": "SELECT * FROM users;",
+              "workspace": {
+                "activeFilePath": "queries.sql",
+                "tree": [
+                  { "type": "file", "name": "queries.sql" }
+                ]
+              }
+            },
+             {
+              "id": "",
+              "type": "exercise",
+              "question": "Liste as tabelas existentes no banco empresa.",
+              "comment": "Listar tabelas do banco",
+              "answer": "\\dt",
+              "workspace": {
+                "activeFilePath": "queries.sql",
+                "tree": [
+                  { "type": "file", "name": "queries.sql" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Agora que já confirmou os dados, saia do prompt do PostgreSQL.",
+              "comment": "Sair do PostgreSQL",
+              "answer": "\\q",
+              "workspace": {
+                "activeFilePath": "queries.sql",
+                "tree": [
+                  { "type": "file", "name": "queries.sql" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "De volta ao terminal do sistema, pare o container postgres-db.",
+              "comment": "Parar o container",
+              "answer": "docker stop postgres-db",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Agora remova completamente o container postgres-db.",
+              "comment": "Remover o container",
+              "answer": "docker rm postgres-db",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Confirme que o container foi removido. Escreva o comando que lista todos os containers, incluindo os parados.",
+              "comment": "Verificar que o container não existe mais",
+              "answer": "docker ps -a",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Crie novamente o container postgres-db, com exatamente as mesmas opções de antes (mesmo usuário, senha, banco e porta).",
+              "comment": "Recriar o container sem volume",
+              "answer": "docker run -d --name postgres-db -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=123456 -e POSTGRES_DB=empresa -p 5432:5432 postgres:17",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Entre novamente no PostgreSQL dentro do container recém-criado, do mesmo jeito que fez antes.",
+              "comment": "Entrar novamente no PostgreSQL",
+              "answer": "docker exec -it postgres-db psql -U admin -d empresa",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Liste as tabelas existentes no banco empresa para verificar se a tabela users ainda existe.",
+              "comment": "Listar tabelas do banco",
+              "answer": "\\dt",
+              "workspace": {
+                "activeFilePath": "queries.sql",
+                "tree": [
+                  { "type": "file", "name": "queries.sql" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Cadê a tabela users?",
+              "content": "O resultado do \\dt agora é Did not find any relations - ou seja, a tabela users não existe mais. Todos os dados que você inseriu foram perdidos.\n\nIsso acontece porque, por padrão, o PostgreSQL guarda os arquivos do banco de dados dentro do próprio sistema de arquivos do container. Quando o container é removido com docker rm, todo o seu sistema de arquivos é descartado junto - inclusive os arquivos do banco.\n\nO container que você criou depois é uma instância nova e independente, criada do zero a partir da imagem postgres:17. Ele nunca teve acesso aos arquivos do container anterior.\n\n```mermaid\nflowchart LR\n  A[Container postgres-db] --> B[Contem o Postgres e o banco de dados]\n  B --> C[docker rm postgres-db]\n  C --> D[Sistema de arquivos do container e descartado]\n  D --> E[Novo container criado a partir da imagem]\n  E --> F[Banco de dados vazio, sem tabelas]\n```\n\nNa próxima lição você vai resolver exatamente esse problema usando um **volume**: um espaço de armazenamento que existe fora do container e sobrevive à remoção dele."
+            }
+          ]
+        },
+        {
+              "id": "",
+              "type": "exercise",
+              "question": "Agora que já confirmou os dados, saia do prompt do PostgreSQL.",
+              "comment": "Sair do PostgreSQL",
+              "answer": "\\q",
+              "workspace": {
+                "activeFilePath": "queries.sql",
+                "tree": [
+                  { "type": "file", "name": "queries.sql" }
+                ]
+              }
+            },
+        {
+          "id": "postgres-com-volume",
+          "name": "PostgreSQL com Docker: persistindo dados com volumes",
+          "lines": [
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "O que é um volume?",
+              "content": "Na lição anterior, você viu que remover um container do PostgreSQL apaga também o banco de dados, porque os arquivos ficam dentro do próprio container.\n\nUm **volume** resolve esse problema: ele é um espaço de armazenamento gerenciado pelo Docker, que existe fora do ciclo de vida do container. O container apenas monta esse volume em uma pasta interna - e é ali que o PostgreSQL passa a gravar os arquivos do banco.\n\nComo o volume não pertence a nenhum container específico, ele continua existindo mesmo depois que o container é removido. Um novo container pode montar o mesmo volume e continuar de onde o anterior parou.\n\n```mermaid\nflowchart TB\n  subgraph Container[Container postgres-db]\n    PG[Processo PostgreSQL]\n  end\n  subgraph Volume[Volume postgres_data]\n    Dados[Arquivos do banco de dados]\n  end\n  Container -- monta o volume --> Volume\n```\n\nVamos colocar isso em prática. Primeiro, vamos limpar o container antigo, sem volume, que ficou da lição anterior."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Agora que já confirmou os dados, saia do prompt do PostgreSQL.",
+              "comment": "Sair do PostgreSQL",
+              "answer": "\\q",
+              "workspace": {
+                "activeFilePath": "queries.sql",
+                "tree": [
+                  { "type": "file", "name": "queries.sql" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Pare o container postgres-db que ficou rodando sem volume, da lição anterior.",
+              "comment": "Parar o container antigo",
+              "answer": "docker stop postgres-db",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Remova esse container antigo, já que vamos criar um novo, agora com volume.",
+              "comment": "Remover o container antigo",
+              "answer": "docker rm postgres-db",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Crie um volume chamado postgres_data, que vamos usar para guardar os dados do banco fora do container.",
+              "comment": "Criar o volume",
+              "answer": "docker volume create postgres_data",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Confirme que o volume foi criado. Escreva o comando que lista todos os volumes do Docker.",
+              "comment": "Listar volumes",
+              "answer": "docker volume ls",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "A opção -v do docker run",
+              "content": "Para o container usar o volume que acabamos de criar, vamos adicionar a opção -v ao docker run:\n\n-v postgres_data:/var/lib/postgresql/data\n\nEssa opção tem duas partes, separadas por dois pontos:\n\n- postgres_data é o nome do volume do Docker que criamos.\n- /var/lib/postgresql/data é a pasta dentro do container onde o PostgreSQL grava os arquivos do banco por padrão.\n\nOu seja: em vez de gravar esses arquivos no sistema de arquivos descartável do container, o PostgreSQL vai gravar diretamente no volume, que é persistente.\n\nAgora vamos criar o container usando essa opção."
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Crie novamente o container postgres-db, com as mesmas opções de usuário, senha, banco e porta de antes, mas agora montando o volume postgres_data na pasta /var/lib/postgresql/data do container.",
+              "comment": "Criar container do PostgreSQL com volume",
+              "answer": "docker run -d --name postgres-db -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=123456 -e POSTGRES_DB=empresa -p 5432:5432 -v postgres_data:/var/lib/postgresql/data postgres:17",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Confirme que o novo container está rodando corretamente.",
+              "comment": "Verificar se o container está rodando",
+              "answer": "docker ps",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Entre no PostgreSQL dentro do novo container, do mesmo jeito de antes.",
+              "comment": "Entrar no PostgreSQL",
+              "answer": "docker exec -it postgres-db psql -U admin -d empresa",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Como este é um container novo, com um volume vazio, crie novamente a tabela users, com id, name e email.",
+              "comment": "Criar a tabela users no volume",
+              "answer": "CREATE TABLE users (\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(100),\n  email VARCHAR(100)\n);",
+              "workspace": {
+                "activeFilePath": "queries.sql",
+                "tree": [
+                  { "type": "file", "name": "queries.sql" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Insira três novos registros na tabela users: Carlos (carlos@email.com), Julia (julia@email.com) e Pedro (pedro@email.com).",
+              "comment": "Inserir novos dados",
+              "answer": "INSERT INTO users (name, email)\nVALUES ('Carlos', 'carlos@email.com'), ('Julia', 'julia@email.com'), ('Pedro', 'pedro@email.com');",
+              "workspace": {
+                "activeFilePath": "queries.sql",
+                "tree": [
+                  { "type": "file", "name": "queries.sql" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Confirme que os novos dados foram inseridos corretamente.",
+              "comment": "Consultar os dados inseridos",
+              "answer": "SELECT * FROM users;",
+              "workspace": {
+                "activeFilePath": "queries.sql",
+                "tree": [
+                  { "type": "file", "name": "queries.sql" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Saia do prompt do PostgreSQL - já vamos testar se os dados sobrevivem à remoção do container.",
+              "comment": "Sair do PostgreSQL",
+              "answer": "\\q",
+              "workspace": {
+                "activeFilePath": "queries.sql",
+                "tree": [
+                  { "type": "file", "name": "queries.sql" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Pare o container postgres-db novamente.",
+              "comment": "Parar o container",
+              "answer": "docker stop postgres-db",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Remova o container postgres-db. Desta vez o volume não será removido junto, pois o volume existe de forma independente do container.",
+              "comment": "Remover o container",
+              "answer": "docker rm postgres-db",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Confirme que o volume postgres_data continua existindo, mesmo com o container removido.",
+              "comment": "Verificar que o volume continua existindo",
+              "answer": "docker volume ls",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Crie um novo container postgres-db, montando o mesmo volume postgres_data de antes, para testar se ele consegue acessar os dados que já existem no volume.",
+              "comment": "Criar outro container reutilizando o mesmo volume",
+              "answer": "docker run -d --name postgres-db -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=123456 -e POSTGRES_DB=empresa -p 5432:5432 -v postgres_data:/var/lib/postgresql/data postgres:17",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Entre novamente no PostgreSQL dentro desse novo container.",
+              "comment": "Entrar novamente no PostgreSQL",
+              "answer": "docker exec -it postgres-db psql -U admin -d empresa",
+              "workspace": {
+                "activeFilePath": "comandos-docker.sh",
+                "tree": [
+                  { "type": "file", "name": "comandos-docker.sh" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Consulte a tabela users para verificar se Carlos, Julia e Pedro ainda estão lá, mesmo em um container recém-criado.",
+              "comment": "Verificar que os dados persistiram",
+              "answer": "SELECT * FROM users;",
+              "workspace": {
+                "activeFilePath": "queries.sql",
+                "tree": [
+                  { "type": "file", "name": "queries.sql" }
+                ]
+              }
+            },
+             {
+              "id": "",
+              "type": "exercise",
+              "question": "Saia do prompt do PostgreSQL",
+              "comment": "Sair do PostgreSQL",
+              "answer": "\\q",
+              "workspace": {
+                "activeFilePath": "queries.sql",
+                "tree": [
+                  { "type": "file", "name": "queries.sql" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Onde o volume fica armazenado?",
+              "content": "Os dados continuaram lá, mesmo com o container tendo sido removido e recriado. Isso prova que o volume, e não o container, é quem realmente guarda o banco de dados.\n\nO Docker armazena os volumes em uma área própria do sistema operacional. No Linux, normalmente em:\n\n/var/lib/docker/volumes/\n\nPara descobrir exatamente onde um volume específico está localizado, use:\n\ndocker volume inspect postgres_data\n\nA saída mostra um campo chamado Mountpoint, que é o caminho físico onde os arquivos do banco realmente ficam salvos no disco da máquina host."
+            },
+             {
+              "id": "",
+              "type": "explanation",
+              "title": "Como deletar o volume?",
+              "content": "Se você quiser deletar o volume, primeiro é preciso remover todos os containers que estão usando ele (docker stop <id> e docker rm <id>). Depois, use o comando:\n\ndocker volume rm postgres_data\n\nIsso vai apagar o volume e todos os arquivos do banco de dados que estavam nele. Use com cuidado!"
+            },
+            {
+              "id": "",
+              "type": "explanation",
+              "title": "Resumo: containers descartáveis, volumes persistentes",
+              "content": "Comparando as duas lições, o comportamento fica bem claro:\n\n| Situação | Os dados permanecem? |\n|---|---|\n| Container sem volume, removido | Não |\n| Container com volume, removido | Sim |\n| Criar novo container usando o mesmo volume | Sim |\n| Atualizar a imagem do PostgreSQL | Sim |\n| Reiniciar o computador | Sim |\n\n```mermaid\nflowchart TD\n  subgraph SemVolume[Sem volume]\n    A1[Remover container] --> A2[Dados perdidos]\n  end\n  subgraph ComVolume[Com volume]\n    B1[Remover container] --> B2[Volume continua existindo]\n    B2 --> B3[Criar outro container usando o volume]\n    B3 --> B4[Dados continuam disponiveis]\n  end\n```\n\nUm **container** é descartável: pode ser criado, removido e recriado a qualquer momento, sem custo. Já um **volume** é persistente: ele guarda os arquivos do banco de dados fora do ciclo de vida do container.\n\nPor isso, sempre que você for rodar um banco de dados em Docker - seja em desenvolvimento ou em produção - use um volume. Assim você pode atualizar, recriar ou substituir o container sem correr o risco de perder os dados."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

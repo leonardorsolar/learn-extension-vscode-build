@@ -1,0 +1,307 @@
+{
+  "levels": [
+    {
+      "id": "teste",
+      "name": "Teste commentAnchor",
+      "themes": [
+        {
+          "id": "teste-insidestart-body",
+          "name": "Caso 1: insideStart dentro de <body>",
+          "lines": [
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro do arquivo index.html vazio, digite ! e pressione Tab para gerar a estrutura básica do HTML com o Emmet.",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag <body>, adicione um título visível na página usando a tag <h1> com o texto Meu Primeiro Site. (Testa commentAnchor com position: insideStart, âncora em <body>: o comentário deve aparecer logo ABAIXO da abertura da tag <body>, e não no final do arquivo.)",
+              "comment": "Adicionar título visível dentro do body",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<h1>Meu Primeiro Site</h1>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "teste-insidestart-classe",
+          "name": "Caso 2: insideStart dentro de classe",
+          "lines": [
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo pessoa.js, crie uma classe chamada Pessoa com um construtor que recebe o parâmetro nome e armazena em this.nome.",
+              "comment": "Criar a classe Pessoa com construtor",
+              "answer": "class Pessoa {\n  constructor(nome) {\n    this.nome = nome;\n  }\n}",
+              "workspace": {
+                "activeFilePath": "pessoa.js",
+                "tree": [
+                  { "type": "file", "name": "pessoa.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da classe Pessoa, logo após o construtor, adicione um método chamado saudacao que retorna a string Olá, junto com o nome da pessoa. (Testa commentAnchor com position: insideEnd em um bloco de chaves: o comentário deve aparecer logo ANTES do fechamento da chave da classe, mesmo com o construtor no meio.)",
+              "comment": "Adicionar método saudacao dentro da classe Pessoa",
+              "commentAnchor": {
+                "find": "class Pessoa {",
+                "position": "insideEnd",
+                "fallback": "end"
+              },
+              "answer": "saudacao() {\n    return `Olá, ${this.nome}`;\n  }",
+              "workspace": {
+                "activeFilePath": "pessoa.js",
+                "tree": [
+                  { "type": "file", "name": "pessoa.js" }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "teste-afterblock-funcao",
+          "name": "Caso 3: afterBlock depois de uma função",
+          "lines": [
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo script.js, crie uma função chamada somar que recebe dois parâmetros, a e b, e retorna a soma dos dois.",
+              "comment": "Criar a função somar",
+              "answer": "function somar(a, b) {\n  return a + b;\n}",
+              "workspace": {
+                "activeFilePath": "script.js",
+                "tree": [
+                  { "type": "file", "name": "script.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo da função somar, chame essa função passando os valores 2 e 3, e armazene o resultado em uma variável chamada resultado. (Testa commentAnchor com position: afterBlock: o comentário deve aparecer DEPOIS do fechamento da função somar, e não dentro dela nem no topo do arquivo.)",
+              "comment": "Chamar a função somar e guardar o resultado",
+              "commentAnchor": {
+                "find": "function somar(a, b) {",
+                "position": "afterBlock",
+                "fallback": "end"
+              },
+              "answer": "const resultado = somar(2, 3);",
+              "workspace": {
+                "activeFilePath": "script.js",
+                "tree": [
+                  { "type": "file", "name": "script.js" }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "teste-replace-linha",
+          "name": "Caso 4: replace de linha específica",
+          "lines": [
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo config.js, crie uma constante chamada DEBUG com valor true, e logo abaixo escreva o comentário // TODO: revisar antes de publicar.",
+              "comment": "Criar constante DEBUG com comentário TODO",
+              "answer": "const DEBUG = true;\n// TODO: revisar antes de publicar",
+              "workspace": {
+                "activeFilePath": "config.js",
+                "tree": [
+                  { "type": "file", "name": "config.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Troque o valor de DEBUG de true para false, já que o projeto será publicado agora. (Testa commentAnchor com position: replace: a linha do TODO antigo deve ser SUBSTITUÍDA pelo novo comentário, em vez de o novo comentário ser apenas anexado no final do arquivo.)",
+              "comment": "Desativar modo DEBUG antes de publicar",
+              "commentAnchor": {
+                "find": "// TODO: revisar antes de publicar",
+                "position": "replace",
+                "fallback": "end"
+              },
+              "answer": "const DEBUG = false;",
+              "workspace": {
+                "activeFilePath": "config.js",
+                "tree": [
+                  { "type": "file", "name": "config.js" }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "teste-before",
+          "name": "Caso 5: before isolado",
+          "lines": [
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo config.js, crie duas constantes: PORT com valor 3000, e HOST com valor localhost (como string).",
+              "comment": "Criar constantes PORT e HOST",
+              "answer": "const PORT = 3000;\nconst HOST = 'localhost';",
+              "workspace": {
+                "activeFilePath": "config.js",
+                "tree": [
+                  { "type": "file", "name": "config.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo acima da constante HOST, crie uma constante chamada ENV com o valor development (como string), já que ela representa uma configuração relacionada ao ambiente. (Testa commentAnchor com position: before, isolado: o comentário deve aparecer ANTES da linha da constante HOST, e não no final do arquivo.)",
+              "comment": "Criar constante ENV antes do HOST",
+              "commentAnchor": {
+                "find": "const HOST",
+                "position": "before",
+                "fallback": "end"
+              },
+              "answer": "const ENV = 'development';",
+              "workspace": {
+                "activeFilePath": "config.js",
+                "tree": [
+                  { "type": "file", "name": "config.js" }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "teste-after",
+          "name": "Caso 6: after isolado",
+          "lines": [
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo config.js, crie uma constante chamada PORT com valor 3000.",
+              "comment": "Criar constante PORT",
+              "answer": "const PORT = 3000;",
+              "workspace": {
+                "activeFilePath": "config.js",
+                "tree": [
+                  { "type": "file", "name": "config.js" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo da constante PORT, crie uma constante chamada HOST com o valor localhost (como string). (Testa commentAnchor com position: after, isolado: o comentário deve aparecer DEPOIS da linha da constante PORT — mesmo que nesse caso a linha da PORT já seja a última do arquivo, o que valida que after não se comporta como o fallback end apenas por coincidência.)",
+              "comment": "Criar constante HOST depois do PORT",
+              "commentAnchor": {
+                "find": "const PORT",
+                "position": "after",
+                "fallback": "end"
+              },
+              "answer": "const HOST = 'localhost';",
+              "workspace": {
+                "activeFilePath": "config.js",
+                "tree": [
+                  { "type": "file", "name": "config.js" }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "teste-occurrence-ancora-estrutural",
+          "name": "Caso 7: âncora estrutural com occurrence (regra 5 e 6 do prompt)",
+          "lines": [
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "No arquivo index.html vazio, digite ! e pressione Tab para gerar a estrutura básica do HTML com o Emmet.",
+              "comment": "Gerar estrutura HTML com Emmet",
+              "answer": "!",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Dentro da tag body, adicione um parágrafo usando a tag p com um texto livre sobre você mesmo.",
+              "comment": "Adicionar primeiro parágrafo",
+              "commentAnchor": {
+                "find": "<body>",
+                "position": "insideStart",
+                "fallback": "end"
+              },
+              "answer": "<p>Escreva aqui uma frase livre sobre voce.</p>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Logo abaixo do parágrafo anterior, adicione um segundo parágrafo usando a tag p, também com um texto livre.",
+              "comment": "Adicionar segundo parágrafo",
+              "commentAnchor": {
+                "find": "<p>",
+                "position": "afterBlock",
+                "occurrence": "last",
+                "fallback": "end"
+              },
+              "answer": "<p>Escreva aqui outra frase livre.</p>",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            },
+            {
+              "id": "",
+              "type": "exercise",
+              "question": "Altere o SEGUNDO parágrafo (o último criado) para dividir seu texto em duas linhas usando a tag br, mantendo a primeira parte do texto e adicionando uma segunda frase livre na linha seguinte. (Testa commentAnchor com find estrutural (apenas <p>, sem o conteúdo digitado) + occurrence: last, para garantir que a âncora aponte para o SEGUNDO parágrafo, não o primeiro, mesmo que o texto interno de cada p seja livre e imprevisível.)",
+              "comment": "Usar br para quebrar o texto do segundo parágrafo em duas linhas",
+              "commentAnchor": {
+                "find": "<p>",
+                "position": "insideEnd",
+                "occurrence": "last",
+                "fallback": "end"
+              },
+              "answer": "Segunda linha livre apos o br.",
+              "workspace": {
+                "activeFilePath": "index.html",
+                "tree": [
+                  { "type": "file", "name": "index.html" }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
